@@ -7,6 +7,8 @@ export const up = ({ schema }) =>
       tb.string('username')
         .unique()
         .notNullable()
+      tb.string('password')
+        .notNullable()
     })
 
 

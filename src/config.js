@@ -23,3 +23,6 @@ export const database = {
     ssl: true
   }
 }
+
+
+export const tokenSecret = process.env.TOKEN_SECRET || 'secret'

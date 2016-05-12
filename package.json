@@ -8,6 +8,7 @@
     "lint": "eslint src/*.js && eslint test/*.js",
     "test:api": "mocha --compilers js:babel-register -r babel-polyfill test-api",
     "tdd:api": "npm run test:api -s -- -w -R min",
+    "dev:api": "babel-node src/api",
     "knex": "babel-node node_modules/.bin/knex --",
     "db:make": "npm run -s knex migrate:make --",
     "db:up": "npm run -s knex migrate:latest",
@@ -41,10 +42,12 @@
   "dependencies": {
     "babel-polyfill": "6.8.0",
     "bcrypt-as-promised": "1.1.0",
+    "body-parser": "1.15.1",
     "es6-promisify": "4.0.0",
     "express": "4.13.4",
     "express-async-wrap": "1.0.0",
     "joi": "8.1.0",
+    "jsonwebtoken": "6.2.0",
     "knex": "0.11.1",
     "pg": "4.5.5",
     "redis": "2.6.0-2"

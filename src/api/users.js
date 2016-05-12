@@ -1,8 +1,9 @@
 
 import wrap from 'express-async-wrap'
-import promisify from 'es6-promisify'
 import joi from 'joi'
 import { hash } from 'bcrypt-as-promised'
+import jwt from 'jsonwebtoken'
+import { tokenSecret } from '../config'
 
 
 export const userSchema = joi.object().keys({
@@ -11,18 +12,23 @@ export const userSchema = joi.object().keys({
 })
 
 
-export const validateUser = promisify(userSchema.validate.bind(userSchema))
+export const sign = payload =>
+
+  new Promise((resolve, reject) =>
+
+    jwt.sign(payload, tokenSecret, {}, (err, token) =>
+      (err && reject(err)) || resolve(token)
+    )
+  )
 
 
-export const userValidation = wrap(async ({ body }, res, next) => {
+export const signup = knex => wrap(async ({ body }, res, next) => {
 
+  const { error, value } = joi.validate(body, userSchema)
 
-})
+  if (error) return next(error)
 
-
-export const createUser = knex => wrap(async ({ body }, res, next) => {
-
-  const { username, password: unhashed } = await validateUser(body)
+  const { username, password: unhashed } = value
 
   const password = await hash(unhashed, 10)
 
@@ -30,4 +36,7 @@ export const createUser = knex => wrap(async ({ body }, res, next) => {
     .insert({ username, password }, 'id')
     .into('users')
 
+  const token = await sign({ id, username }, tokenSecret)
+
+  res.json({ token })
 })
