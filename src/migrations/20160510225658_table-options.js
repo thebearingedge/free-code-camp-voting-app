@@ -2,7 +2,7 @@
 export const up = ({ schema }) =>
 
   schema
-    .createTable('poll_options', tb => {
+    .createTable('options', tb => {
       tb.increments('id')
       tb.string('value')
         .notNullable()
@@ -11,4 +11,4 @@ export const up = ({ schema }) =>
 
 export const down = ({ raw }) =>
 
-  raw('drop table if exists "poll_options" cascade')
+  raw('drop table if exists "options" cascade')

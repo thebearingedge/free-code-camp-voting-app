@@ -51,6 +51,7 @@
     "bcrypt-as-promised": "1.1.0",
     "bluebird": "3.3.5",
     "body-parser": "1.15.1",
+    "deep-clone": "2.0.2",
     "es6-promisify-all": "0.1.0",
     "express": "4.13.4",
     "express-async-wrap": "1.0.0",
