@@ -1,5 +1,5 @@
 
-export const up = async ({ schema }) =>
+export const up = ({ schema }) =>
 
   schema
     .table('polls', tb => {
