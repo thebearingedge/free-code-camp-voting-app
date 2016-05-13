@@ -25,4 +25,13 @@ export const database = {
 }
 
 
+export const pgConnection = database[process.env.NODE_ENV || 'development']
+
+
 export const tokenSecret = process.env.TOKEN_SECRET || 'secret'
+
+
+export const tokenExpiry = process.env.TOKEN_EXPIRY || 14400
+
+
+export const redisConnection = process.env.REDIS_URL

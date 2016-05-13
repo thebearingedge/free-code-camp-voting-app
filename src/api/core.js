@@ -1,10 +1,14 @@
 
-import knex from 'knex'
-import { database } from '../config'
+import Knex from 'knex'
+import Redis from 'redis'
+import { promisifyAll } from 'bluebird'
+import { pgConnection, redisConnection } from '../config'
 
 
-const { NODE_ENV: env } = process.env
-const sql = database[env || 'development']
+promisifyAll(Redis.RedisClient.prototype)
 
 
-export const db = knex(sql)
+export const redis = Redis.createClient(redisConnection)
+
+
+export const knex = new Knex(pgConnection)
