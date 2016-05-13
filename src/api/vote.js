@@ -7,25 +7,14 @@ export const vote = knex => wrap(async ({ params }, res) => {
 
   const { optionId } = params
 
-  const option = await knex
-    .table('options')
-    .where(snakeKeys({ optionId }))
-
-  if (!option) throw new Error('invalid poll option')
-
-  const { pollId } = camelKeys(option)
-
   await knex
-    .insert(snakeKeys({ pollId }))
+    .insert(snakeKeys({ optionId }))
     .into('votes')
 
-  const poll = await knex
-    .from('polls_view')
-    .where(snakeKeys({ pollId }))
+  const option = await knex
+    .from('options_view')
+    .where({ id: optionId })
+    .first()
 
-  const options = await knex
-    .from('options')
-    .where(snakeKeys({ pollId }))
-
-  res.json(camelKeys({ ...poll, options }))
+  res.json(camelKeys(option))
 })

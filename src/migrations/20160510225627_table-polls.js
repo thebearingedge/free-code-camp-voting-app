@@ -4,7 +4,9 @@ export const up = ({ schema }) =>
   schema
     .createTable('polls', tb => {
       tb.increments('id')
-      tb.string('name')
+      tb.string('question')
+        .notNullable()
+      tb.string('slug')
         .notNullable()
     })
 

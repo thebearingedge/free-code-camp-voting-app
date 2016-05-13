@@ -6,7 +6,7 @@ export const up = ({ schema }) =>
       tb.integer('option_id')
         .notNullable()
         .references('id')
-        .inTable('users')
+        .inTable('options')
         .onDelete('cascade')
     })
 

@@ -4,12 +4,14 @@ import { join } from 'path'
 
 const client = 'postgresql'
 const migrations = { directory: join(__dirname, '/migrations') }
+const seeds = { directory: join(__dirname, '/seeds') }
 
 
 export const database = {
   development: {
     client,
     migrations,
+    seeds,
     connection: {
       user: 'voting-app',
       password: 'voting-app',

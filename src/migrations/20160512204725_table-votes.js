@@ -4,7 +4,7 @@ export const up = ({ schema, raw }) =>
   schema
     .createTable('votes', tb => {
       tb.increments('id')
-      tb.timestamp('time')
+      tb.timestamp('date')
         .notNullable()
         .defaultTo(raw('now()'))
     })
