@@ -26,7 +26,7 @@ export const issueToken = redis => wrap(async ({ user }, res) => {
 
   await redis.setexAsync(token, tokenExpiry, token)
 
-  res.json({ ...user, token })
+  res.status(201).json({ ...user, token })
 })
 
 

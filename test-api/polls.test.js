@@ -154,6 +154,39 @@ describe('polls', () => {
 
     })
 
+    describe('findById', () => {
+
+      it('selects a poll by id', async () => {
+
+        const poll = await polls.findById(1)
+
+        expect(poll).to.have.interface({
+          id: Number,
+          question: String,
+          slug: String,
+          userId: Number
+        })
+      })
+
+    })
+
+    describe('deleteById', () => {
+
+      it('deletes a poll', async () => {
+
+        const id = 1
+
+        await polls.deleteById(id)
+
+        const deleted = await trx
+          .from('polls')
+          .where({ id })
+          .first()
+
+        expect(deleted).not.to.exist
+      })
+    })
+
   })
 
 
@@ -287,6 +320,71 @@ describe('polls', () => {
 
         expect(res).to.have.property('status', 404)
         expect(res.body).to.have.property('error', 'NotFound')
+      })
+
+    })
+
+  })
+
+
+  const { deletePoll } = polls
+
+  describe('deletePoll', () => {
+
+    let polls, client
+
+    before(() => {
+      polls = {}
+      const app = express()
+        .use((req, res, next) =>
+          (req.user = { id: 1, username: 'foo' }) && next()
+        )
+        .delete('/:pollId', deletePoll(polls))
+        .use(errorHandler)
+      client = request(app)
+    })
+
+    beforeEach(() => {
+      polls.deleteById = stub()
+      polls.findById = stub()
+    })
+
+    context('when the user does not own the poll', () => {
+
+      it('returns an Unauthorized error', async () => {
+
+        polls.findById.resolves({ userId: 2 })
+
+        const res = await client.delete('/1')
+
+        expect(res).to.have.property('status', 401)
+        expect(res.body).to.have.property('error', 'Unauthorized')
+      })
+
+    })
+
+    context('when the user owns the poll', () => {
+
+      it('deletes the poll', async () => {
+
+        polls.findById.resolves({ userId: 1 })
+
+        const res = await client.delete('/1')
+
+        expect(res).to.have.property('status', 204)
+      })
+
+    })
+
+    context('when the poll does not exists', () => {
+
+      it('returns a success response', async () => {
+
+        polls.findById.resolves(null)
+
+        const res = await client.delete('/1')
+
+        expect(res).to.have.property('status', 204)
       })
 
     })

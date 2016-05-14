@@ -2,7 +2,7 @@
 import joi from 'joi'
 import wrap from 'express-async-wrap'
 import { snakeKeys, camelKeys, lowerSlug, validate } from './utils'
-import { NotFound } from './errors'
+import { NotFound, Unauthorized } from './errors'
 
 
 export const optionSchema = joi.object().keys({
@@ -83,6 +83,24 @@ export const pollsData = knex => ({
       .first()
 
     return camelKeys(option)
+  },
+
+  async deleteById(id) {
+
+    return knex
+      .delete()
+      .from('polls')
+      .where({ id })
+  },
+
+  async findById(id) {
+
+    const poll = await knex
+      .from('polls')
+      .where({ id })
+      .first()
+
+    return camelKeys(poll)
   }
 
 })
@@ -136,4 +154,26 @@ export const voteInPoll = polls => wrap(async ({ params }, res) => {
   const option = await polls.vote(optionId)
 
   res.status(201).json(option)
+})
+
+
+export const deletePoll = polls => wrap(async ({ params, user }, res) => {
+
+  const { pollId } = params
+  const { id: userId } = user
+
+  const poll = await polls.findById(pollId)
+
+  if (!poll) return res.sendStatus(204)
+
+  const { userId: ownerId } = poll
+
+  if (userId !== ownerId) {
+
+    throw new Unauthorized('permission denied')
+  }
+
+  await polls.deleteById(pollId)
+
+  res.sendStatus(204)
 })

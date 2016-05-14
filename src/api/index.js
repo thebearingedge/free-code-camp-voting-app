@@ -5,7 +5,7 @@ import { userData, postUser } from './users'
 import { authenticate } from './authenticate'
 import { issueToken, setUser } from './tokens'
 import { knex, redis } from './core'
-import { pollsData, getPoll, postPoll, voteInPoll } from './polls'
+import { pollsData, getPoll, postPoll, voteInPoll, deletePoll } from './polls'
 import errorHandler from './error-handler'
 
 
@@ -21,6 +21,7 @@ export default new Router()
   .post('/:username/:slug/:optionId', voteInPoll(polls))
   .use(setUser(redis))
   .post('/polls', postPoll(polls))
+  .delete('/polls/:pollId', deletePoll(polls))
   // DELETE /polls/:slug -> deletePoll
   // GET /:username/polls -> listPolls
   .use(errorHandler)
