@@ -1,26 +1,26 @@
 
 import { Router } from 'express'
 import { json } from 'body-parser'
-import { userData, createUser } from './users'
+import { userData, postUser } from './users'
 import { authenticate } from './authenticate'
 import { issueToken, setUser } from './tokens'
 import { knex, redis } from './core'
 import { vote } from './vote'
-import { getPoll } from './polls'
+import { pollsData, getPoll, postPoll } from './polls'
 import errorHandler from './error-handler'
 
 
 const users = userData(knex)
-
+const polls = pollsData(knex)
 
 export default new Router()
   .use(json())
-  .post('/signup', createUser(users), issueToken(redis))
-  .post('/authenticate', authenticate(knex), issueToken(redis))
+  .post('/signup', postUser(users), issueToken(redis))
+  .post('/authenticate', authenticate(users), issueToken(redis))
   .post('/vote/:optionId', vote(knex))
-  .get('/:username/:slug', getPoll(knex))
+  .get('/:username/:slug', getPoll(polls))
   .use(setUser(redis))
-  // POST /polls -> createPoll
+  .post('/polls', postPoll(polls))
   // DELETE /polls/:slug -> deletePoll
   // GET /:username/polls -> listPolls
   .use(errorHandler)

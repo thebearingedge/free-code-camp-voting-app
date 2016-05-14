@@ -1,16 +1,14 @@
 
+import { ClientError } from './errors'
+
 const errorHandler = (err, req, res, next) => {
 
-  const statusCode = err.statusCode || 500
+  if (err instanceof ClientError) {
 
-  const response = {
-    statusCode,
-    error: err.name,
-    message: err.message || 'Internal Server Error',
-    details: err.details
+    return res.status(err.statusCode).json(err)
   }
 
-  res.status(statusCode).json(response)
+  res.status(500).json({ error: 'Internal Server Error' })
 }
 
 

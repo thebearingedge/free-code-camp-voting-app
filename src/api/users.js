@@ -5,13 +5,13 @@ import { hash } from 'bcrypt-as-promised'
 import { validate } from './utils'
 
 
-export const newUserSchema = joi.object().keys({
+export const userSchema = joi.object().keys({
   username: joi.string().token().required(),
   password: joi.string().required()
 })
 
 
-export const createUser = users => wrap(async (req, _, next) => {
+export const postUser = users => wrap(async (req, _, next) => {
 
   const user = await users.create(req.body)
 
@@ -25,7 +25,7 @@ export const userData = knex => ({
 
   async create(data) {
 
-    const { username, password: unhashed } = await validate(data, newUserSchema)
+    const { username, password: unhashed } = await validate(data, userSchema)
 
     const password = await hash(unhashed, 10)
 
@@ -34,14 +34,6 @@ export const userData = knex => ({
       .into('users')
 
     return { id, username }
-  },
-
-  async findByUsername(username) {
-
-    return knex
-      .table('users')
-      .where({ username })
-      .first()
   }
 
 })

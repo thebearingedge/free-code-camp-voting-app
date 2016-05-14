@@ -1,5 +1,9 @@
 
 import { join } from 'path'
+import pg from 'pg'
+
+
+pg.types.setTypeParser(20, 'text', parseInt)
 
 
 const client = 'postgresql'

@@ -1,6 +1,6 @@
 
 import { expect, rejected, begin } from '@thebearingedge/test-utils'
-import { newUserSchema, userData, createUser } from '../src/api/users'
+import { userSchema, userData, postUser } from '../src/api/users'
 import { validate } from '../src/api/utils'
 import { knex } from '../src/api/core'
 import express from 'express'
@@ -8,13 +8,13 @@ import request from 'supertest'
 
 describe('users', () => {
 
-  describe('newUserSchema', () => {
+  describe('userSchema', () => {
 
     it('requires a string username', async () => {
 
       const user = { password: 'bar' }
 
-      const err = await rejected(validate(user, newUserSchema))
+      const err = await rejected(validate(user, userSchema))
 
       expect(err).to.be.an.instanceof(Error)
       expect(err).to.have.property('name', 'ValidationError')
@@ -28,7 +28,7 @@ describe('users', () => {
 
       const user = { username: 'foo' }
 
-      const err = await rejected(validate(user, newUserSchema))
+      const err = await rejected(validate(user, userSchema))
 
       expect(err).to.be.an.instanceof(Error)
       expect(err).to.have.property('name', 'ValidationError')
@@ -68,7 +68,7 @@ describe('users', () => {
     })
   })
 
-  describe('createUser', () => {
+  describe('postUser', () => {
 
     let app
 
@@ -82,7 +82,7 @@ describe('users', () => {
         res.end()
       }
       app = express()
-        .get('/', createUser(users), handler)
+        .get('/', postUser(users), handler)
     })
 
     it('sets the new user on req', async () => {

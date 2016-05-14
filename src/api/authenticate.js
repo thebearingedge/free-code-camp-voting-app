@@ -1,8 +1,8 @@
 
 import wrap from 'express-async-wrap'
 import { compare } from 'bcrypt-as-promised'
-import { newUserSchema as credentialsSchema } from './users'
-import { UnauthorizedError } from './errors'
+import { userSchema as credentialsSchema } from './users'
+import { Unauthorized } from './errors'
 import { validate } from './utils'
 
 
@@ -16,7 +16,7 @@ export const authenticate = users => wrap(async (req, res, next) => {
 
   const user = await users.findByUsername(username)
 
-  if (!user) throw new UnauthorizedError('invalid login')
+  if (!user) throw new Unauthorized('invalid login')
 
   const { id, password: hash } = user
 
@@ -28,7 +28,7 @@ export const authenticate = users => wrap(async (req, res, next) => {
   }
   catch (err) {
 
-    const error = new UnauthorizedError('invalid login')
+    const error = new Unauthorized('invalid login')
 
     error.originalError = err
 
