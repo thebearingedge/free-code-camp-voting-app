@@ -18,15 +18,12 @@ export const pollSchema = joi.object().keys({
 
 export const pollsData = knex => ({
 
-  async findByUserAndSlug(username, slug, trx) {
+  async findByUserAndSlug(user, slug, trx) {
 
     const poll = await knex
       .transacting(trx)
-      .select('p.id', 'u.username as user', 'p.question', 'p.slug')
-      .from('polls as p')
-      .innerJoin('users as u', 'p.user_id', 'u.id')
-      .where('u.username', username)
-      .andWhere('p.slug', slug)
+      .from('polls_view')
+      .where({ user, slug })
       .first()
 
     if (!poll) return null
