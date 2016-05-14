@@ -110,6 +110,7 @@ describe('tokens', () => {
       app
         .get('/', setUser(redis), (req, res) => {
           expect(req.user).to.include(user)
+          expect(req.user).not.to.have.property('password')
           res.end()
         })
         .use(errorHandler)

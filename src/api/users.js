@@ -34,6 +34,14 @@ export const userData = knex => ({
       .into('users')
 
     return { id, username }
+  },
+
+  async findByUsername(username) {
+
+    return knex
+      .table('users')
+      .where({ username })
+      .first()
   }
 
 })

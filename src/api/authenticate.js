@@ -1,23 +1,22 @@
 
-import joi from 'joi'
 import wrap from 'express-async-wrap'
 import { compare } from 'bcrypt-as-promised'
-import { credentialsSchema } from './users'
+import { newUserSchema as credentialsSchema } from './users'
+import { UnauthorizedError } from './errors'
+import { validate } from './utils'
 
 
-export const authenticate = knex => wrap(async (req, res, next) => {
+export const authenticate = users => wrap(async (req, res, next) => {
 
   const { body } = req
-  const { error } = joi.validate(body, credentialsSchema)
 
-  if (error) throw new Error('invalid login')
+  await validate(body, credentialsSchema)
 
   const { username, password } = body
 
-  const user = await knex
-    .table('users')
-    .where({ username })
-    .first()
+  const user = await users.findByUsername(username)
+
+  if (!user) throw new UnauthorizedError('invalid login')
 
   const { id, password: hash } = user
 
@@ -29,7 +28,7 @@ export const authenticate = knex => wrap(async (req, res, next) => {
   }
   catch (err) {
 
-    const error = new Error('invalid login')
+    const error = new UnauthorizedError('invalid login')
 
     error.originalError = err
 
