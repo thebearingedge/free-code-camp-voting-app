@@ -1,0 +1,6 @@
+instrumentation:
+  include-all-sources: true
+  verbose: true
+  root: src/api
+reporting:
+  dir: "test-api/coverage"

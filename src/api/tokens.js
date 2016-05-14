@@ -1,24 +1,22 @@
 
 import jwt from 'jsonwebtoken'
 import wrap from 'express-async-wrap'
+import { UnauthorizedError } from './errors'
 import { tokenSecret, tokenExpiry } from '../config'
 
 
-export const createToken = payload => new Promise((resolve, reject) =>
+export const createToken = async payload =>
 
-  jwt.sign(payload, tokenSecret, (err, token) =>
-
-    (err && reject(err)) || resolve(token)
-  )
-)
+  Promise.resolve(jwt.sign(payload, tokenSecret, {}))
 
 
 export const verifyToken = token => new Promise((resolve, reject) =>
 
-  jwt.verify(token, tokenSecret, (err, payload) =>
+  jwt.verify(token, tokenSecret, (err, payload) => {
 
-    (err && reject(err)) || resolve(payload)
-  )
+    if (err) return reject(err)
+    resolve(payload)
+  })
 )
 
 
@@ -36,9 +34,11 @@ export const setUser = redis => wrap(async (req, _, next) => {
 
   const token = req.headers['x-access-token']
 
+  if (!token) throw new UnauthorizedError('x-access-token required')
+
   const issued = await redis.getAsync(token)
 
-  if (!issued) throw new Error('invalid token')
+  if (!issued) throw new UnauthorizedError('invalid token')
 
   try {
 
@@ -48,7 +48,7 @@ export const setUser = redis => wrap(async (req, _, next) => {
   }
   catch (err) {
 
-    const error = new Error('invalid token')
+    const error = new UnauthorizedError('invalid token')
 
     error.originalError = err
 

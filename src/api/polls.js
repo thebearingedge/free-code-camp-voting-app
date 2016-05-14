@@ -4,7 +4,15 @@ import wrap from 'express-async-wrap'
 import { snakeKeys, camelKeys } from './utils'
 
 
-export const pollSchema = joi.object()
+export const optionSchema = joi.object().keys({
+
+})
+
+
+export const pollSchema = joi.object().keys({
+  question: joi.string().required(),
+  options: joi.array().required().items()
+})
 
 
 export const createPoll = knex => wrap(async (req, res, next) => {

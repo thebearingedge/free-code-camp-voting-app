@@ -5,10 +5,14 @@
   "description": "Free Code Camp - Build a Voting App",
   "main": "index.js",
   "scripts": {
+    "istanbul": "babel-node node_modules/.bin/babel-istanbul cover",
+    "istanbul:api": "npm run -s istanbul -- --config test-api/.api.yml _mocha --",
     "lint": "eslint src/*.js && eslint test/*.js",
-    "test:api": "mocha --compilers js:babel-register -r babel-polyfill test-api",
-    "tdd:api": "npm run test:api -s -- -w -R min",
-    "watch:api": "babel-node src/api",
+    "mocha": "mocha --compilers js:babel-register -r babel-polyfill",
+    "api:test": "npm run -s mocha -- test-api",
+    "api:tdd": "npm run -s api:test -- -w -R min",
+    "api:cover": "npm run -s istanbul:api -- test-api",
+    "api:watch": "babel-node src/app",
     "knex": "babel-node node_modules/.bin/knex --",
     "db:make": "npm run -s knex migrate:make --",
     "db:up": "npm run -s knex migrate:latest",
@@ -19,9 +23,10 @@
     "dev": "npm-watch"
   },
   "watch": {
-    "watch:api": {
+    "api:watch": {
       "patterns": [
-        "src/api/**.js"
+        "src/api/**.js",
+        "src/app.js"
       ]
     }
   },
@@ -46,7 +51,9 @@
     "eslint": "2.9.0",
     "mocha": "2.4.5",
     "npm-watch": "0.1.4",
-    "rimraf": "2.5.2"
+    "rimraf": "2.5.2",
+    "supertest": "1.2.0",
+    "supertest-as-promised": "3.1.0"
   },
   "dependencies": {
     "babel-polyfill": "6.8.0",
@@ -54,12 +61,12 @@
     "bluebird": "3.3.5",
     "body-parser": "1.15.1",
     "deep-clone": "2.0.2",
-    "es6-promisify-all": "0.1.0",
+    "es6-error": "2.1.1",
     "express": "4.13.4",
     "express-async-wrap": "1.0.0",
     "joi": "8.1.0",
     "jsonwebtoken": "6.2.0",
-    "knex": "0.11.1",
+    "knex": "0.11.3",
     "pg": "4.5.5",
     "redis": "2.6.0-2",
     "slug": "0.9.1"

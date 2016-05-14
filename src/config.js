@@ -27,6 +27,9 @@ export const database = {
 }
 
 
+export const port = process.env.PORT || 3000
+
+
 export const pgConnection = database[process.env.NODE_ENV || 'development']
 
 

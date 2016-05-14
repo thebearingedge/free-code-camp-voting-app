@@ -2,31 +2,38 @@
 import wrap from 'express-async-wrap'
 import joi from 'joi'
 import { hash } from 'bcrypt-as-promised'
+import { validate } from './utils'
 
 
-export const credentialsSchema = joi.object().keys({
-  id: joi.number(),
+export const newUserSchema = joi.object().keys({
   username: joi.string().token().required(),
   password: joi.string().required()
 })
 
 
-export const createUser = knex => wrap(async (req, _, next) => {
+export const createUser = users => wrap(async (req, _, next) => {
 
-  const { body } = req
-  const { error, value } = joi.validate(body, credentialsSchema)
+  const user = await users.create(req.body)
 
-  if (error) throw error
-
-  const { username, password: unhashed } = value
-
-  const password = await hash(unhashed, 10)
-
-  const [ id ] = await knex
-    .insert({ username, password }, 'id')
-    .into('users')
-
-  req.user = { id, username }
+  req.user = user
 
   next()
+})
+
+
+export const userData = knex => ({
+
+  async create(data) {
+
+    const { username, password: unhashed } = await validate(data, newUserSchema)
+
+    const password = await hash(unhashed, 10)
+
+    const [ id ] = await knex
+      .insert({ username, password }, 'id')
+      .into('users')
+
+    return { id, username }
+  }
+
 })
