@@ -1,6 +1,7 @@
 
 import { ClientError } from './errors'
 
+
 const errorHandler = (err, req, res, next) => {
 
   if (err instanceof ClientError) {

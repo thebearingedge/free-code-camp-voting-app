@@ -6,28 +6,22 @@ export class ClientError extends BaseError {
 
   toJSON() {
 
-    const { statusCode, message } = this
+    const { name: error, statusCode, message } = this
 
-    return { statusCode, message }
+    return { error, statusCode, message }
   }
 }
 
 
 export class Unauthorized extends ClientError {
 
-  constructor(message) {
-    super(message)
-  }
-
   get statusCode() { return 401 }
 
 }
 
+
 export class NotFound extends ClientError {
 
-  constructor(message) {
-    super(message)
-  }
-
   get statusCode() { return 404 }
+
 }
