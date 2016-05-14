@@ -18,6 +18,15 @@ export const pollSchema = joi.object().keys({
 
 export const pollsData = knex => ({
 
+  async getByUsername(user) {
+
+    const polls = await knex
+      .from('polls_view')
+      .where({ user })
+
+    return camelKeys(polls)
+  },
+
   async findByUserAndSlug(user, slug, trx) {
 
     const poll = await knex
@@ -130,7 +139,7 @@ export const getPoll = polls => wrap(async ({ params }, res, next) => {
 })
 
 
-export const voteInPoll = polls => wrap(async ({ params }, res) => {
+export const postVote = polls => wrap(async ({ params }, res) => {
 
   const { username, slug, optionId } = params
 
@@ -173,4 +182,14 @@ export const deletePoll = polls => wrap(async ({ params, user }, res) => {
   await polls.deleteById(pollId)
 
   res.sendStatus(204)
+})
+
+
+export const getPollsByUsername = polls => wrap(async ({ params }, res) => {
+
+  const { username } = params
+
+  const pollsList = await polls.getByUsername(username)
+
+  res.json(pollsList)
 })

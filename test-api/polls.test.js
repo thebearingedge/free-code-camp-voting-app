@@ -185,6 +185,18 @@ describe('polls', () => {
 
         expect(deleted).not.to.exist
       })
+
+    })
+
+    describe('getByUsername', () => {
+
+      it('lists all polls for a username', async () => {
+
+        const list = await polls.getByUsername('foo')
+
+        expect(list).to.have.property('length', 1)
+      })
+
     })
 
   })
@@ -261,16 +273,16 @@ describe('polls', () => {
   })
 
 
-  const { voteInPoll } = polls
+  const { postVote } = polls
 
-  describe('voteInPoll', () => {
+  describe('postVote', () => {
 
     let polls, client
 
     before(() => {
       polls = {}
       const app = express()
-        .post('/', voteInPoll(polls))
+        .post('/', postVote(polls))
         .use(errorHandler)
       client = request(app)
     })

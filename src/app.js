@@ -4,5 +4,5 @@ import api from './api'
 import { port } from './config'
 
 express()
-  .use(api)
+  .use('/api', api)
   .listen(port, _ => console.log(`listening on ${port}`))

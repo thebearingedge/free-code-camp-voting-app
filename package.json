@@ -9,7 +9,7 @@
     "istanbul:api": "npm run -s istanbul -- --config test-api/.api.yml _mocha --",
     "lint": "eslint src/*.js && eslint test/*.js",
     "mocha": "mocha --compilers js:babel-register -r babel-polyfill",
-    "api:test": "npm run -s mocha -- test-api",
+    "api:test": "npm run -s db:cycle && npm run -s mocha -- test-api",
     "api:tdd": "npm run -s api:test -- -w -R min",
     "api:cover": "npm run -s istanbul:api -- test-api",
     "api:watch": "babel-node src/app",
@@ -25,8 +25,8 @@
   "watch": {
     "api:watch": {
       "patterns": [
-        "src/api/**.js",
-        "src/app.js"
+        "src/app.js",
+        "src/api/**.js"
       ]
     }
   },
