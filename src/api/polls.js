@@ -64,8 +64,27 @@ export const pollsData = knex => ({
       return this.findByUserAndSlug(username, slug, trx)
     })
 
+  },
 
+  async vote(optionId) {
+
+    await knex
+      .insert(snakeKeys({ optionId }))
+      .into('votes')
+
+    return this.findOptionById(optionId)
+  },
+
+  async findOptionById(id) {
+
+    const option = await knex
+      .from('options_view')
+      .where(snakeKeys({ id }))
+      .first()
+
+    return camelKeys(option)
   }
+
 })
 
 
@@ -89,10 +108,32 @@ export const getPoll = polls => wrap(async ({ params }, res, next) => {
 
   if (!poll) {
 
-    const message = `poll "${slug}" not found for user "${username}"`
-
-    throw new NotFound(message)
+    throw new NotFound(`poll "${slug}" not found for user "${username}"`)
   }
 
   res.json(poll)
+})
+
+
+export const voteInPoll = polls => wrap(async ({ params }, res) => {
+
+  const { username, slug, optionId } = params
+
+  const poll = await polls.findByUserAndSlug(username, slug)
+
+  if (!poll) {
+
+    throw new NotFound(`poll "${slug}" not found for user "${username}"`)
+  }
+
+  const validOption = await polls.findOptionById(optionId)
+
+  if (!validOption) {
+
+    throw new NotFound(`invalid option for poll "${slug}"`)
+  }
+
+  const option = await polls.vote(optionId)
+
+  res.status(201).json(option)
 })

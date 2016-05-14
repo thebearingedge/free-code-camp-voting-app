@@ -7,23 +7,14 @@ import express from 'express'
 import request from 'supertest-as-promised'
 import errorHandler from '../src/api/error-handler'
 
-
-const { optionSchema, pollSchema, pollsData, postPoll, getPoll } = polls
-
+const mockPoll = {
+  question: 'What is your favorite dog?',
+  options: [{ value: 'Basenji' }, { value: 'Pom-Chi'}]
+}
 
 describe('polls', () => {
 
-  let mockPoll
-
-  before(async () => {
-
-    const poll = {
-      question: 'What is your favorite dog?',
-      options: [{ value: 'Basenji' }, { value: 'Pom-Chi'}]
-    }
-
-    mockPoll = await validate(poll, pollSchema)
-  })
+  const { optionSchema } = polls
 
   describe('optionSchema', () => {
 
@@ -39,7 +30,11 @@ describe('polls', () => {
 
       expect(invalid).to.have.property('path', 'value')
     })
+
   })
+
+
+  const { pollSchema } = polls
 
   describe('pollSchema', () => {
 
@@ -72,6 +67,9 @@ describe('polls', () => {
       expect(invalid).to.have.property('path', 'options')
     })
   })
+
+
+  const { pollsData } = polls
 
   describe('pollsData', () => {
 
@@ -145,68 +143,154 @@ describe('polls', () => {
 
     })
 
-    describe('postPoll', () => {
+    describe('vote', () => {
 
-      let app, polls, setUser
+      it('adds a vote to a poll option', async () => {
 
-      before(() => {
-        setUser = (req, res, next) =>
-          (req.user = { id: 1, username: 'foo' }) && next()
-        polls = {}
-        app = express()
-          .use(setUser)
-          .post('/', postPoll(polls))
+        const option = await polls.vote(1)
+
+        expect(option).to.have.property('votes', 1)
       })
 
-      beforeEach(() => {
-        polls.createForUser = stub()
-      })
-
-      it('handles new polls', async () => {
-
-        polls.createForUser.resolves({})
-
-        const res = await request(app)
-          .post('/')
-          .send(mockPoll)
-
-        expect(res).to.have.property('status', 201)
-      })
-    })
-
-    describe('getPoll', () => {
-
-      let app, polls
-
-      before(() => {
-        polls = {}
-        app = express()
-          .get('/', getPoll(polls))
-          .use(errorHandler)
-      })
-
-      beforeEach(() => {
-        polls.findByUserAndSlug = stub()
-      })
-
-      it('responds with a saved poll', async () => {
-
-        polls.findByUserAndSlug.resolves(mockPoll)
-
-        const res = await request(app).get('/')
-
-        expect(res).to.have.property('status', 200)
-      })
-
-      it('sends a NotFound error', async () => {
-
-        polls.findByUserAndSlug.resolves(null)
-
-        const res = await request(app).get('/')
-
-        expect(res).to.have.property('status', 404)
-      })
     })
 
   })
+
+
+  const { postPoll } = polls
+
+  describe('postPoll', () => {
+
+    let app, polls, setUser
+
+    before(() => {
+      setUser = (req, res, next) =>
+        (req.user = { id: 1, username: 'foo' }) && next()
+      polls = {}
+      app = express()
+        .use(setUser)
+        .post('/', postPoll(polls))
+    })
+
+    beforeEach(() => {
+      polls.createForUser = stub()
+    })
+
+    it('handles new polls', async () => {
+
+      polls.createForUser.resolves({})
+
+      const res = await request(app)
+        .post('/')
+        .send(mockPoll)
+
+      expect(res).to.have.property('status', 201)
+    })
+  })
+
+
+  const { getPoll } = polls
+
+  describe('getPoll', () => {
+
+    let app, polls
+
+    before(() => {
+      polls = {}
+      app = express()
+        .get('/', getPoll(polls))
+        .use(errorHandler)
+    })
+
+    beforeEach(() => {
+      polls.findByUserAndSlug = stub()
+    })
+
+    it('responds with a saved poll', async () => {
+
+      polls.findByUserAndSlug.resolves(mockPoll)
+
+      const res = await request(app).get('/')
+
+      expect(res).to.have.property('status', 200)
+    })
+
+    it('sends a NotFound error', async () => {
+
+      polls.findByUserAndSlug.resolves(null)
+
+      const res = await request(app).get('/')
+
+      expect(res).to.have.property('status', 404)
+      expect(res.body).to.have.property('error', 'NotFound')
+    })
+
+  })
+
+
+  const { voteInPoll } = polls
+
+  describe('voteInPoll', () => {
+
+    let polls, client
+
+    before(() => {
+      polls = {}
+      const app = express()
+        .post('/', voteInPoll(polls))
+        .use(errorHandler)
+      client = request(app)
+    })
+
+    beforeEach(() => {
+      polls.vote = stub()
+      polls.findOptionById = stub()
+      polls.findByUserAndSlug = stub()
+    })
+
+    it('registers a vote for a poll option', async () => {
+
+      polls.findByUserAndSlug.resolves(true)
+      polls.findOptionById.resolves(true)
+      polls.vote.resolves({ votes: 1 })
+
+      const res = await client.post('/')
+
+      expect(res).to.have.property('status', 201)
+      expect(res.body).to.have.interface({
+        votes: Number
+      })
+    })
+
+    context('when a poll does not exist', () => {
+
+      it('returns a NotFound error', async () => {
+
+        polls.findByUserAndSlug.resolves(null)
+
+        const res = await client.post('/')
+
+        expect(res).to.have.property('status', 404)
+        expect(res.body).to.have.property('error', 'NotFound')
+      })
+
+    })
+
+    context('when a poll option does not exist', () => {
+
+      it('returns a NotFound error', async () => {
+
+        polls.findByUserAndSlug.resolves(true)
+        polls.findOptionById.resolves(null)
+
+        const res = await client.post('/')
+
+        expect(res).to.have.property('status', 404)
+        expect(res.body).to.have.property('error', 'NotFound')
+      })
+
+    })
+
+  })
+
 })
