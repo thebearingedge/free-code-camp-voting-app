@@ -10,6 +10,7 @@ export class ClientError extends BaseError {
 
     return { error, statusCode, message }
   }
+
 }
 
 

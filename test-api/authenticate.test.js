@@ -1,11 +1,13 @@
 
 import { expect, stub } from '@thebearingedge/test-utils'
 import { authenticate } from '../src/api/authenticate'
+import { userData } from '../src/api/users'
 import { hash } from 'bcrypt-as-promised'
 import errorHandler from '../src/api/error-handler'
 import express from 'express'
 import request from 'supertest'
 import { json } from 'body-parser'
+
 
 describe('authenticate', () => {
 
@@ -15,7 +17,7 @@ describe('authenticate', () => {
   let users, app, password
 
   before(async () => {
-    users = {}
+    users = userData()
     app = express()
       .use(json())
       .post('/', authenticate(users), (req, res) => {
@@ -27,10 +29,9 @@ describe('authenticate', () => {
     password = await hash(unhashed)
   })
 
-  beforeEach(() => {
-    users.findByUsername = stub()
-  })
+  beforeEach(() => stub(users, 'findByUsername'))
 
+  afterEach(() => users.findByUsername.restore())
 
   it('adds a user to req', async () => {
 
@@ -70,6 +71,7 @@ describe('authenticate', () => {
 
       expect(res).to.have.property('status', 401)
     })
+
   })
 
 

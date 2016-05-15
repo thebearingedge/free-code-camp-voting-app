@@ -37,6 +37,16 @@ export const userData = knex => ({
     return { id, username }
   },
 
+  async findByUsername(username) {
+
+    const user = await knex
+      .from('users')
+      .where({ username })
+      .first()
+
+    return camelKeys(user)
+  },
+
   async isPollOwner(id, pollId) {
 
     const { count } = await knex
@@ -67,10 +77,7 @@ export const checkPollOwner = users => wrap(async ({ params, user }, _, next) =>
 
   const isOwner = await users.isPollOwner(id, pollId)
 
-  if (!isOwner) {
-
-    throw new Unauthorized('permission denied')
-  }
+  if (!isOwner) throw new Unauthorized('permission denied')
 
   next()
 })

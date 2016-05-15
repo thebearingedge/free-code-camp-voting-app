@@ -15,10 +15,8 @@ const users = userData(knex)
 const polls = pollsData(knex)
 
 // TODO: reorganize routes into something more RESTful
-// TODO: fix app.js file watching
 // TODO: finish custom errors (InternalServerError, ValidationFailure)
 // TODO: stub real Data Access objects in route tests
-// TODO: move knexfile to src
 // TODO: add unique constraint (polls.user_id, polls.slug)
 
 export default new Router()
