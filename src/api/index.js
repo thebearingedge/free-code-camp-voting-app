@@ -23,5 +23,9 @@ export default new Router()
   .post('/:username/:slug/:optionId', postVote(polls))
   .use(setUser(redis))
   .post('/polls', postPoll(polls))
+  // USE ownsPoll
   .delete('/polls/:pollId', deletePoll(polls))
+  // POST /polls/:pollId/options -> addOption
+  // USE ownsOption
+  // DELETE /options/:optionId -> deleteOption
   .use(errorHandler)
