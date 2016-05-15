@@ -3,4 +3,4 @@ instrumentation:
   verbose: true
   root: src/api
 reporting:
-  dir: "test-api/coverage"
+  dir: "coverage/api"

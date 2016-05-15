@@ -5,11 +5,6 @@ import { Unauthorized } from './errors'
 import { tokenSecret, tokenExpiry } from '../config'
 
 
-export const createToken = async payload =>
-
-  Promise.resolve(jwt.sign(payload, tokenSecret, {}))
-
-
 export const verifyToken = token => new Promise((resolve, reject) =>
 
   jwt.verify(token, tokenSecret, (err, payload) => {
@@ -18,16 +13,6 @@ export const verifyToken = token => new Promise((resolve, reject) =>
     resolve(payload)
   })
 )
-
-
-export const issueToken = redis => wrap(async ({ user }, res) => {
-
-  const token = await createToken(user)
-
-  await redis.setexAsync(token, tokenExpiry, token)
-
-  res.status(201).json({ ...user, token })
-})
 
 
 export const setUser = redis => wrap(async (req, _, next) => {
@@ -43,8 +28,6 @@ export const setUser = redis => wrap(async (req, _, next) => {
   try {
 
     req.user = await verifyToken(token)
-
-    await redis.setexAsync(token, tokenExpiry, token)
   }
   catch (err) {
 
@@ -55,6 +38,7 @@ export const setUser = redis => wrap(async (req, _, next) => {
     throw error
   }
 
+  await redis.setexAsync(token, tokenExpiry, token)
+
   next()
 })
-

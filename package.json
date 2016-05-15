@@ -6,12 +6,12 @@
   "main": "index.js",
   "scripts": {
     "istanbul": "babel-node node_modules/.bin/babel-istanbul cover",
-    "istanbul:api": "npm run -s istanbul -- --config test-api/.api.yml _mocha --",
+    "istanbul:api": "npm run -s istanbul -- --config .istanbul.api.yml _mocha --",
     "lint": "eslint src/*.js && eslint test/*.js",
     "mocha": "mocha --compilers js:babel-register -r babel-polyfill",
-    "api:test": "npm run -s db:cycle && npm run -s mocha -- test-api",
+    "api:test": "npm run -s mocha -- src/api/test",
     "api:tdd": "npm run -s api:test -- -w -R min",
-    "api:cover": "npm run -s istanbul:api -- test-api",
+    "api:cover": "npm run -s istanbul:api -- src/api/test",
     "api:watch": "babel-node src/app",
     "knex": "babel-node node_modules/.bin/knex --",
     "db:make": "npm run -s knex migrate:make --",
@@ -48,12 +48,14 @@
     "babel-preset-es2015": "6.6.0",
     "babel-preset-stage-2": "6.5.0",
     "babel-register": "6.8.0",
+    "babel-tape-runner": "2.0.1",
     "eslint": "2.9.0",
     "mocha": "2.4.5",
     "npm-watch": "0.1.4",
     "rimraf": "2.5.2",
     "supertest": "1.2.0",
-    "supertest-as-promised": "3.1.0"
+    "supertest-as-promised": "3.1.0",
+    "tape": "4.5.1"
   },
   "dependencies": {
     "babel-polyfill": "6.8.0",

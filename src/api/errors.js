@@ -6,7 +6,7 @@ export class ClientError extends BaseError {
 
   toJSON() {
 
-    const { name: error, statusCode, message } = this
+    const { error, statusCode, message } = this
 
     return { error, statusCode, message }
   }
@@ -14,15 +14,39 @@ export class ClientError extends BaseError {
 }
 
 
-export class Unauthorized extends ClientError {
+export class BadRequest extends ClientError {
 
-  get statusCode() { return 401 }
+  get error() { return 'Bad Request' }
+
+  get statusCode() { return 400 }
+
+}
+
+
+export class Forbidden extends ClientError {
+
+  get error() { return 'Forbidden' }
+
+  get statusCode() { return 403 }
 
 }
 
 
 export class NotFound extends ClientError {
 
+  get error() { return 'Not Found' }
+
   get statusCode() { return 404 }
 
+}
+
+
+export const errorHandler = (err, req, res, next) => {
+
+  if (err instanceof ClientError) {
+
+    return res.status(err.statusCode).json(err)
+  }
+
+  res.status(500).json({ error: 'Internal Server Error' })
 }

@@ -1,5 +1,5 @@
 
-import { knex, redis } from '../src/api/core'
+import { knex, redis } from '../core'
 
 after(() => {
   redis.quit()

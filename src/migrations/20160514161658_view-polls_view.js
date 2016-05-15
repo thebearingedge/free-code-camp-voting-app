@@ -2,7 +2,7 @@
 export const up = knex => {
 
   const pollsView = knex
-    .select('p.id', 'u.username as user', 'p.question', 'p.slug')
+    .select('p.id', 'u.username', 'p.user_id', 'p.question', 'p.slug')
     .sum('o.votes as votes')
     .from('users as u')
     .innerJoin('polls as p', 'u.id', 'p.user_id')
