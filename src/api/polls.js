@@ -18,15 +18,6 @@ export const pollSchema = joi.object().keys({
 
 export const pollsData = knex => ({
 
-  async getByUsername(user) {
-
-    const polls = await knex
-      .from('polls_view')
-      .where({ user })
-
-    return camelKeys(polls)
-  },
-
   async findByUserAndSlug(user, slug, trx) {
 
     const poll = await knex
@@ -107,6 +98,16 @@ export const pollsData = knex => ({
       .first()
 
     return camelKeys(poll)
+  },
+
+  async addOption(pollId, option) {
+
+    const [ id ] = await knex
+      .insert(snakeKeys({ pollId, ...option }))
+      .into('options')
+      .returning('id')
+
+    return this.findOptionById(id)
   }
 
 })
@@ -132,7 +133,7 @@ export const getPoll = polls => wrap(async ({ params }, res, next) => {
 
   if (!poll) {
 
-    throw new NotFound(`poll "${slug}" not found for user "${username}"`)
+    throw new NotFound(`poll '${slug}' not found for user '${username}'`)
   }
 
   res.json(poll)
@@ -147,14 +148,14 @@ export const postVote = polls => wrap(async ({ params }, res) => {
 
   if (!poll) {
 
-    throw new NotFound(`poll "${slug}" not found for user "${username}"`)
+    throw new NotFound(`poll '${slug}' not found for user '${username}'`)
   }
 
   const validOption = await polls.findOptionById(optionId)
 
   if (!validOption) {
 
-    throw new NotFound(`invalid option for poll "${slug}"`)
+    throw new NotFound(`invalid option for poll '${slug}'`)
   }
 
   const option = await polls.vote(optionId)
@@ -185,11 +186,13 @@ export const deletePoll = polls => wrap(async ({ params, user }, res) => {
 })
 
 
-export const getPollsByUsername = polls => wrap(async ({ params }, res) => {
+export const postOption = polls => wrap(async ({ params, body }, res) => {
 
-  const { username } = params
+  const { pollId } = params
 
-  const pollsList = await polls.getByUsername(username)
+  const option = await validate(body, optionSchema)
 
-  res.json(pollsList)
+  const created = await polls.addOption(pollId, option)
+
+  res.status(201).json(created)
 })

@@ -188,13 +188,19 @@ describe('polls', () => {
 
     })
 
-    describe('getByUsername', () => {
+    describe('addOption', () => {
 
-      it('lists all polls for a username', async () => {
+      it('adds an option to a poll', async () => {
 
-        const list = await polls.getByUsername('foo')
+        const option = await polls.addOption(1, { value: 'yellow' })
 
-        expect(list).to.have.property('length', 1)
+        expect(option).to.have.interface({
+          id: Number,
+          pollId: Number,
+          value: String,
+          votes: Number
+        })
+
       })
 
     })
@@ -231,6 +237,7 @@ describe('polls', () => {
 
       expect(res).to.have.property('status', 201)
     })
+
   })
 
 
@@ -241,15 +248,15 @@ describe('polls', () => {
     let app, polls
 
     before(() => {
-      polls = {}
+      polls = pollsData()
       app = express()
         .get('/', getPoll(polls))
         .use(errorHandler)
     })
 
-    beforeEach(() => {
-      polls.findByUserAndSlug = stub()
-    })
+    beforeEach(() => stub(polls, 'findByUserAndSlug'))
+
+    afterEach(() => polls.findByUserAndSlug.restore())
 
     it('responds with a saved poll', async () => {
 
@@ -399,6 +406,32 @@ describe('polls', () => {
         expect(res).to.have.property('status', 204)
       })
 
+    })
+
+  })
+
+
+  const { postOption } = polls
+
+  describe('postOption', () => {
+
+    let polls, client
+
+    before(() => {
+      polls = { addOption: stub().resolves({}) }
+      const app = express()
+        .post('/:pollId/options', postOption(polls))
+        .use(errorHandler)
+      client = request(app)
+    })
+
+    it('adds an option to a poll', async () => {
+
+      const res = await client
+        .post('/1/options')
+        .send({ value: 'yellow' })
+
+      expect(res).to.have.property('status', 201)
     })
 
   })

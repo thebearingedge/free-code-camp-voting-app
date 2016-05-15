@@ -32,9 +32,9 @@ export const issueToken = redis => wrap(async ({ user }, res) => {
 
 export const setUser = redis => wrap(async (req, _, next) => {
 
-  const token = req.headers['x-access-token']
+  const token = req.get('x-access-token')
 
-  if (!token) throw new Unauthorized('x-access-token required')
+  if (!token) throw new Unauthorized('access token required')
 
   const issued = await redis.getAsync(token)
 
