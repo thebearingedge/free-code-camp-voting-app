@@ -1,6 +1,5 @@
 
-import { expect, stub } from '@thebearingedge/test-utils'
-import request from 'supertest-as-promised'
+import { expect, stub, request } from '@thebearingedge/test-utils'
 import express from 'express'
 import jwt from 'jsonwebtoken'
 import { tokensData } from '../tokens-data'

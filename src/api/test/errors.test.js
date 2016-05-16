@@ -1,7 +1,6 @@
 
-import { expect } from '@thebearingedge/test-utils'
+import { expect, request } from '@thebearingedge/test-utils'
 import express from 'express'
-import request from 'supertest-as-promised'
 import { errorHandler, NotFound } from '../errors'
 
 
