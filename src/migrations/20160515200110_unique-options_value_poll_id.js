@@ -10,6 +10,6 @@ export const up = ({ schema }) =>
 export const down = ({ schema }) =>
 
   schema
-    .table('option', tb => {
+    .table('options', tb => {
       tb.dropUnique(['value', 'poll_id'])
     })
