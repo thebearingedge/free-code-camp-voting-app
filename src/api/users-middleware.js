@@ -6,7 +6,7 @@ import { Forbidden } from './errors'
 import { validate } from './utils'
 
 
-export const newUserSchema = joi.object().keys({
+export const authenticationSchema = joi.object().keys({
   username: joi.string().token().required(),
   password: joi.string().required()
 })
@@ -14,7 +14,7 @@ export const newUserSchema = joi.object().keys({
 
 export const postUser = users => wrap(async (req, _, next) => {
 
-  const user = await validate(req.body, newUserSchema)
+  const user = await validate(req.body, authenticationSchema)
 
   const { id, username } = await users.create(user)
 
@@ -37,13 +37,11 @@ export const checkPollOwner = users => wrap(async ({ params, user }, _, next) =>
 })
 
 
-export const authenticate = users => wrap(async (req, res, next) => {
+export const login = users => wrap(async (req, res, next) => {
 
   const { body } = req
 
-  await validate(body, newUserSchema)
-
-  const { username, password } = body
+  const { username, password } = await validate(body, authenticationSchema)
 
   const user = await users.findByUsername(username)
 
@@ -54,8 +52,6 @@ export const authenticate = users => wrap(async (req, res, next) => {
   try {
 
     await compare(password, hash)
-
-    req.user = { id, username }
   }
   catch (err) {
 
@@ -65,6 +61,8 @@ export const authenticate = users => wrap(async (req, res, next) => {
 
     throw error
   }
+
+  req.user = { id, username }
 
   next()
 })

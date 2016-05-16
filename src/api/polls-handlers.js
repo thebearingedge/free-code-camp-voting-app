@@ -49,15 +49,3 @@ export const deletePoll = polls => wrap(async ({ params, user }, res) => {
 
   res.sendStatus(204)
 })
-
-
-export const postOption = polls => wrap(async ({ params, body }, res) => {
-
-  const { pollId } = params
-
-  const option = await validate(body, optionSchema)
-
-  const created = await polls.addOption(pollId, option)
-
-  res.status(201).json(created)
-})

@@ -35,6 +35,25 @@ describe('errors', () => {
 
     })
 
+    context('when a ValidationError is thrown', () => {
+
+      it('sends a Bad Request error', async () => {
+
+        error.throw = function () {
+
+          const error = new Error()
+
+          error.name = 'ValidationError'
+
+          throw error
+        }
+
+        const res = await client.get('/')
+
+        expect(res).to.have.property('status', 400)
+      })
+    })
+
     context('when a server error is thrown', () => {
 
       it('sends an Internal Server Error', async () => {

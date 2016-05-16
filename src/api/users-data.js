@@ -19,6 +19,8 @@ export const usersData = knex => ({
       .where({ username })
       .first()
 
+    if (!user) return null
+
     return camelKeys(user)
   },
 

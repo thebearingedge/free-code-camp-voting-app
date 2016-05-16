@@ -1,7 +1,7 @@
 
 import jwt from 'jsonwebtoken'
 import wrap from 'express-async-wrap'
-import { tokenSecret, tokenExpiry } from '../config'
+import { tokenSecret } from '../config'
 
 
 export const createToken = async payload =>
@@ -9,11 +9,11 @@ export const createToken = async payload =>
   Promise.resolve(jwt.sign(payload, tokenSecret, {}))
 
 
-export const issueToken = redis => wrap(async ({ user }, res) => {
+export const issueToken = tokens => wrap(async ({ user }, res) => {
 
   const token = await createToken(user)
 
-  await redis.setexAsync(token, tokenExpiry, token)
+  await tokens.save(token)
 
   res.status(201).json({ ...user, token })
 })

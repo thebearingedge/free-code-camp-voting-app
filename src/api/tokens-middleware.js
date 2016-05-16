@@ -1,7 +1,7 @@
 
 import jwt from 'jsonwebtoken'
 import wrap from 'express-async-wrap'
-import { Unauthorized } from './errors'
+import { Forbidden } from './errors'
 import { tokenSecret, tokenExpiry } from '../config'
 
 
@@ -15,15 +15,15 @@ export const verifyToken = token => new Promise((resolve, reject) =>
 )
 
 
-export const setUser = redis => wrap(async (req, _, next) => {
+export const ensureToken = tokens => wrap(async (req, _, next) => {
 
   const token = req.get('x-access-token')
 
-  if (!token) throw new Unauthorized('access token required')
+  if (!token) throw new Forbidden('access token required')
 
-  const issued = await redis.getAsync(token)
+  const issued = await tokens.get(token)
 
-  if (!issued) throw new Unauthorized('invalid token')
+  if (!issued) throw new Forbidden('invalid access token')
 
   try {
 
@@ -31,14 +31,14 @@ export const setUser = redis => wrap(async (req, _, next) => {
   }
   catch (err) {
 
-    const error = new Unauthorized('invalid token')
+    const error = new Forbidden('invalid access token')
 
     error.originalError = err
 
     throw error
   }
 
-  await redis.setexAsync(token, tokenExpiry, token)
+  await tokens.save(token, tokenExpiry, token)
 
   next()
 })

@@ -17,16 +17,31 @@ describe('polls-data', () => {
 
   describe('findById', () => {
 
-    it('selects a poll by id', async () => {
+    context('when a poll exists', () => {
 
-      const poll = await polls.findById(1)
+      it('selects a poll by id', async () => {
 
-      expect(poll).to.have.interface({
-        id: Number,
-        question: String,
-        slug: String,
-        userId: Number
+        const poll = await polls.findById(1)
+
+        expect(poll).to.have.interface({
+          id: Number,
+          question: String,
+          slug: String,
+          userId: Number
+        })
       })
+
+    })
+
+    context('when a poll does not exist', () => {
+
+      it('returns null', async () => {
+
+        const poll = await polls.findById(2)
+
+        expect(poll).to.be.null
+      })
+
     })
 
   })

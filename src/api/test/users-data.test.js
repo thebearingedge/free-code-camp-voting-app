@@ -14,6 +14,33 @@ describe('users-data', () => {
 
   afterEach(() => trx.rollback())
 
+  describe('findByUsername', () => {
+
+    context('when a user exists', () => {
+
+      it('returns the user', async () => {
+
+        const user = await users.findByUsername('foo')
+
+        expect(user).to.be.ok
+      })
+
+    })
+
+    context('when a user does not exist', () => {
+
+      it('returns null', async () => {
+
+        const user = await users.findByUsername('bar')
+
+        expect(user).to.be.null
+
+      })
+
+    })
+
+  })
+
   describe('create', () => {
 
     it('saves a new user', async () => {
