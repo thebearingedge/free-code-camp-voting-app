@@ -4,6 +4,16 @@ import { snakeKeys, camelKeys, lowerSlug } from './utils'
 
 export const pollsData = knex => ({
 
+  async list() {
+
+    const results = await knex
+      .select('*')
+      .from('polls_view')
+
+    return camelKeys(results)
+  },
+
+
   async findById(id, trx) {
 
     const poll = await knex

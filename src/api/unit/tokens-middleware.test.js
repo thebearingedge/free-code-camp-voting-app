@@ -10,24 +10,16 @@ import { protect } from '../tokens-middleware'
 
 describe('tokens-middleware', () => {
 
-  let tokens, client, goodToken, badToken
-
-  before(async () => {
-
-    tokens = tokensData()
-
-    const app = express()
-      .get('/protected', protect(tokens), ({ user }, res) => {
-        expect(user).to.include({ id: 1, username: 'foo' })
-        res.end()
-      })
-      .use(errorHandler)
-
-    client = request(app)
-
-    goodToken = jwt.sign({ id: 1, username: 'foo' }, tokenSecret)
-    badToken = jwt.sign({ id: 666 }, 'fake-secret')
-  })
+  const tokens = tokensData()
+  const app = express()
+    .get('/protected', protect(tokens), ({ user }, res) => {
+      expect(user).to.include({ id: 1, username: 'foo' })
+      res.end()
+    })
+    .use(errorHandler)
+  const client = request(app)
+  const goodToken = jwt.sign({ id: 1, username: 'foo' }, tokenSecret)
+  const badToken = jwt.sign({ id: 666 }, 'fake-secret')
 
   beforeEach(() => {
     stub(tokens, 'get')
@@ -45,9 +37,10 @@ describe('tokens-middleware', () => {
 
       it('returns a Forbidden error', async () => {
 
-        const res = await client.get('/protected')
+        const res = await client
+          .get('/protected')
+          .expect(403)
 
-        expect(res).to.have.property('status', 403)
         expect(res.body).to.have.property('error', 'Forbidden')
       })
 
@@ -62,8 +55,8 @@ describe('tokens-middleware', () => {
         const res = await client
           .get('/protected')
           .set('x-access-token', goodToken)
+          .expect(403)
 
-        expect(res).to.have.property('status', 403)
         expect(res.body).to.have.property('error', 'Forbidden')
       })
 
@@ -78,8 +71,8 @@ describe('tokens-middleware', () => {
         const res = await client
           .get('/protected')
           .set('x-access-token', badToken)
+          .expect(403)
 
-        expect(res).to.have.property('status', 403)
         expect(res.body).to.have.property('error', 'Forbidden')
       })
 
@@ -91,11 +84,11 @@ describe('tokens-middleware', () => {
 
         tokens.get.resolves(goodToken)
 
-        const res = await client
+        await client
           .get('/protected')
           .set('x-access-token', goodToken)
+          .expect(200)
 
-        expect(res).to.have.property('status', 200)
         expect(tokens.set)
           .to.have.been.calledWithExactly(goodToken, tokenExpiry, goodToken)
       })

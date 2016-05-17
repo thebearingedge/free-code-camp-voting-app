@@ -30,10 +30,10 @@ describe('users-middleware', () => {
       expect(user).to.have.interface({ id: Number, username: String })
       expect(user).not.to.have.property('password')
 
-      res.status(201).end()
+      res.sendStatus(201)
     }
 
-    const setUser = (req, res, next) =>
+    const setUser = (req, _, next) =>
 
       (req.user = omit(mockUser, 'password')) && next()
 
@@ -61,11 +61,10 @@ describe('users-middleware', () => {
 
       users.create.resolves({ id: 1, ...mockUser })
 
-      const res = await client
+      await client
         .post('/signup')
         .send(mockUser)
-
-      expect(res).to.have.property('status', 201)
+        .expect(201)
     })
 
   })
@@ -85,8 +84,8 @@ describe('users-middleware', () => {
         const res = await client
           .post('/login')
           .send(mockUser)
+          .expect(403)
 
-        expect(res).to.have.property('status', 403)
         expect(res.body).to.have.property('error', 'Forbidden')
       })
 
@@ -101,8 +100,8 @@ describe('users-middleware', () => {
         const res = await client
           .post('/login')
           .send({ ...mockUser, password: 'baz' })
+          .expect(403)
 
-        expect(res).to.have.property('status', 403)
         expect(res.body).to.have.property('error', 'Forbidden')
       })
 
@@ -114,11 +113,10 @@ describe('users-middleware', () => {
 
         users.findByUsername.resolves({ ...mockUser, password: hashed })
 
-        const res = await client
+        await client
           .post('/login')
           .send(mockUser)
-
-        expect(res).to.have.property('status', 204)
+          .expect(204)
       })
 
     })
@@ -137,9 +135,9 @@ describe('users-middleware', () => {
 
         users.isPollOwner.resolves(true)
 
-        const res = await client.delete('/polls/1')
-
-        expect(res).to.have.property('status', 204)
+        await client
+          .delete('/polls/1')
+          .expect(204)
       })
 
     })
@@ -150,9 +148,9 @@ describe('users-middleware', () => {
 
         users.isPollOwner.resolves(false)
 
-        const res = await client.delete('/polls/1')
-
-        expect(res).to.have.property('status', 403)
+        await client
+          .delete('/polls/1')
+          .expect(403)
       })
 
     })

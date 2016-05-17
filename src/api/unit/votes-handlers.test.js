@@ -10,19 +10,12 @@ describe('votes-handlers', () => {
 
   describe('postVote', () => {
 
-    let votes, client
-
-    before(() => {
-
-      votes = votesData()
-
-      const app = express()
-        .use(json())
-        .post('/votes', postVote(votes))
-        .use(errorHandler)
-
-      client = request(app)
-    })
+    const votes = votesData()
+    const app = express()
+      .use(json())
+      .post('/votes', postVote(votes))
+      .use(errorHandler)
+    const client = request(app)
 
     beforeEach(() => {
       stub(votes, 'create')
@@ -39,16 +32,17 @@ describe('votes-handlers', () => {
       it('adds a vote', async () => {
 
         votes.optionExists.resolves(true)
-        votes.create.resolves({ id: 1, optionId: 1, date: new Date() })
+        votes.create.resolves({ id: 1, optionId: 1, date: '2016-01-01' })
 
         const res = await client
           .post('/votes')
           .send({ optionId: 1 })
+          .expect(201)
 
-        expect(res).to.have.property('status', 201)
         expect(res.body).to.have.interface({
           id: Number,
-          optionId: Number
+          optionId: Number,
+          date: String
         })
       })
 
@@ -63,8 +57,8 @@ describe('votes-handlers', () => {
         const res = await client
           .post('/votes')
           .send({ optionId: 1000 })
+          .expect(400)
 
-        expect(res).to.have.property('status', 400)
         expect(res.body).to.have.property('error', 'Bad Request')
       })
 

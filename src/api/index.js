@@ -12,7 +12,7 @@ import { protect } from './tokens-middleware'
 import { issueToken } from './tokens-handlers'
 import { postVote } from './votes-handlers'
 import { postOption } from './options-handlers'
-import { getPoll, postPoll, deletePoll } from './polls-handlers'
+import { getPolls, getPoll, postPoll, deletePoll } from './polls-handlers'
 import { errorHandler } from './errors'
 
 
@@ -24,6 +24,7 @@ const tokens = tokensData(redis)
 
 
 const pollsRoutes = new Router()
+  .get('/', getPolls(polls))
   .get('/:pollId', getPoll(polls))
   .use(protect(tokens))
   .post('/', postPoll(polls))
@@ -38,4 +39,5 @@ export default new Router()
   // DELETE '/login' -> logout
   .post('/vote', postVote(votes))
   .use('/polls', pollsRoutes)
+  // * -> 404
   .use(errorHandler)

@@ -11,20 +11,13 @@ const mockOption = { value: 'yellow' }
 
 describe('options-handlers', () => {
 
+  const options = optionsData()
+  const app = express()
+    .post('/options', postOption(options))
+    .use(errorHandler)
+  const client = request(app)
+
   describe('postOption', () => {
-
-    let options, client
-
-    before(() => {
-
-      options = optionsData()
-
-      const app = express()
-        .post('/options', postOption(options))
-        .use(errorHandler)
-
-      client = request(app)
-    })
 
     beforeEach(() => stub(options, 'create'))
 
@@ -37,8 +30,8 @@ describe('options-handlers', () => {
       const res = await client
         .post('/options')
         .send({ value: 'yellow' })
+        .expect(201)
 
-      expect(res).to.have.property('status', 201)
       expect(res.body).to.have.interface({ id: Number, votes: Number })
     })
 

@@ -15,6 +15,22 @@ describe('polls-data', () => {
 
   afterEach(() => trx.rollback())
 
+  describe('list', () => {
+
+    it('selects the list of polls', async () => {
+
+      const [ poll ] = await polls.list()
+
+      expect(poll).to.have.interface({
+        id: Number,
+        question: String,
+        slug: String,
+        userId: Number,
+        votes: Number
+      })
+    })
+  })
+
   describe('findById', () => {
 
     context('when a poll exists', () => {

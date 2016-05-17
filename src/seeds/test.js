@@ -16,7 +16,7 @@ const options = [
 
 export const seed = async knex => {
 
-  await knex('users').delete()
+  await knex.raw('truncate table "users" restart identity cascade')
 
   const password = await hash(unhashed)
 

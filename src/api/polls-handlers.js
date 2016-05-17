@@ -16,6 +16,14 @@ export const pollSchema = joi.object().keys({
 })
 
 
+export const getPolls = polls => wrap(async (_, res) => {
+
+  const pollsList = await polls.list()
+
+  res.json(pollsList)
+})
+
+
 export const getPoll = polls => wrap(async ({ params }, res, next) => {
 
   const { pollId } = params

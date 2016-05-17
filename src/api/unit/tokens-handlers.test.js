@@ -10,21 +10,14 @@ import { issueToken } from '../tokens-handlers'
 
 describe('tokens-handlers', () => {
 
-  let tokens, client
-
-  before(() => {
-
-    tokens = tokensData()
-
-    const app = express()
-      .use((req, res, next) =>
-        (req.user = { id: 1, username: 'foo' }) && next()
-      )
-      .post('/login', issueToken(tokens))
-      .use(errorHandler)
-
-    client = request(app)
-  })
+  const tokens = tokensData()
+  const app = express()
+    .use((req, res, next) =>
+      (req.user = { id: 1, username: 'foo' }) && next()
+    )
+    .post('/login', issueToken(tokens))
+    .use(errorHandler)
+  const client = request(app)
 
   beforeEach(() => stub(tokens, 'set'))
 
@@ -34,9 +27,10 @@ describe('tokens-handlers', () => {
 
     it('creates a webtoken from req.user', async () => {
 
-      const res = await client.post('/login')
+      const res = await client
+        .post('/login')
+        .expect(201)
 
-      expect(res).to.have.property('status', 201)
       expect(res.body).to.have.interface({
         id: Number,
         username: String,

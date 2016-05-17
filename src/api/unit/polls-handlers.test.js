@@ -3,7 +3,7 @@ import { expect, stub, request } from '@thebearingedge/test-utils'
 import express from 'express'
 import { errorHandler } from '../errors'
 import { pollsData } from '../polls-data'
-import { getPoll, postPoll, deletePoll } from '../polls-handlers'
+import { getPolls, getPoll, postPoll, deletePoll } from '../polls-handlers'
 
 
 const mockPoll = {
@@ -13,20 +13,35 @@ const mockPoll = {
 
 describe('polls-handlers', () => {
 
-  let polls = pollsData()
+  const polls = pollsData()
+  const setUser = (req, _, next) => (req.user = { id: 1 }) && next()
+  const app = express()
+    .get('/polls', getPolls(polls))
+    .post('/polls', setUser, postPoll(polls))
+    .delete('/polls/:pollId', deletePoll(polls))
+    .get('/polls/:pollId', getPoll(polls))
+    .use(errorHandler)
+  const client = request(app)
+
+  describe('getPolls', () => {
+
+    beforeEach(() => stub(polls, 'list'))
+
+    afterEach(() => polls.list.restore())
+
+    it('responds with a list of polls', async () => {
+
+      polls.list.resolves([{ id: 1, ...mockPoll }])
+
+      const { body: results } = await client
+        .get('/polls')
+        .expect(200)
+
+      expect(results).to.have.property('length', 1)
+    })
+  })
 
   describe('getPoll', () => {
-
-    let client
-
-    before(() => {
-
-      const app = express()
-        .get('/polls/:pollId', getPoll(polls))
-        .use(errorHandler)
-
-      client = request(app)
-    })
 
     beforeEach(() => stub(polls, 'findById'))
 
@@ -34,11 +49,13 @@ describe('polls-handlers', () => {
 
     it('responds with a saved poll', async () => {
 
-      polls.findById.resolves(mockPoll)
+      polls.findById.resolves({ id: 1, ...mockPoll })
 
-      const res = await client.get('/polls/1')
+      const { body: poll } = await client
+        .get('/polls/1')
+        .expect(200)
 
-      expect(res).to.have.property('status', 200)
+      expect(poll).to.have.property('id', 1)
       expect(polls.findById).to.have.been.calledWith('1')
     })
 
@@ -46,30 +63,17 @@ describe('polls-handlers', () => {
 
       polls.findById.resolves(null)
 
-      const res = await client.get('/polls/2')
+      const res = await client
+        .get('/polls/2')
+        .expect(404)
 
-      expect(res).to.have.property('status', 404)
       expect(res.body).to.have.property('error', 'Not Found')
       expect(polls.findById).to.have.been.calledWith('2')
-
     })
 
   })
 
   describe('postPoll', () => {
-
-    let client
-
-    before(() => {
-
-      const setUser = (req, _, next) => (req.user = { id: 1 }) && next()
-
-      const app = express()
-        .post('/polls', setUser, postPoll(polls))
-        .use(errorHandler)
-
-      client = request(app)
-    })
 
     beforeEach(() => stub(polls, 'create'))
 
@@ -77,30 +81,15 @@ describe('polls-handlers', () => {
 
     it('handles new polls', async () => {
 
-      polls.create.resolves({})
-
-      const res = await client
+      await client
         .post('/polls')
         .send(mockPoll)
-
-      expect(res).to.have.property('status', 201)
+        .expect(201)
     })
 
   })
 
-
   describe('deletePoll', () => {
-
-    let client
-
-    before(() => {
-
-      const app = express()
-        .delete('/polls/:pollId', deletePoll(polls))
-        .use(errorHandler)
-
-      client = request(app)
-    })
 
     beforeEach(() => stub(polls, 'deleteById'))
 
@@ -108,9 +97,9 @@ describe('polls-handlers', () => {
 
     it('deletes a poll', async () => {
 
-      const res = await client.delete('/polls/1')
-
-      expect(res).to.have.property('status', 204)
+      await client
+        .delete('/polls/1')
+        .expect(204)
     })
 
   })
