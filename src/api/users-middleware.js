@@ -2,7 +2,7 @@
 import joi from 'joi'
 import wrap from 'express-async-wrap'
 import { compare } from 'bcrypt-as-promised'
-import { Forbidden } from './errors'
+import { Forbidden, BadRequest } from './errors'
 import { validate } from './utils'
 
 
@@ -15,6 +15,10 @@ export const userSchema = joi.object().keys({
 export const postUser = users => wrap(async (req, _, next) => {
 
   const user = await validate(req.body, userSchema)
+
+  const existing = await users.findByUsername(user.username)
+
+  if (existing) throw new BadRequest('username is not available')
 
   const { id, username } = await users.create(user)
 
@@ -55,11 +59,7 @@ export const login = users => wrap(async (req, res, next) => {
   }
   catch (err) {
 
-    const error = new Forbidden('invalid login')
-
-    error.originalError = err
-
-    throw error
+    throw new Forbidden('invalid login')
   }
 
   req.user = { id, username }

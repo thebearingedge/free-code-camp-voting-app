@@ -53,18 +53,43 @@ describe('users-middleware', () => {
 
   describe('postUser', () => {
 
-    beforeEach(() => stub(users, 'create'))
+    beforeEach(() => {
+      stub(users, 'findByUsername')
+      stub(users, 'create')
+    })
 
-    afterEach(() => users.create.restore())
+    afterEach(() => {
+      users.findByUsername.restore()
+      users.create.restore()
+    })
 
-    it('sets the new user on req', async () => {
+    context('when the username is not taken', () => {
 
-      users.create.resolves({ id: 1, ...mockUser })
+      it('sets the new user on req', async () => {
 
-      await client
-        .post('/signup')
-        .send(mockUser)
-        .expect(201)
+        users.findByUsername.resolves(null)
+        users.create.resolves({ id: 1, ...mockUser })
+
+        await client
+          .post('/signup')
+          .send(mockUser)
+          .expect(201)
+      })
+
+    })
+
+    context('when the username is taken', () => {
+
+      it('returns a Bad Request error', async () => {
+
+        users.findByUsername.resolves({ id: 1, ...mockUser })
+
+        await client
+          .post('/signup')
+          .send(mockUser)
+          .expect(400)
+      })
+
     })
 
   })
