@@ -1,7 +1,7 @@
 
 import { expect, request } from '@thebearingedge/test-utils'
 import express from 'express'
-import { errorHandler, NotFound } from '../errors'
+import { errorHandler, NotFound, ValidationError } from '../errors'
 
 
 describe('errors', () => {
@@ -38,18 +38,12 @@ describe('errors', () => {
 
       it('sends a Bad Request error', async () => {
 
-        error.throw = function () {
-
-          const error = new Error()
-
-          error.name = 'ValidationError'
-
-          throw error
-        }
+        error.throw = function () { throw new ValidationError() }
 
         const res = await client.get('/')
 
         expect(res).to.have.property('status', 400)
+        expect(res.body).to.have.property('error', 'Bad Request')
       })
     })
 

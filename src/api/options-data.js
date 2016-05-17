@@ -12,9 +12,7 @@ export const optionsData = knex => ({
       .where({ id })
       .first()
 
-    if (!option) return null
-
-    return camelKeys(option)
+    return camelKeys(option || null)
   },
 
   async create(data) {

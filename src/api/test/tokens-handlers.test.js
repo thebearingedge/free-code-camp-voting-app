@@ -26,9 +26,9 @@ describe('tokens-handlers', () => {
     client = request(app)
   })
 
-  beforeEach(() => stub(tokens, 'save'))
+  beforeEach(() => stub(tokens, 'set'))
 
-  afterEach(() => tokens.save.restore())
+  afterEach(() => tokens.set.restore())
 
   describe('issueToken', () => {
 

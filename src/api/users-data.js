@@ -1,13 +1,6 @@
 
-import joi from 'joi'
 import { hash } from 'bcrypt-as-promised'
-import { validate, snakeKeys, camelKeys } from './utils'
-
-
-export const userSchema = joi.object().keys({
-  username: joi.string().token().required(),
-  password: joi.string().required()
-})
+import { snakeKeys, camelKeys } from './utils'
 
 
 export const usersData = knex => ({
@@ -19,20 +12,19 @@ export const usersData = knex => ({
       .where({ username })
       .first()
 
-    if (!user) return null
-
-    return camelKeys(user)
+    return camelKeys(user || null)
   },
 
-  async create(data) {
+  async create(user) {
 
-    const { username, password: unhashed } = await validate(data, userSchema)
+    const { username, password: unhashed } = user
 
     const password = await hash(unhashed, 10)
 
     const [ id ] = await knex
-      .insert({ username, password }, 'id')
+      .insert({ username, password })
       .into('users')
+      .returning('id')
 
     return { id, username }
   },

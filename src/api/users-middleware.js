@@ -6,7 +6,7 @@ import { Forbidden } from './errors'
 import { validate } from './utils'
 
 
-export const authenticationSchema = joi.object().keys({
+export const userSchema = joi.object().keys({
   username: joi.string().token().required(),
   password: joi.string().required()
 })
@@ -14,7 +14,7 @@ export const authenticationSchema = joi.object().keys({
 
 export const postUser = users => wrap(async (req, _, next) => {
 
-  const user = await validate(req.body, authenticationSchema)
+  const user = await validate(req.body, userSchema)
 
   const { id, username } = await users.create(user)
 
@@ -41,7 +41,7 @@ export const login = users => wrap(async (req, res, next) => {
 
   const { body } = req
 
-  const { username, password } = await validate(body, authenticationSchema)
+  const { username, password } = await validate(body, userSchema)
 
   const user = await users.findByUsername(username)
 

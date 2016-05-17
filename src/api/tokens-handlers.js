@@ -13,7 +13,7 @@ export const issueToken = tokens => wrap(async ({ user }, res) => {
 
   const token = await createToken(user)
 
-  await tokens.save(token)
+  await tokens.set(token)
 
   res.status(201).json({ ...user, token })
 })

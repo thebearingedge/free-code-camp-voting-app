@@ -7,7 +7,7 @@ export const votesData = knex => ({
   async findById(id) {
 
     const vote = await knex
-      .select('*')
+      .select('id', 'option_id', knex.raw('date::text'))
       .from('votes')
       .where({ id })
       .first()
@@ -15,7 +15,7 @@ export const votesData = knex => ({
     return camelKeys(vote)
   },
 
-  async create(optionId) {
+  async create({ optionId }) {
 
     const [ id ] = await knex
       .insert(snakeKeys({ optionId }))

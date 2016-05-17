@@ -2,16 +2,28 @@
 import BaseError from 'es6-error'
 
 
-export class ClientError extends BaseError {
+export class CustomError extends BaseError {
 
   toJSON() {
 
-    const { error, statusCode, message } = this
+    const { error, statusCode, message, details } = this
 
-    return { error, statusCode, message }
+    return { error, statusCode, message, details }
   }
 
 }
+
+
+export class InternalServerError extends CustomError {
+
+  get error() { return 'Internal Server Error' }
+
+  get statusCode() { return 500 }
+
+}
+
+
+export class ClientError extends CustomError {}
 
 
 export class BadRequest extends ClientError {
@@ -19,6 +31,18 @@ export class BadRequest extends ClientError {
   get error() { return 'Bad Request' }
 
   get statusCode() { return 400 }
+
+}
+
+
+export class ValidationError extends BadRequest {
+
+  constructor(message, details) {
+
+    super(message || 'invalid data')
+
+    this.details = details
+  }
 
 }
 
@@ -43,15 +67,9 @@ export class NotFound extends ClientError {
 
 export const errorHandler = (err, req, res, next) => {
 
-  if (err instanceof ClientError) {
+  const error = err instanceof ClientError
+    ? err
+    : new InternalServerError()
 
-    return res.status(err.statusCode).json(err)
-  }
-
-  if (err.name === 'ValidationError') {
-
-    return res.status(400).json(err)
-  }
-
-  res.status(500).json({ error: 'Internal Server Error' })
+  res.status(error.statusCode).json(error)
 }

@@ -19,11 +19,12 @@ describe('votes-data', () => {
 
     it('creates a vote', async () => {
 
-      const vote = await votes.create(1)
+      const vote = await votes.create({ optionId: 1 })
 
       expect(vote).to.have.interface({
         id: Number,
-        optionId: Number
+        optionId: Number,
+        date: String
       })
     })
 

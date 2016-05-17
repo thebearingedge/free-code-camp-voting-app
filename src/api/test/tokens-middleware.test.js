@@ -31,12 +31,12 @@ describe('tokens-middleware', () => {
 
   beforeEach(() => {
     stub(tokens, 'get')
-    stub(tokens, 'save')
+    stub(tokens, 'set')
   })
 
   afterEach(() => {
     tokens.get.restore()
-    tokens.save.restore()
+    tokens.set.restore()
   })
 
   describe('ensureToken', () => {
@@ -96,7 +96,7 @@ describe('tokens-middleware', () => {
           .set('x-access-token', goodToken)
 
         expect(res).to.have.property('status', 200)
-        expect(tokens.save)
+        expect(tokens.set)
           .to.have.been.calledWithExactly(goodToken, tokenExpiry, goodToken)
       })
 

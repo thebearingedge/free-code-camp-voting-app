@@ -27,7 +27,7 @@ describe('tokens-data', () => {
 
     it('stores a token with the appropriate expiration', async () => {
 
-      await tokens.save(mockToken)
+      await tokens.set(mockToken)
 
       expect(redis.setexAsync)
         .to.have.been.calledWithExactly(mockToken, tokenExpiry, mockToken)

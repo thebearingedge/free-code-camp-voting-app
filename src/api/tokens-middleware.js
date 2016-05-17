@@ -10,6 +10,7 @@ export const verifyToken = token => new Promise((resolve, reject) =>
   jwt.verify(token, tokenSecret, (err, payload) => {
 
     if (err) return reject(err)
+
     resolve(payload)
   })
 )
@@ -31,14 +32,10 @@ export const ensureToken = tokens => wrap(async (req, _, next) => {
   }
   catch (err) {
 
-    const error = new Forbidden('invalid access token')
-
-    error.originalError = err
-
-    throw error
+    throw new Forbidden('invalid access token')
   }
 
-  await tokens.save(token, tokenExpiry, token)
+  await tokens.set(token, tokenExpiry, token)
 
   next()
 })
