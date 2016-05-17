@@ -11,7 +11,7 @@
     "mocha": "mocha --compilers js:babel-register -r babel-polyfill",
     "api:test": "SLOW_TESTS=true npm run -s mocha -- src/api/test",
     "api:tdd": "npm run -s api:test -- -w -R min",
-    "api:cover": "npm run -s istanbul:api -- src/api/test",
+    "api:cover": "SLOW_TESTS=true npm run -s istanbul:api -- src/api/test",
     "api:watch": "babel-node src/app",
     "knex": "babel-node node_modules/.bin/knex --",
     "db:make": "npm run -s knex migrate:make --",

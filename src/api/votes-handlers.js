@@ -18,7 +18,7 @@ export const postVote = votes => wrap(async ({ body }, res) => {
 
   if (!isValidOption) throw new BadRequest('invalid poll option')
 
-  const vote = await votes.create(optionId)
+  const vote = await votes.create({ optionId })
 
   res.status(201).json(vote)
 })

@@ -62,8 +62,10 @@ describe('polls-handlers', () => {
 
     before(() => {
 
+      const setUser = (req, _, next) => (req.user = { id: 1 }) && next()
+
       const app = express()
-        .post('/polls', postPoll(polls))
+        .post('/polls', setUser, postPoll(polls))
         .use(errorHandler)
 
       client = request(app)

@@ -7,6 +7,7 @@ export const up = knex => {
     .from('polls as p')
     .innerJoin('options as o', 'p.id', 'o.poll_id')
     .leftJoin('votes', 'o.id', 'votes.option_id')
+    .orderBy('o.id')
     .groupBy('o.id')
 
   return knex.raw(`create or replace view "options_view" as ${optionsView}`)

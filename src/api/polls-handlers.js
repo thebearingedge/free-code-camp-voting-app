@@ -22,20 +22,19 @@ export const getPoll = polls => wrap(async ({ params }, res, next) => {
 
   const poll = await polls.findById(pollId)
 
-  if (!poll) throw new NotFound(`could not find poll with id '${pollId}'`)
+  if (!poll) throw new NotFound('poll does not exist')
 
   res.json(poll)
 })
 
 
-export const postPoll = polls => wrap(async (req, res, next) => {
+export const postPoll = polls => wrap(async ({ user, body }, res, next) => {
 
-  const { params, body } = req
-  const { userId } = params
+  const { id: userId } = user
 
   const poll = await validate(body, pollSchema)
 
-  const created = await polls.create(userId, poll)
+  const created = await polls.create({ userId, ...poll })
 
   res.status(201).json(created)
 })

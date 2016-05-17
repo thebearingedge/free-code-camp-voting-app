@@ -4,13 +4,14 @@ import { snakeKeys, camelKeys, lowerSlug } from './utils'
 
 export const pollsData = knex => ({
 
-  async findById(id) {
+  async findById(id, trx) {
 
     const poll = await knex
       .select('*')
       .from('polls_view')
       .where({ id })
       .first()
+      .transacting(trx)
 
     if (!poll) return null
 
@@ -20,6 +21,7 @@ export const pollsData = knex => ({
       .select('*')
       .from('options_view')
       .where(snakeKeys({ pollId }))
+      .transacting(trx)
 
     return camelKeys({ ...poll, options })
   },
@@ -41,7 +43,7 @@ export const pollsData = knex => ({
         .insert(snakeKeys(options.map(option => ({ pollId, ...option }))))
         .into('options')
 
-      return this.findById(pollId)
+      return this.findById(pollId, trx)
     })
   },
 

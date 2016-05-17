@@ -16,11 +16,11 @@ export const verifyToken = token => new Promise((resolve, reject) =>
 )
 
 
-export const ensureToken = tokens => wrap(async (req, _, next) => {
+export const protect = tokens => wrap(async (req, _, next) => {
 
   const token = req.get('x-access-token')
 
-  if (!token) throw new Forbidden('access token required')
+  if (!token) throw new Forbidden('action requires authentication')
 
   const issued = await tokens.get(token)
 

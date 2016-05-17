@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken'
 import { tokensData } from '../tokens-data'
 import { errorHandler } from '../errors'
 import { tokenSecret, tokenExpiry } from '../../config'
-import { ensureToken } from '../tokens-middleware'
+import { protect } from '../tokens-middleware'
 
 
 describe('tokens-middleware', () => {
@@ -17,7 +17,7 @@ describe('tokens-middleware', () => {
     tokens = tokensData()
 
     const app = express()
-      .get('/protected', ensureToken(tokens), ({ user }, res) => {
+      .get('/protected', protect(tokens), ({ user }, res) => {
         expect(user).to.include({ id: 1, username: 'foo' })
         res.end()
       })
@@ -39,9 +39,9 @@ describe('tokens-middleware', () => {
     tokens.set.restore()
   })
 
-  describe('ensureToken', () => {
+  describe('protect', () => {
 
-    context('when no token is included on the request headers', () => {
+    context('when no token is included', () => {
 
       it('returns a Forbidden error', async () => {
 
@@ -53,7 +53,7 @@ describe('tokens-middleware', () => {
 
     })
 
-    context('when the token is not found', () => {
+    context('when an unknown token is included', () => {
 
       it('returns a Forbidden error', async () => {
 
