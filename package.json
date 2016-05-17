@@ -9,7 +9,7 @@
     "istanbul:api": "npm run -s istanbul -- --config .istanbul.api.yml _mocha --",
     "lint": "eslint src/*.js && eslint test/*.js",
     "mocha": "mocha --compilers js:babel-register -r babel-polyfill",
-    "api:test": "npm run -s mocha -- src/api/test",
+    "api:test": "SLOW_TESTS=true npm run -s mocha -- src/api/test",
     "api:tdd": "npm run -s api:test -- -w -R min",
     "api:cover": "npm run -s istanbul:api -- src/api/test",
     "api:watch": "babel-node src/app",
@@ -41,7 +41,7 @@
   },
   "homepage": "",
   "devDependencies": {
-    "@thebearingedge/test-utils": "3.1.0",
+    "@thebearingedge/test-utils": "3.2.0",
     "babel-cli": "6.8.0",
     "babel-eslint": "6.0.4",
     "babel-istanbul": "0.8.0",

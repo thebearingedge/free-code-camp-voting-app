@@ -1,5 +1,5 @@
 
-import { expect, stub, request } from '@thebearingedge/test-utils'
+import { expect, stub, request, skipSlow } from '@thebearingedge/test-utils'
 import { omit } from 'lodash'
 import express from 'express'
 import { json } from 'body-parser'
@@ -8,6 +8,8 @@ import { usersData } from '../users-data'
 import { errorHandler } from '../errors'
 import { postUser, login, checkPollOwner } from '../users-middleware'
 
+
+const slow = skipSlow()
 
 const password = 'bar'
 const mockUser = { username: 'foo', password }
@@ -92,7 +94,7 @@ describe('users-middleware', () => {
 
     context('when the password does not match', () => {
 
-      it('returns a Forbidden error', async () => {
+      slow('returns a Forbidden error', async () => {
 
         users.findByUsername.resolves({ ...mockUser, password: hashed })
 
@@ -108,7 +110,7 @@ describe('users-middleware', () => {
 
     context('when the username and password match', () => {
 
-      it('is successfull', async () => {
+      slow('is successfull', async () => {
 
         users.findByUsername.resolves({ ...mockUser, password: hashed })
 

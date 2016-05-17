@@ -1,7 +1,10 @@
 
-import { begin, expect } from '@thebearingedge/test-utils'
+import { begin, expect, skipSlow } from '@thebearingedge/test-utils'
 import { knex } from '../core'
 import { usersData } from '../users-data'
+
+
+const slow = skipSlow()
 
 describe('users-data', () => {
 
@@ -43,7 +46,7 @@ describe('users-data', () => {
 
   describe('create', () => {
 
-    it('saves a new user', async () => {
+    slow('saves a new user', async () => {
 
       const username = 'thebearingedge'
       const password = 'foobarbaz'
