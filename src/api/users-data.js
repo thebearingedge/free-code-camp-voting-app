@@ -15,6 +15,7 @@ export const usersData = knex => ({
     return camelKeys(user || null)
   },
 
+
   async create(user) {
 
     const { username, password: unhashed } = user
@@ -28,6 +29,7 @@ export const usersData = knex => ({
 
     return { id, username }
   },
+
 
   async isPollOwner(userId, pollId) {
 

@@ -15,6 +15,7 @@ export const votesData = knex => ({
     return camelKeys(vote)
   },
 
+
   async create({ optionId }) {
 
     const [ id ] = await knex
@@ -24,6 +25,7 @@ export const votesData = knex => ({
 
     return this.findById(id)
   },
+
 
   async optionExists(id) {
 

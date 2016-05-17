@@ -15,6 +15,7 @@ export const optionsData = knex => ({
     return camelKeys(option || null)
   },
 
+
   async create(data) {
 
     const [ id ] = await knex

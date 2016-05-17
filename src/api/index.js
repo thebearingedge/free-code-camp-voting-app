@@ -20,8 +20,8 @@ const users = usersData(knex)
 const polls = pollsData(knex)
 const votes = votesData(knex)
 const options = optionsData(knex)
-
 const tokens = tokensData(redis)
+
 
 const pollsRoutes = new Router()
   .get('/:pollId', getPoll(polls))

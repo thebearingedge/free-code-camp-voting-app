@@ -26,6 +26,7 @@ export const pollsData = knex => ({
     return camelKeys({ ...poll, options })
   },
 
+
   async create(data) {
 
     const { userId, question, options } = data
@@ -46,6 +47,7 @@ export const pollsData = knex => ({
       return this.findById(pollId, trx)
     })
   },
+
 
   async deleteById(id) {
 
