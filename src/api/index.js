@@ -25,7 +25,7 @@ const tokens = tokensData(redis)
 
 const pollsRoutes = new Router()
   .get('/:pollId', getPoll(polls))
-  .use(protect())
+  .use(protect(tokens))
   .post('/', postPoll(polls))
   .delete('/:pollId', checkPollOwner(users), deletePoll(polls))
   .post('/:pollId/options', checkPollOwner(users), postOption(options))
