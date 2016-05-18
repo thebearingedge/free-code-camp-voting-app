@@ -69,4 +69,20 @@ describe('tokens-data', () => {
 
   })
 
+  describe('unset', () => {
+
+    it('deletes a token', async () => {
+
+      const token = 'foo-bar-baz'
+
+      await redis.setAsync(token, token)
+
+      await tokens.unset(token)
+
+      const found = await redis.getAsync(token)
+
+      expect(found).to.be.null
+    })
+  })
+
 })

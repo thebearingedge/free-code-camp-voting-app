@@ -6,7 +6,7 @@ import { json } from 'body-parser'
 import { hash } from 'bcrypt-as-promised'
 import { usersData } from '../users-data'
 import { errorHandler } from '../errors'
-import { postUser, login, checkPollOwner } from '../users-middleware'
+import { postUser, authenticate, checkPollOwner } from '../users-middleware'
 
 
 const slow = skipSlow()
@@ -36,7 +36,7 @@ describe('users-middleware', () => {
     app = express()
       .use(json())
       .post('/api/signup', postUser(users))
-      .post('/api/login', login(users), loginHandler)
+      .post('/api/authenticate', authenticate(users), loginHandler)
       .delete('/api/polls/:pollId', setUser, checkPollOwner(users), deleteHandler)
       .use(errorHandler)
 
@@ -88,7 +88,7 @@ describe('users-middleware', () => {
 
   })
 
-  describe('login', () => {
+  describe('authenticate', () => {
 
     beforeEach(() => stub(users, 'findByUsername'))
 
@@ -101,7 +101,7 @@ describe('users-middleware', () => {
         users.findByUsername.resolves(null)
 
         const res = await client
-          .post('/api/login')
+          .post('/api/authenticate')
           .send(mockUser)
           .expect(403)
 
@@ -117,7 +117,7 @@ describe('users-middleware', () => {
         users.findByUsername.resolves({ ...mockUser, password: hashed })
 
         const res = await client
-          .post('/api/login')
+          .post('/api/authenticate')
           .send({ ...mockUser, password: 'baz' })
           .expect(403)
 
@@ -133,7 +133,7 @@ describe('users-middleware', () => {
         users.findByUsername.resolves({ ...mockUser, password: hashed })
 
         await client
-          .post('/api/login')
+          .post('/api/authenticate')
           .send(mockUser)
           .expect(201)
       })

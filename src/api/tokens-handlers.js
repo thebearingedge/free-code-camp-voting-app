@@ -19,3 +19,13 @@ export const issueToken = tokens => wrap(async (_, res) => {
 
   res.status(201).json({ ...user, token })
 })
+
+
+export const deleteToken = tokens => wrap(async (req, res) => {
+
+  const token = req.get('x-access-token')
+
+  await tokens.unset(token)
+
+  res.sendStatus(204)
+})

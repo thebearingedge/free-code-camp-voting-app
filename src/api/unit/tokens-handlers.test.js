@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken'
 import { tokensData } from '../tokens-data'
 import { errorHandler } from '../errors'
 import { tokenSecret } from '../../config'
-import { issueToken } from '../tokens-handlers'
+import { issueToken, deleteToken } from '../tokens-handlers'
 
 
 describe('tokens-handlers', () => {
@@ -15,20 +15,27 @@ describe('tokens-handlers', () => {
     .use((_, res, next) =>
       (res.locals.user = { id: 1, username: 'foo' }) && next()
     )
-    .post('/login', issueToken(tokens))
+    .post('/authenticate', issueToken(tokens))
+    .delete('/authenticate', deleteToken(tokens))
     .use(errorHandler)
   const client = request(app)
 
-  beforeEach(() => stub(tokens, 'set'))
+  beforeEach(() => {
+    stub(tokens, 'set')
+    stub(tokens, 'unset')
+  })
 
-  afterEach(() => tokens.set.restore())
+  afterEach(() => {
+    tokens.set.restore()
+    tokens.unset.restore()
+  })
 
   describe('issueToken', () => {
 
     it('creates a webtoken from req.user', async () => {
 
       const res = await client
-        .post('/login')
+        .post('/authenticate')
         .expect(201)
 
       expect(res.body).to.have.interface({
@@ -45,6 +52,19 @@ describe('tokens-handlers', () => {
       })
     })
 
+  })
+
+  describe('deleteToken', () => {
+
+    it('deletes the included webtoken', async () => {
+
+      await client
+        .delete('/authenticate')
+        .set('x-access-token', 'foo')
+        .expect(204)
+
+      expect(tokens.unset).to.have.been.calledWith('foo')
+    })
   })
 
 })

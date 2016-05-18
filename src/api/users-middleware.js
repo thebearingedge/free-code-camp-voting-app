@@ -22,7 +22,7 @@ export const postUser = users => wrap(async (req, res, next) => {
 
   res.locals.user = await users.create(user)
 
-  res.redirect(307, '/api/login')
+  res.redirect(307, '/api/authenticate')
 })
 
 
@@ -39,7 +39,7 @@ export const checkPollOwner = users => wrap(async ({ params }, { locals }, next)
 })
 
 
-export const login = users => wrap(async (req, res, next) => {
+export const authenticate = users => wrap(async (req, res, next) => {
 
   const { body } = req
 

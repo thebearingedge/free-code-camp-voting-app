@@ -89,10 +89,10 @@ describe('an unauthenticated user', () => {
     })
   })
 
-  it('can login', async () => {
+  it('can authenticate', async () => {
 
     const { body } = await client
-      .post('/api/login')
+      .post('/api/authenticate')
       .send({ username: 'foo', password: 'bar' })
       .expect(201)
 

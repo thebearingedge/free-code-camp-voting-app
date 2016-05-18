@@ -7,9 +7,9 @@ import { tokensData } from './tokens-data'
 import { pollsData } from './polls-data'
 import { optionsData } from './options-data'
 import { votesData } from './votes-data'
-import { login, postUser, checkPollOwner } from './users-middleware'
+import { authenticate, postUser, checkPollOwner } from './users-middleware'
 import { protect } from './tokens-middleware'
-import { issueToken } from './tokens-handlers'
+import { issueToken, deleteToken } from './tokens-handlers'
 import { postVote } from './votes-handlers'
 import { postOption } from './options-handlers'
 import { getPolls, getPoll, postPoll, deletePoll } from './polls-handlers'
@@ -35,8 +35,8 @@ const pollsRoutes = new Router()
 export default new Router()
   .use(json())
   .post('/signup', postUser(users))
-  .post('/login', login(users), issueToken(tokens))
-  // DELETE '/login' -> logout
+  .post('/authenticate', authenticate(users), issueToken(tokens))
+  .delete('/authenticate', deleteToken(tokens))
   .post('/vote', postVote(votes))
   .use('/polls', pollsRoutes)
   .use('*', notFoundHandler)

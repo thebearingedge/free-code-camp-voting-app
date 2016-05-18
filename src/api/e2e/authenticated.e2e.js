@@ -145,4 +145,12 @@ describe('an authenticated user', () => {
       .expect(204)
   })
 
+  it('can logout', async () => {
+
+    await client
+      .delete('/api/authenticate')
+      .set('x-access-token', token)
+      .expect(204)
+  })
+
 })
