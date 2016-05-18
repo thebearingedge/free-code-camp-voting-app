@@ -57,8 +57,7 @@
     "npm-watch": "0.1.4",
     "rimraf": "2.5.2",
     "supertest": "1.2.0",
-    "supertest-as-promised": "3.1.0",
-    "tape": "4.5.1"
+    "supertest-as-promised": "3.1.0"
   },
   "dependencies": {
     "babel-polyfill": "6.8.0",
@@ -69,7 +68,6 @@
     "es6-error": "2.1.1",
     "express": "4.13.4",
     "express-async-wrap": "1.0.0",
-    "fecha": "2.1.0",
     "joi": "8.1.0",
     "jsonwebtoken": "6.2.0",
     "knex": "0.11.3",
