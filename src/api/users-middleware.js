@@ -12,7 +12,7 @@ export const userSchema = joi.object().keys({
 })
 
 
-export const postUser = users => wrap(async (req, _, next) => {
+export const postUser = users => wrap(async (req, res, next) => {
 
   const user = await validate(req.body, userSchema)
 
@@ -22,18 +22,18 @@ export const postUser = users => wrap(async (req, _, next) => {
 
   const { id, username } = await users.create(user)
 
-  req.user = { id, username }
+  res.locals.user = { id, username }
 
   next()
 })
 
 
-export const checkPollOwner = users => wrap(async ({ params, user }, _, next) => {
+export const checkPollOwner = users => wrap(async ({ params }, { locals }, next) => {
 
-  const { id } = user
+  const { id: userId } = locals.user
   const { pollId } = params
 
-  const isOwner = await users.isPollOwner(id, pollId)
+  const isOwner = await users.isPollOwner(userId, pollId)
 
   if (!isOwner) throw new Forbidden('permission denied')
 
@@ -62,7 +62,7 @@ export const login = users => wrap(async (req, res, next) => {
     throw new Forbidden('invalid login')
   }
 
-  req.user = { id, username }
+  res.locals.user = { id, username }
 
   next()
 })

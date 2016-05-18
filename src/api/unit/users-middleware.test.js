@@ -25,7 +25,9 @@ describe('users-middleware', () => {
 
     hashed = await hash(password)
 
-    const postUserHandler = ({ user }, res) => {
+    const postUserHandler = (req, res) => {
+
+      const { user } = res.locals
 
       expect(user).to.have.interface({ id: Number, username: String })
       expect(user).not.to.have.property('password')
@@ -33,9 +35,9 @@ describe('users-middleware', () => {
       res.sendStatus(201)
     }
 
-    const setUser = (req, _, next) =>
+    const setUser = (_, res, next) =>
 
-      (req.user = omit(mockUser, 'password')) && next()
+      (res.locals.user = omit(mockUser, 'password')) && next()
 
     const deleteHandler = (_, res) => res.sendStatus(204)
 
@@ -65,7 +67,7 @@ describe('users-middleware', () => {
 
     context('when the username is not taken', () => {
 
-      it('sets the new user on req', async () => {
+      it('sets the new user on locals', async () => {
 
         users.findByUsername.resolves(null)
         users.create.resolves({ id: 1, ...mockUser })

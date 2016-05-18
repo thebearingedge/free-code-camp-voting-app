@@ -9,7 +9,9 @@ export const createToken = async payload =>
   Promise.resolve(jwt.sign(payload, tokenSecret, {}))
 
 
-export const issueToken = tokens => wrap(async ({ user }, res) => {
+export const issueToken = tokens => wrap(async (_, res) => {
+
+  const { user } = res.locals
 
   const token = await createToken(user)
 

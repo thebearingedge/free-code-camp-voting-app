@@ -14,7 +14,7 @@ const mockPoll = {
 describe('polls-handlers', () => {
 
   const polls = pollsData()
-  const setUser = (req, _, next) => (req.user = { id: 1 }) && next()
+  const setUser = (_, res, next) => (res.locals.user = { id: 1 }) && next()
   const app = express()
     .get('/polls', getPolls(polls))
     .post('/polls', setUser, postPoll(polls))

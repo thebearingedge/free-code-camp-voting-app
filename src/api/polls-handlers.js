@@ -36,9 +36,9 @@ export const getPoll = polls => wrap(async ({ params }, res, next) => {
 })
 
 
-export const postPoll = polls => wrap(async ({ user, body }, res, next) => {
+export const postPoll = polls => wrap(async ({ body }, res, next) => {
 
-  const { id: userId } = user
+  const { id: userId } = res.locals.user
 
   const poll = await validate(body, pollSchema)
 
@@ -48,7 +48,7 @@ export const postPoll = polls => wrap(async ({ user, body }, res, next) => {
 })
 
 
-export const deletePoll = polls => wrap(async ({ params, user }, res) => {
+export const deletePoll = polls => wrap(async ({ params }, res) => {
 
   const { pollId } = params
 

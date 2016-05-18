@@ -12,7 +12,10 @@ describe('tokens-middleware', () => {
 
   const tokens = tokensData()
   const app = express()
-    .get('/protected', protect(tokens), ({ user }, res) => {
+    .get('/protected', protect(tokens), (_, res) => {
+
+      const { user } = res.locals
+
       expect(user).to.include({ id: 1, username: 'foo' })
       res.end()
     })

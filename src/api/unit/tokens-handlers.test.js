@@ -12,8 +12,8 @@ describe('tokens-handlers', () => {
 
   const tokens = tokensData()
   const app = express()
-    .use((req, res, next) =>
-      (req.user = { id: 1, username: 'foo' }) && next()
+    .use((_, res, next) =>
+      (res.locals.user = { id: 1, username: 'foo' }) && next()
     )
     .post('/login', issueToken(tokens))
     .use(errorHandler)

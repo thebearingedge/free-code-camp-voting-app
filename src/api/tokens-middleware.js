@@ -16,7 +16,7 @@ export const verifyToken = token => new Promise((resolve, reject) =>
 )
 
 
-export const protect = tokens => wrap(async (req, _, next) => {
+export const protect = tokens => wrap(async (req, res, next) => {
 
   const token = req.get('x-access-token')
 
@@ -28,7 +28,7 @@ export const protect = tokens => wrap(async (req, _, next) => {
 
   try {
 
-    req.user = await verifyToken(token)
+    res.locals.user = await verifyToken(token)
   }
   catch (err) {
 
