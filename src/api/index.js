@@ -28,16 +28,23 @@ const pollsRoutes = new Router()
   .get('/:pollId', getPoll(polls))
   .use(protect(tokens))
   .post('/', postPoll(polls))
-  .delete('/:pollId', checkPollOwner(users), deletePoll(polls))
-  .post('/:pollId/options', checkPollOwner(users), postOption(options))
+  .use('/:pollId', checkPollOwner(users))
+  .delete('/:pollId', deletePoll(polls))
+  .post('/:pollId/options', postOption(options))
+
+
+const authRoutes = new Router()
+  .post('/', authenticate(users), issueToken(tokens))
+  .delete('/', deleteToken(tokens))
 
 
 export default new Router()
   .use(json())
-  .post('/signup', postUser(users))
-  .post('/authenticate', authenticate(users), issueToken(tokens))
-  .delete('/authenticate', deleteToken(tokens))
+  // GET /profile/:username -> user profile & polls
+  // GET /profile/:username/:slug -> profile & options
   .post('/vote', postVote(votes))
+  .post('/signup', postUser(users))
+  .use('/authenticate', authRoutes)
   .use('/polls', pollsRoutes)
   .use('*', notFoundHandler)
   .use(errorHandler)
