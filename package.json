@@ -17,7 +17,7 @@
     "api:cover:unit": "SLOW_TESTS=true npm run -s istanbul:api:unit -- src/api/unit",
     "api:cover:e2e": "SLOW_TESTS=true npm run -s istanbul:api:e2e -- src/api/e2e",
     "api:watch": "babel-node src/app",
-    "knex": "babel-node node_modules/.bin/knex --",
+    "knex": "babel-node node_modules/.bin/knex --cwd src --",
     "db:make": "npm run -s knex migrate:make --",
     "db:up": "npm run -s knex migrate:latest",
     "db:down": "npm run -s knex migrate:rollback",

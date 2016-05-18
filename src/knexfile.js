@@ -1,5 +1,5 @@
 
-import { database } from './src/config'
+import { database } from './config'
 
 
 const { production, development } = database
