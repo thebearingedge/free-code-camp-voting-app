@@ -18,15 +18,59 @@ describe('users-data', () => {
 
   afterEach(() => trx.rollback())
 
+  describe('nameExists', () => {
+
+    it('confirms the existence of a user', async () => {
+
+      const exists = await users.nameExists('foo')
+
+      expect(exists).to.be.true
+    })
+
+  })
+
   describe('findByUsername', () => {
 
-    context('when a user exists', () => {
+    context('when a user exits', () => {
 
       it('returns the user', async () => {
 
         const user = await users.findByUsername('foo')
 
-        expect(user).to.be.ok
+        expect(user).to.have.interface({
+          id: Number,
+          username: String,
+          polls: Array
+        })
+      })
+
+    })
+
+    context('when a user does not exits', () => {
+
+      it('returns null', async () => {
+
+        const user = await users.findByUsername('xyzzy')
+
+        expect(user).to.be.null
+      })
+
+    })
+
+  })
+
+  describe('findHash', () => {
+
+    context('when a user exists', () => {
+
+      it('returns the user', async () => {
+
+        const user = await users.findHash('foo')
+
+        expect(user).to.have.interface({
+          id: Number,
+          hash: String
+        })
       })
 
     })
@@ -35,7 +79,7 @@ describe('users-data', () => {
 
       it('returns null', async () => {
 
-        const user = await users.findByUsername('bar')
+        const user = await users.findHash('bar')
 
         expect(user).to.be.null
 

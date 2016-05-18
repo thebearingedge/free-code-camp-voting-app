@@ -3,7 +3,8 @@ import { expect, stub, request } from '@thebearingedge/test-utils'
 import express from 'express'
 import { errorHandler } from '../errors'
 import { pollsData } from '../polls-data'
-import { getPolls, getPoll, postPoll, deletePoll } from '../polls-handlers'
+import { getPolls, getPoll,
+         postPoll, deletePoll, getPollByUserSlug } from '../polls-handlers'
 
 
 const mockPoll = {
@@ -20,6 +21,7 @@ describe('polls-handlers', () => {
     .post('/polls', setUser, postPoll(polls))
     .delete('/polls/:pollId', deletePoll(polls))
     .get('/polls/:pollId', getPoll(polls))
+    .get('/user/:username/:slug', getPollByUserSlug(polls))
     .use(errorHandler)
   const client = request(app)
 
@@ -100,6 +102,40 @@ describe('polls-handlers', () => {
       await client
         .delete('/polls/1')
         .expect(204)
+    })
+
+  })
+
+  describe('getPollByUserSlug', () => {
+
+    beforeEach(() => stub(polls, 'findByUserSlug'))
+
+    afterEach(() => polls.findByUserSlug.restore())
+
+    context('when a poll exists', () => {
+
+      it('sends the poll', async () => {
+
+        polls.findByUserSlug.resolves({ question: 'yay' })
+
+        await client
+          .get('/user/foo/whats-up')
+          .expect(200)
+      })
+
+    })
+
+    context('when a poll does not exist', () => {
+
+      it('returns a Not Found error', async () => {
+
+        polls.findByUserSlug.resolves(null)
+
+        await client
+          .get('/user/foo/whats-up')
+          .expect(404)
+      })
+
     })
 
   })

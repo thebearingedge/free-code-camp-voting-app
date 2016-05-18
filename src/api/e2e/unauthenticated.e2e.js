@@ -3,6 +3,8 @@ import { expect, request } from '@thebearingedge/test-utils'
 import express from 'express'
 import { knex } from '../core'
 import api from '../'
+import { Profile, Poll, PollListItem, Auth, Vote } from './__setup__'
+
 
 describe('an unauthenticated user', () => {
 
@@ -24,14 +26,25 @@ describe('an unauthenticated user', () => {
       .get('/api/polls')
       .expect(200)
 
-    expect(polls[0]).to.have.interface({
-      id: Number,
-      username: String,
-      question: String,
-      slug: String,
-      userId: Number,
-      votes: Number
-    })
+    expect(polls[0]).to.have.interface(PollListItem)
+  })
+
+  it('can see a user profile', async () => {
+
+    const { body: profile } = await client
+      .get('/api/user/foo')
+      .expect(200)
+
+    expect(profile).to.have.interface(Profile)
+  })
+
+  it('can get a poll by username and slug', async () => {
+
+    const { body: poll } = await client
+      .get('/api/user/foo/what-is-your-favorite-color')
+      .expect(200)
+
+    expect(poll).to.have.interface(Poll)
   })
 
   it('can see any poll details', async () => {
@@ -40,24 +53,7 @@ describe('an unauthenticated user', () => {
       .get('/api/polls/1')
       .expect(200)
 
-    expect(poll).to.have.interface({
-      id: Number,
-      username: String,
-      question: String,
-      slug: String,
-      userId: Number,
-      votes: Number,
-      options: Object
-    })
-
-    const [ option ] = poll.options
-
-    expect(option).to.have.interface({
-      id: Number,
-      value: String,
-      pollId: Number,
-      votes: Number
-    })
+    expect(poll).to.have.interface(Poll)
   })
 
   it('can vote on all polls', async () => {
@@ -67,11 +63,7 @@ describe('an unauthenticated user', () => {
       .send({ optionId: 1 })
       .expect(201)
 
-    expect(vote).to.have.interface({
-      id: Number,
-      optionId: Number,
-      date: String
-    })
+    expect(vote).to.have.interface(Vote)
   })
 
   it('can sign up', async () => {
@@ -82,11 +74,7 @@ describe('an unauthenticated user', () => {
       .redirects(1)
       .expect(201)
 
-    expect(body).to.have.interface({
-      id: Number,
-      username: String,
-      token: String
-    })
+    expect(body).to.have.interface(Auth)
   })
 
   it('can authenticate', async () => {
@@ -96,11 +84,7 @@ describe('an unauthenticated user', () => {
       .send({ username: 'foo', password: 'bar' })
       .expect(201)
 
-    expect(body).to.have.interface({
-      id: Number,
-      username: String,
-      token: String
-    })
+    expect(body).to.have.interface(Auth)
   })
 
   it('cannot create a new poll', async () => {

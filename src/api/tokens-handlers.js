@@ -6,7 +6,13 @@ import { tokenSecret } from '../config'
 
 export const createToken = async payload =>
 
-  Promise.resolve(jwt.sign(payload, tokenSecret, {}))
+  new Promise((resolve, reject) =>
+
+    jwt.sign(payload, tokenSecret, {}, (err, token) =>
+
+      (!err && resolve(token)) || reject(err)
+    )
+  )
 
 
 export const issueToken = tokens => wrap(async (_, res) => {

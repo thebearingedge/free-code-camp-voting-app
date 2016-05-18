@@ -7,12 +7,10 @@ import { tokenSecret, tokenExpiry } from '../config'
 
 export const verifyToken = token => new Promise((resolve, reject) =>
 
-  jwt.verify(token, tokenSecret, (err, payload) => {
+  jwt.verify(token, tokenSecret, (err, payload) =>
 
-    if (err) return reject(err)
-
-    resolve(payload)
-  })
+    (!err && resolve(payload)) || reject(err)
+  )
 )
 
 

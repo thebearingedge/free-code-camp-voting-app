@@ -51,7 +51,7 @@ export const pollsData = knex => ({
         .returning('id')
 
       await trx
-        .insert(snakeKeys(options.map(option => ({ pollId, ...option }))))
+        .insert(snakeKeys(options.map(opt => ({ pollId, ...opt }))))
         .into('options')
 
       return this.findById(pollId, trx)
@@ -65,6 +65,21 @@ export const pollsData = knex => ({
       .delete()
       .from('polls')
       .where({ id })
+  },
+
+
+  async findByUserSlug(username, slug) {
+
+    const found = await knex
+      .select('p.id')
+      .from('users as u')
+      .innerJoin('polls as p', 'u.id', 'p.user_id')
+      .where({ username, slug })
+      .first()
+
+    if (!found) return null
+
+    return this.findById(found.id)
   }
 
 })

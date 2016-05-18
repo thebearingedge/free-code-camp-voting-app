@@ -16,9 +16,9 @@ export const postUser = users => wrap(async (req, res, next) => {
 
   const user = await validate(req.body, userSchema)
 
-  const existing = await users.findByUsername(user.username)
+  const exists = await users.nameExists(user.username)
 
-  if (existing) throw new BadRequest('username is not available')
+  if (exists) throw new BadRequest('username is not available')
 
   res.locals.user = await users.create(user)
 
@@ -45,11 +45,11 @@ export const authenticate = users => wrap(async (req, res, next) => {
 
   const { username, password } = await validate(body, userSchema)
 
-  const user = await users.findByUsername(username)
+  const user = await users.findHash(username)
 
   if (!user) throw new Forbidden('invalid login')
 
-  const { id, password: hash } = user
+  const { id, hash } = user
 
   try {
 

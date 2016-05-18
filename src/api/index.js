@@ -7,12 +7,17 @@ import { tokensData } from './tokens-data'
 import { pollsData } from './polls-data'
 import { optionsData } from './options-data'
 import { votesData } from './votes-data'
-import { authenticate, postUser, checkPollOwner } from './users-middleware'
+
 import { protect } from './tokens-middleware'
-import { issueToken, deleteToken } from './tokens-handlers'
+import { authenticate, postUser, checkPollOwner } from './users-middleware'
+
 import { postVote } from './votes-handlers'
 import { postOption } from './options-handlers'
-import { getPolls, getPoll, postPoll, deletePoll } from './polls-handlers'
+import { getUserByName } from './users-handlers'
+import { issueToken, deleteToken } from './tokens-handlers'
+import { getPolls, getPoll,
+         postPoll, deletePoll, getPollByUserSlug } from './polls-handlers'
+
 import { errorHandler, notFoundHandler } from './errors'
 
 
@@ -38,13 +43,17 @@ const authRoutes = new Router()
   .delete('/', deleteToken(tokens))
 
 
+const userRoutes = new Router()
+  .get('/:username', getUserByName(users))
+  .get('/:username/:slug', getPollByUserSlug(polls))
+
+
 export default new Router()
   .use(json())
-  // GET /profile/:username -> user profile & polls
-  // GET /profile/:username/:slug -> profile & options
   .post('/vote', postVote(votes))
   .post('/signup', postUser(users))
   .use('/authenticate', authRoutes)
   .use('/polls', pollsRoutes)
+  .use('/user', userRoutes)
   .use('*', notFoundHandler)
   .use(errorHandler)

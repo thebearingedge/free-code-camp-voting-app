@@ -46,12 +46,14 @@ describe('users-middleware', () => {
   describe('postUser', () => {
 
     beforeEach(() => {
-      stub(users, 'findByUsername')
+      stub(users, 'nameExists')
+      stub(users, 'findHash')
       stub(users, 'create')
     })
 
     afterEach(() => {
-      users.findByUsername.restore()
+      users.nameExists.restore()
+      users.findHash.restore()
       users.create.restore()
     })
 
@@ -59,8 +61,8 @@ describe('users-middleware', () => {
 
       it('sets the new user on locals', async () => {
 
-        users.findByUsername.onCall(0).resolves(null)
-        users.findByUsername.onCall(1).resolves({ ...mockUser, password: hashed })
+        users.nameExists.resolves(false)
+        users.findHash.resolves({ ...mockUser, hash: hashed })
         users.create.resolves(omit(mockUser, 'password'))
 
         await client
@@ -76,7 +78,7 @@ describe('users-middleware', () => {
 
       it('returns a Bad Request error', async () => {
 
-        users.findByUsername.resolves({ id: 1, ...mockUser })
+        users.nameExists.resolves(true)
 
         await client
           .post('/api/signup')
@@ -90,15 +92,15 @@ describe('users-middleware', () => {
 
   describe('authenticate', () => {
 
-    beforeEach(() => stub(users, 'findByUsername'))
+    beforeEach(() => stub(users, 'findHash'))
 
-    afterEach(() => users.findByUsername.restore())
+    afterEach(() => users.findHash.restore())
 
     context('when the username is not found', () => {
 
       it('returns a Forbidden error', async () => {
 
-        users.findByUsername.resolves(null)
+        users.findHash.resolves(null)
 
         const res = await client
           .post('/api/authenticate')
@@ -114,7 +116,7 @@ describe('users-middleware', () => {
 
       slow('returns a Forbidden error', async () => {
 
-        users.findByUsername.resolves({ ...mockUser, password: hashed })
+        users.findHash.resolves({ ...mockUser, hash: hashed })
 
         const res = await client
           .post('/api/authenticate')
@@ -130,7 +132,7 @@ describe('users-middleware', () => {
 
       slow('advances to the login handler', async () => {
 
-        users.findByUsername.resolves({ ...mockUser, password: hashed })
+        users.findHash.resolves({ ...mockUser, hash: hashed })
 
         await client
           .post('/api/authenticate')

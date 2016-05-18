@@ -112,4 +112,37 @@ describe('polls-data', () => {
 
   })
 
+  describe('findByUserSlug', () => {
+
+    context('when the poll exists', () => {
+
+      it('returns the poll', async () => {
+
+        const poll = await polls.findByUserSlug('foo', 'what-is-your-favorite-color')
+
+        expect(poll).to.have.interface({
+          id: Number,
+          question: String,
+          slug: String,
+          userId: Number,
+          username: String,
+          options: Array
+        })
+      })
+
+    })
+
+  })
+
+  context('when the poll does not exist', () => {
+
+    it('returns null', async () => {
+
+      const poll = await polls.findByUserSlug('qux', 'how-do')
+
+      expect(poll).to.be.null
+    })
+
+  })
+
 })

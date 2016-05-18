@@ -5,6 +5,8 @@ import jwt from 'jsonwebtoken'
 import { tokenSecret } from '../../config'
 import { knex, redis } from '../core'
 import api from '../'
+import { Profile, Poll, PollListItem, Option, Vote } from './__setup__'
+
 
 describe('an authenticated user', () => {
 
@@ -29,6 +31,26 @@ describe('an authenticated user', () => {
     await redis.setAsync(token, token)
   })
 
+  it('can see a user profile', async () => {
+
+    const { body: profile } = await client
+      .get('/api/user/foo')
+      .set('x-access-token', token)
+      .expect(200)
+
+    expect(profile).to.have.interface(Profile)
+  })
+
+  it('can get a poll by username and slug', async () => {
+
+    const { body: poll } = await client
+      .get('/api/user/foo/what-is-your-favorite-color')
+      .set('x-access-token', token)
+      .expect(200)
+
+    expect(poll).to.have.interface(Poll)
+  })
+
   it('can see all polls', async () => {
 
     const { body: polls } = await client
@@ -36,14 +58,7 @@ describe('an authenticated user', () => {
       .set('x-access-token', token)
       .expect(200)
 
-    expect(polls[0]).to.have.interface({
-      id: Number,
-      username: String,
-      question: String,
-      slug: String,
-      userId: Number,
-      votes: Number
-    })
+    expect(polls[0]).to.have.interface(PollListItem)
   })
 
   it('can see any poll details', async () => {
@@ -53,24 +68,7 @@ describe('an authenticated user', () => {
       .set('x-access-token', token)
       .expect(200)
 
-    expect(poll).to.have.interface({
-      id: Number,
-      username: String,
-      question: String,
-      slug: String,
-      userId: Number,
-      votes: Number,
-      options: Array
-    })
-
-    const [ option ] = poll.options
-
-    expect(option).to.have.interface({
-      id: Number,
-      value: String,
-      pollId: Number,
-      votes: Number
-    })
+    expect(poll).to.have.interface(Poll)
   })
 
   it('can vote on all polls', async () => {
@@ -81,11 +79,7 @@ describe('an authenticated user', () => {
       .send({ optionId: 1 })
       .expect(201)
 
-    expect(vote).to.have.interface({
-      id: Number,
-      optionId: Number,
-      date: String
-    })
+    expect(vote).to.have.interface(Vote)
   })
 
   it('can add an option to their own poll', async () => {
@@ -96,12 +90,7 @@ describe('an authenticated user', () => {
       .send({ value: 'yellow' })
       .expect(201)
 
-    expect(option).to.have.interface({
-      id: Number,
-      pollId: Number,
-      value: String,
-      votes: Number
-    })
+    expect(option).to.have.interface(Option)
   })
 
   it('can create a new poll', async () => {
@@ -117,24 +106,7 @@ describe('an authenticated user', () => {
       .send(newPoll)
       .expect(201)
 
-    expect(poll).to.have.interface({
-      id: Number,
-      username: String,
-      question: String,
-      slug: String,
-      userId: Number,
-      votes: Number,
-      options: Array
-    })
-
-    const [ option ] = poll.options
-
-    expect(option).to.have.interface({
-      id: Number,
-      value: String,
-      pollId: Number,
-      votes: Number
-    })
+    expect(poll).to.have.interface(Poll)
   })
 
   it('can delete its own poll', async () => {

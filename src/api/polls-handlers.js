@@ -56,3 +56,15 @@ export const deletePoll = polls => wrap(async ({ params }, res) => {
 
   res.sendStatus(204)
 })
+
+
+export const getPollByUserSlug = polls => wrap(async ({ params }, res) => {
+
+  const { username, slug } = params
+
+  const poll = await polls.findByUserSlug(username, slug)
+
+  if (!poll) throw new NotFound('poll not found')
+
+  res.json(poll)
+})
