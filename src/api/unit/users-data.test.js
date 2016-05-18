@@ -59,13 +59,13 @@ describe('users-data', () => {
 
   })
 
-  describe('findHash', () => {
+  describe('findWithHash', () => {
 
     context('when a user exists', () => {
 
       it('returns the user', async () => {
 
-        const user = await users.findHash('foo')
+        const user = await users.findWithHash('foo')
 
         expect(user).to.have.interface({
           id: Number,
@@ -79,7 +79,7 @@ describe('users-data', () => {
 
       it('returns null', async () => {
 
-        const user = await users.findHash('bar')
+        const user = await users.findWithHash('bar')
 
         expect(user).to.be.null
 

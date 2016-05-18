@@ -45,7 +45,7 @@ export const authenticate = users => wrap(async (req, res, next) => {
 
   const { username, password } = await validate(body, userSchema)
 
-  const user = await users.findHash(username)
+  const user = await users.findWithHash(username)
 
   if (!user) throw new Forbidden('invalid login')
 

@@ -47,13 +47,13 @@ describe('users-middleware', () => {
 
     beforeEach(() => {
       stub(users, 'nameExists')
-      stub(users, 'findHash')
+      stub(users, 'findWithHash')
       stub(users, 'create')
     })
 
     afterEach(() => {
       users.nameExists.restore()
-      users.findHash.restore()
+      users.findWithHash.restore()
       users.create.restore()
     })
 
@@ -62,7 +62,7 @@ describe('users-middleware', () => {
       it('sets the new user on locals', async () => {
 
         users.nameExists.resolves(false)
-        users.findHash.resolves({ ...mockUser, hash: hashed })
+        users.findWithHash.resolves({ ...mockUser, hash: hashed })
         users.create.resolves(omit(mockUser, 'password'))
 
         await client
@@ -92,15 +92,15 @@ describe('users-middleware', () => {
 
   describe('authenticate', () => {
 
-    beforeEach(() => stub(users, 'findHash'))
+    beforeEach(() => stub(users, 'findWithHash'))
 
-    afterEach(() => users.findHash.restore())
+    afterEach(() => users.findWithHash.restore())
 
     context('when the username is not found', () => {
 
       it('returns a Forbidden error', async () => {
 
-        users.findHash.resolves(null)
+        users.findWithHash.resolves(null)
 
         const res = await client
           .post('/api/authenticate')
@@ -116,7 +116,7 @@ describe('users-middleware', () => {
 
       slow('returns a Forbidden error', async () => {
 
-        users.findHash.resolves({ ...mockUser, hash: hashed })
+        users.findWithHash.resolves({ ...mockUser, hash: hashed })
 
         const res = await client
           .post('/api/authenticate')
@@ -132,7 +132,7 @@ describe('users-middleware', () => {
 
       slow('advances to the login handler', async () => {
 
-        users.findHash.resolves({ ...mockUser, hash: hashed })
+        users.findWithHash.resolves({ ...mockUser, hash: hashed })
 
         await client
           .post('/api/authenticate')

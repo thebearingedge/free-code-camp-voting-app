@@ -35,7 +35,7 @@ export const usersData = knex => ({
   },
 
 
-  async findHash(username) {
+  async findWithHash(username) {
 
     const user = await knex
       .select('id', 'password as hash')
