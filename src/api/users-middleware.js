@@ -20,11 +20,9 @@ export const postUser = users => wrap(async (req, res, next) => {
 
   if (existing) throw new BadRequest('username is not available')
 
-  const { id, username } = await users.create(user)
+  res.locals.user = await users.create(user)
 
-  res.locals.user = { id, username }
-
-  next()
+  res.redirect(307, '/api/login')
 })
 
 

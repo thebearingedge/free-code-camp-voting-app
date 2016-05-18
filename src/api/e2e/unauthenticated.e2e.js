@@ -79,6 +79,7 @@ describe('an unauthenticated user', () => {
     const { body } = await client
       .post('/api/signup')
       .send({ username: 'bar', password: 'baz' })
+      .redirects(1)
       .expect(201)
 
     expect(body).to.have.interface({

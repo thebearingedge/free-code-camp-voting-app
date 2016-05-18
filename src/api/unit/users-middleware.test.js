@@ -25,29 +25,19 @@ describe('users-middleware', () => {
 
     hashed = await hash(password)
 
-    const postUserHandler = (req, res) => {
-
-      const { user } = res.locals
-
-      expect(user).to.have.interface({ id: Number, username: String })
-      expect(user).not.to.have.property('password')
-
-      res.sendStatus(201)
-    }
-
     const setUser = (_, res, next) =>
 
       (res.locals.user = omit(mockUser, 'password')) && next()
 
     const deleteHandler = (_, res) => res.sendStatus(204)
 
-    const loginHandler = (_, res) => res.sendStatus(204)
+    const loginHandler = (_, res) => res.sendStatus(201)
 
     app = express()
       .use(json())
-      .post('/signup', postUser(users), postUserHandler)
-      .post('/login', login(users), loginHandler)
-      .delete('/polls/:pollId', setUser, checkPollOwner(users), deleteHandler)
+      .post('/api/signup', postUser(users))
+      .post('/api/login', login(users), loginHandler)
+      .delete('/api/polls/:pollId', setUser, checkPollOwner(users), deleteHandler)
       .use(errorHandler)
 
     client = request(app)
@@ -69,12 +59,14 @@ describe('users-middleware', () => {
 
       it('sets the new user on locals', async () => {
 
-        users.findByUsername.resolves(null)
-        users.create.resolves({ id: 1, ...mockUser })
+        users.findByUsername.onCall(0).resolves(null)
+        users.findByUsername.onCall(1).resolves({ ...mockUser, password: hashed })
+        users.create.resolves(omit(mockUser, 'password'))
 
         await client
-          .post('/signup')
+          .post('/api/signup')
           .send(mockUser)
+          .redirects(1)
           .expect(201)
       })
 
@@ -87,7 +79,7 @@ describe('users-middleware', () => {
         users.findByUsername.resolves({ id: 1, ...mockUser })
 
         await client
-          .post('/signup')
+          .post('/api/signup')
           .send(mockUser)
           .expect(400)
       })
@@ -109,7 +101,7 @@ describe('users-middleware', () => {
         users.findByUsername.resolves(null)
 
         const res = await client
-          .post('/login')
+          .post('/api/login')
           .send(mockUser)
           .expect(403)
 
@@ -125,7 +117,7 @@ describe('users-middleware', () => {
         users.findByUsername.resolves({ ...mockUser, password: hashed })
 
         const res = await client
-          .post('/login')
+          .post('/api/login')
           .send({ ...mockUser, password: 'baz' })
           .expect(403)
 
@@ -136,14 +128,14 @@ describe('users-middleware', () => {
 
     context('when the username and password match', () => {
 
-      slow('is successfull', async () => {
+      slow('advances to the login handler', async () => {
 
         users.findByUsername.resolves({ ...mockUser, password: hashed })
 
         await client
-          .post('/login')
+          .post('/api/login')
           .send(mockUser)
-          .expect(204)
+          .expect(201)
       })
 
     })
@@ -163,7 +155,7 @@ describe('users-middleware', () => {
         users.isPollOwner.resolves(true)
 
         await client
-          .delete('/polls/1')
+          .delete('/api/polls/1')
           .expect(204)
       })
 
@@ -176,7 +168,7 @@ describe('users-middleware', () => {
         users.isPollOwner.resolves(false)
 
         await client
-          .delete('/polls/1')
+          .delete('/api/polls/1')
           .expect(403)
       })
 

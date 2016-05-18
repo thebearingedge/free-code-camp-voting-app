@@ -34,7 +34,7 @@ const pollsRoutes = new Router()
 
 export default new Router()
   .use(json())
-  .post('/signup', postUser(users), issueToken(tokens))
+  .post('/signup', postUser(users))
   .post('/login', login(users), issueToken(tokens))
   // DELETE '/login' -> logout
   .post('/vote', postVote(votes))
