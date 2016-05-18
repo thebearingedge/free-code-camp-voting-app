@@ -39,7 +39,7 @@ export class ValidationError extends BadRequest {
 
   constructor(message, details) {
 
-    super(message || 'invalid data')
+    super(message)
 
     this.details = details
   }
@@ -62,6 +62,12 @@ export class NotFound extends ClientError {
 
   get statusCode() { return 404 }
 
+}
+
+
+export const notFoundHandler = ({ originalUrl }) => {
+
+  throw new NotFound(`route '${originalUrl}' does not exist`)
 }
 
 
