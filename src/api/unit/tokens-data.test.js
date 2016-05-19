@@ -60,9 +60,9 @@ describe('tokens-data', () => {
 
       it('returns null', async () => {
 
-        const found = await tokens.get('bar-baz-qux')
+        const token = await tokens.get('bar-baz-qux')
 
-        expect(found).to.be.null
+        expect(token).to.be.null
       })
 
     })
@@ -79,9 +79,9 @@ describe('tokens-data', () => {
 
       await tokens.unset(token)
 
-      const found = await redis.getAsync(token)
+      const deleted = await redis.getAsync(token)
 
-      expect(found).to.be.null
+      expect(deleted).to.be.null
     })
   })
 

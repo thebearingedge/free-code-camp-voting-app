@@ -2,9 +2,9 @@
 import { hash } from 'bcrypt-as-promised'
 import { snakeKeys, lowerSlug } from '../api/utils'
 
+
 const username = 'foo'
 const unhashed = 'bar'
-
 const question = 'What is your favorite color?'
 const slug = lowerSlug(question)
 const options = [
@@ -33,4 +33,8 @@ export const seed = async knex => {
   await knex
     .insert(options.map(option => snakeKeys({ ...option, pollId })))
     .into('options')
+
+  await knex
+    .insert(snakeKeys({ optionId: 1 }))
+    .into('votes')
 }

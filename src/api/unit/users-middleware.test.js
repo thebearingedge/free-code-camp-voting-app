@@ -1,5 +1,5 @@
 
-import { expect, stub, request, skipSlow } from '@thebearingedge/test-utils'
+import { expect, stub, request } from '@thebearingedge/test-utils'
 import { omit } from 'lodash'
 import express from 'express'
 import { json } from 'body-parser'
@@ -8,8 +8,6 @@ import { usersData } from '../users-data'
 import { errorHandler } from '../errors'
 import { postUser, authenticate, checkPollOwner } from '../users-middleware'
 
-
-const slow = skipSlow()
 
 const password = 'bar'
 const mockUser = { username: 'foo', password }
@@ -25,19 +23,19 @@ describe('users-middleware', () => {
 
     hashed = await hash(password)
 
-    const setUser = (_, res, next) =>
+    const protect = _ => (_, res, next) =>
 
       (res.locals.user = omit(mockUser, 'password')) && next()
 
-    const deleteHandler = (_, res) => res.sendStatus(204)
+    const onDelete = (_, res) => res.sendStatus(204)
 
-    const loginHandler = (_, res) => res.sendStatus(201)
+    const onLogin = (_, res) => res.sendStatus(201)
 
     app = express()
       .use(json())
       .post('/api/signup', postUser(users))
-      .post('/api/authenticate', authenticate(users), loginHandler)
-      .delete('/api/polls/:pollId', setUser, checkPollOwner(users), deleteHandler)
+      .post('/api/authenticate', authenticate(users), onLogin)
+      .delete('/api/polls/:pollId', protect(), checkPollOwner(users), onDelete)
       .use(errorHandler)
 
     client = request(app)
@@ -80,10 +78,12 @@ describe('users-middleware', () => {
 
         users.nameExists.resolves(true)
 
-        await client
+        const res = await client
           .post('/api/signup')
           .send(mockUser)
           .expect(400)
+
+        expect(res.body).to.have.property('error', 'Bad Request')
       })
 
     })
@@ -165,13 +165,15 @@ describe('users-middleware', () => {
 
     context('when the user is not the owner of the poll', () => {
 
-      it('returns an Unauthorized error', async () => {
+      it('returns a Forbidden error', async () => {
 
         users.isPollOwner.resolves(false)
 
-        await client
+        const res = await client
           .delete('/api/polls/1')
           .expect(403)
+
+        expect(res.body).to.have.property('error', 'Forbidden')
       })
 
     })

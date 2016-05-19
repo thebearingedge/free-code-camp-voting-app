@@ -2,6 +2,6 @@ instrumentation:
   include-all-sources: true
   verbose: true
   root: src/api
-  excludes: ["*.test.js", "*.e2e.js", "__setup__.js"]
+  excludes: ["*.test.js", "*.e2e.js", "__setup__.js", "fixtures/*"]
 reporting:
   dir: "coverage/api-unit"

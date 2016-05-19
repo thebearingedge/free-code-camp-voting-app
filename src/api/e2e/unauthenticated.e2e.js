@@ -3,7 +3,7 @@ import { expect, request } from '@thebearingedge/test-utils'
 import express from 'express'
 import { knex } from '../core'
 import api from '../'
-import { Profile, Poll, PollListItem, Auth, Vote } from './__setup__'
+import { Profile, Poll, PollListItem, Auth, Vote } from '../fixtures/interfaces'
 
 
 describe('an unauthenticated user', () => {

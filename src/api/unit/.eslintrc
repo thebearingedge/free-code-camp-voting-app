@@ -6,6 +6,7 @@
     afterEach: true,
     describe: true,
     it: true,
-    context: true
+    context: true,
+    slow: true
   }
 }

@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken'
 import { tokensData } from '../tokens-data'
 import { errorHandler } from '../errors'
 import { tokenSecret } from '../../config'
+import { Auth } from '../fixtures/interfaces'
 import { issueToken, deleteToken } from '../tokens-handlers'
 
 
@@ -38,11 +39,7 @@ describe('tokens-handlers', () => {
         .post('/authenticate')
         .expect(201)
 
-      expect(res.body).to.have.interface({
-        id: Number,
-        username: String,
-        token: String
-      })
+      expect(res.body).to.have.interface(Auth)
 
       const verified = jwt.verify(res.body.token, tokenSecret)
 
@@ -62,8 +59,6 @@ describe('tokens-handlers', () => {
         .delete('/authenticate')
         .set('x-access-token', 'foo')
         .expect(204)
-
-      expect(tokens.unset).to.have.been.calledWith('foo')
     })
   })
 

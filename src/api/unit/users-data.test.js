@@ -1,10 +1,8 @@
 
-import { begin, expect, skipSlow } from '@thebearingedge/test-utils'
+import { begin, expect } from '@thebearingedge/test-utils'
 import { knex } from '../core'
+import { Profile } from '../fixtures/interfaces'
 import { usersData } from '../users-data'
-
-
-const slow = skipSlow()
 
 
 describe('users-data', () => {
@@ -37,11 +35,7 @@ describe('users-data', () => {
 
         const user = await users.findByUsername('foo')
 
-        expect(user).to.have.interface({
-          id: Number,
-          username: String,
-          polls: Array
-        })
+        expect(user).to.have.interface(Profile)
       })
 
     })
@@ -99,9 +93,10 @@ describe('users-data', () => {
       const user = await users.create({ username, password })
 
       expect(user).not.to.have.property('password')
-      expect(user)
-        .to.have.property('id')
-        .that.is.a('number')
+      expect(user).to.have.interface({
+        id: Number,
+        username: String
+      })
     })
 
   })

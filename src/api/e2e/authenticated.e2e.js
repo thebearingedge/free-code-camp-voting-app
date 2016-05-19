@@ -5,7 +5,8 @@ import jwt from 'jsonwebtoken'
 import { tokenSecret } from '../../config'
 import { knex, redis } from '../core'
 import api from '../'
-import { Profile, Poll, PollListItem, Option, Vote } from './__setup__'
+import { Profile, Poll,
+         PollListItem, Option, Vote } from '../fixtures/interfaces'
 
 
 describe('an authenticated user', () => {

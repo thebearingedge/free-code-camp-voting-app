@@ -1,6 +1,7 @@
 
 import { begin, expect } from '@thebearingedge/test-utils'
 import { knex } from '../core'
+import { Vote } from '../fixtures/interfaces'
 import { votesData } from '../votes-data'
 
 
@@ -21,11 +22,7 @@ describe('votes-data', () => {
 
       const vote = await votes.create({ optionId: 1 })
 
-      expect(vote).to.have.interface({
-        id: Number,
-        optionId: Number,
-        date: String
-      })
+      expect(vote).to.have.interface(Vote)
     })
 
   })

@@ -34,16 +34,10 @@ describe('votes-handlers', () => {
         votes.optionExists.resolves(true)
         votes.create.resolves({ id: 1, optionId: 1, date: '2016-01-01' })
 
-        const res = await client
+        await client
           .post('/votes')
           .send({ optionId: 1 })
           .expect(201)
-
-        expect(res.body).to.have.interface({
-          id: Number,
-          optionId: Number,
-          date: String
-        })
       })
 
     })

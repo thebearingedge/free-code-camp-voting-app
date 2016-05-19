@@ -14,9 +14,7 @@ describe('tokens-middleware', () => {
   const app = express()
     .get('/protected', protect(tokens), (_, res) => {
 
-      const { user } = res.locals
-
-      expect(user).to.include({ id: 1, username: 'foo' })
+      expect(res.locals.user).to.include({ id: 1, username: 'foo' })
       res.end()
     })
     .use(errorHandler)
