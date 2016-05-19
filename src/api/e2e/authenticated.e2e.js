@@ -5,8 +5,8 @@ import jwt from 'jsonwebtoken'
 import { tokenSecret } from '../../config'
 import { knex, redis } from '../core'
 import api from '../'
-import { Profile, Poll,
-         PollListItem, Option, Vote } from '../fixtures/interfaces'
+import { Profile, Poll, PollListItem,
+         Option, Vote } from '../fixtures/interfaces'
 
 
 describe('an authenticated user', () => {
@@ -34,64 +34,64 @@ describe('an authenticated user', () => {
 
   it('can see a user profile', async () => {
 
-    const { body: profile } = await client
+    const { body } = await client
       .get('/api/user/foo')
       .set('x-access-token', token)
       .expect(200)
 
-    expect(profile).to.have.interface(Profile)
+    expect(body).to.have.interface(Profile)
   })
 
   it('can get a poll by username and slug', async () => {
 
-    const { body: poll } = await client
+    const { body } = await client
       .get('/api/user/foo/what-is-your-favorite-color')
       .set('x-access-token', token)
       .expect(200)
 
-    expect(poll).to.have.interface(Poll)
+    expect(body).to.have.interface(Poll)
   })
 
   it('can see all polls', async () => {
 
-    const { body: polls } = await client
+    const { body } = await client
       .get('/api/polls')
       .set('x-access-token', token)
       .expect(200)
 
-    expect(polls[0]).to.have.interface(PollListItem)
+    expect(body[0]).to.have.interface(PollListItem)
   })
 
   it('can see any poll details', async () => {
 
-    const { body: poll } = await client
+    const { body } = await client
       .get('/api/polls/1')
       .set('x-access-token', token)
       .expect(200)
 
-    expect(poll).to.have.interface(Poll)
+    expect(body).to.have.interface(Poll)
   })
 
   it('can vote on all polls', async () => {
 
-    const { body: vote } = await client
+    const { body } = await client
       .post('/api/vote')
       .set('x-access-token', token)
       .send({ optionId: 1 })
       .expect(201)
 
-    expect(vote).to.have.interface(Vote)
+    expect(body).to.have.interface(Vote)
   })
 
   it('can add an option to their own poll', async () => {
 
-    const { body: option } = await client
+    const { body } = await client
       .post('/api/polls/1/options')
       .set('x-access-token', token)
       .send({ value: 'yellow' })
       .expect(201)
 
-    expect(option).to.have.interface(Option)
+    expect(body).to.have.interface(Option)
   })
 
   it('can create a new poll', async () => {
@@ -101,13 +101,13 @@ describe('an authenticated user', () => {
       options: [{ value: 'Basenji' }, { value: 'Pom-Chi' } ]
     }
 
-    const { body: poll } = await client
+    const { body } = await client
       .post('/api/polls')
       .set('x-access-token', token)
       .send(newPoll)
       .expect(201)
 
-    expect(poll).to.have.interface(Poll)
+    expect(body).to.have.interface(Poll)
   })
 
   it('can delete its own poll', async () => {

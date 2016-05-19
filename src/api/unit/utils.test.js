@@ -23,7 +23,7 @@ describe('utils', () => {
 
         const user = await validate(data, userSchema)
 
-        expect(user).to.be.ok
+        expect(user).to.deep.equal(data)
       })
 
     })
@@ -38,10 +38,10 @@ describe('utils', () => {
         const err = await rejected(validate(data, userSchema, message))
 
         expect(err).to.be.an.instanceOf(ValidationError)
+        expect(err).to.have.property('message', message)
         expect(err)
           .to.have.property('details')
           .that.is.an.instanceOf(Array)
-        expect(err).to.have.property('message', message)
         expect(err.details[0].message)
           .to.include('password')
           .and.to.include('required')

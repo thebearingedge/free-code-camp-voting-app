@@ -40,7 +40,7 @@ describe('votes-data', () => {
 
     })
 
-    context('when the option does not exists', () => {
+    context('when the option does not exist', () => {
 
       it('is false', async () => {
 

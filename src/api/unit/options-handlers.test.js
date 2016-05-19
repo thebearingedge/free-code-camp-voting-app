@@ -3,18 +3,20 @@ import { expect, stub, request } from '@thebearingedge/test-utils'
 import express from 'express'
 import { errorHandler } from '../errors'
 import { optionsData } from '../options-data'
+import { Option } from '../fixtures/interfaces'
 import { postOption } from '../options-handlers'
-
-
-const mockOption = { value: 'yellow' }
 
 
 describe('options-handlers', () => {
 
+  const mockOption = { pollId: 1, value: 'yellow' }
+
   const options = optionsData()
+
   const app = express()
     .post('/options', postOption(options))
     .use(errorHandler)
+
   const client = request(app)
 
   describe('postOption', () => {
@@ -27,12 +29,12 @@ describe('options-handlers', () => {
 
       options.create.resolves({ id: 4, votes: 0, ...mockOption })
 
-      const res = await client
+      const { body } = await client
         .post('/options')
-        .send({ value: 'yellow' })
+        .send(mockOption)
         .expect(201)
 
-      expect(res.body).to.have.interface({ id: Number, votes: Number })
+      expect(body).to.have.interface(Option)
     })
 
   })

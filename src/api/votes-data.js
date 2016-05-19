@@ -16,10 +16,10 @@ export const votesData = knex => ({
   },
 
 
-  async create({ optionId }) {
+  async create(vote) {
 
     const [ id ] = await knex
-      .insert(snakeKeys({ optionId }))
+      .insert(snakeKeys(vote))
       .into('votes')
       .returning('id')
 
@@ -29,13 +29,13 @@ export const votesData = knex => ({
 
   async optionExists(id) {
 
-    const { count } = await knex
-      .count('*')
+    const { exists } = await knex
+      .select(knex.raw('count(*)::int::bool as exists'))
       .from('options')
       .where({ id })
       .first()
 
-    return !!count
+    return exists
   }
 
 })

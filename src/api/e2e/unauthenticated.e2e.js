@@ -22,48 +22,48 @@ describe('an unauthenticated user', () => {
 
   it('can see all polls', async () => {
 
-    const { body: polls } = await client
+    const { body } = await client
       .get('/api/polls')
       .expect(200)
 
-    expect(polls[0]).to.have.interface(PollListItem)
+    expect(body[0]).to.have.interface(PollListItem)
   })
 
   it('can see a user profile', async () => {
 
-    const { body: profile } = await client
+    const { body } = await client
       .get('/api/user/foo')
       .expect(200)
 
-    expect(profile).to.have.interface(Profile)
+    expect(body).to.have.interface(Profile)
   })
 
   it('can get a poll by username and slug', async () => {
 
-    const { body: poll } = await client
+    const { body } = await client
       .get('/api/user/foo/what-is-your-favorite-color')
       .expect(200)
 
-    expect(poll).to.have.interface(Poll)
+    expect(body).to.have.interface(Poll)
   })
 
   it('can see any poll details', async () => {
 
-    const { body: poll } = await client
+    const { body } = await client
       .get('/api/polls/1')
       .expect(200)
 
-    expect(poll).to.have.interface(Poll)
+    expect(body).to.have.interface(Poll)
   })
 
   it('can vote on all polls', async () => {
 
-    const { body: vote } = await client
+    const { body } = await client
       .post('/api/vote')
       .send({ optionId: 1 })
       .expect(201)
 
-    expect(vote).to.have.interface(Vote)
+    expect(body).to.have.interface(Vote)
   })
 
   it('can sign up', async () => {

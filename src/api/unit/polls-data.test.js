@@ -1,6 +1,7 @@
 
 import { begin, expect } from '@thebearingedge/test-utils'
 import { knex } from '../core'
+import { PollListItem, Poll, Option } from '../fixtures/interfaces'
 import { pollsData } from '../polls-data'
 
 
@@ -21,13 +22,7 @@ describe('polls-data', () => {
 
       const [ poll ] = await polls.list()
 
-      expect(poll).to.have.interface({
-        id: Number,
-        question: String,
-        slug: String,
-        userId: Number,
-        votes: Number
-      })
+      expect(poll).to.have.interface(PollListItem)
     })
   })
 
@@ -39,12 +34,7 @@ describe('polls-data', () => {
 
         const poll = await polls.findById(1)
 
-        expect(poll).to.have.interface({
-          id: Number,
-          question: String,
-          slug: String,
-          userId: Number
-        })
+        expect(poll).to.have.interface(Poll)
       })
 
     })
@@ -74,22 +64,11 @@ describe('polls-data', () => {
 
       const saved = await polls.create(poll)
 
-      expect(saved).to.have.interface({
-        id: Number,
-        username: String,
-        question: String,
-        slug: String,
-        options: Array
-      })
+      expect(saved).to.have.interface(Poll)
 
       const [ option ] = saved.options
 
-      expect(option).to.have.interface({
-        id: Number,
-        pollId: Number,
-        value: String,
-        votes: Number
-      })
+      expect(option).to.have.interface(Option)
     })
 
   })
@@ -118,16 +97,10 @@ describe('polls-data', () => {
 
       it('returns the poll', async () => {
 
-        const poll = await polls.findByUserSlug('foo', 'what-is-your-favorite-color')
+        const poll = await polls
+          .findByUserSlug('foo', 'what-is-your-favorite-color')
 
-        expect(poll).to.have.interface({
-          id: Number,
-          question: String,
-          slug: String,
-          userId: Number,
-          username: String,
-          options: Array
-        })
+        expect(poll).to.have.interface(Poll)
       })
 
     })

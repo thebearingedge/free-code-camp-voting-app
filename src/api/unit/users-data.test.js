@@ -61,10 +61,7 @@ describe('users-data', () => {
 
         const user = await users.findWithHash('foo')
 
-        expect(user).to.have.interface({
-          id: Number,
-          hash: String
-        })
+        expect(user).to.have.interface({ id: Number, hash: String })
       })
 
     })
@@ -76,7 +73,6 @@ describe('users-data', () => {
         const user = await users.findWithHash('bar')
 
         expect(user).to.be.null
-
       })
 
     })
@@ -93,10 +89,7 @@ describe('users-data', () => {
       const user = await users.create({ username, password })
 
       expect(user).not.to.have.property('password')
-      expect(user).to.have.interface({
-        id: Number,
-        username: String
-      })
+      expect(user).to.have.interface({ id: Number, username: String })
     })
 
   })
@@ -127,7 +120,6 @@ describe('users-data', () => {
         const isOwner = await users.isPollOwner(userId, pollId)
 
         expect(isOwner).to.be.false
-
       })
 
     })

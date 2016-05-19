@@ -1,6 +1,7 @@
 
 import { begin, expect, rejected } from '@thebearingedge/test-utils'
 import { knex } from '../core'
+import { Option } from '../fixtures/interfaces'
 import { optionsData } from '../options-data'
 
 
@@ -32,27 +33,26 @@ describe('options-data', () => {
 
   describe('create', () => {
 
-    context('when an option does not exist', () => {
+    context('when the option does not exist', () => {
 
-      it('inserts an option', async () => {
+      it('inserts the option', async () => {
 
-        const option = await options.create({ pollId: 1, value: 'yellow' })
+        const data = { pollId: 1, value: 'yellow' }
 
-        expect(option).to.have.interface({
-          id: Number,
-          pollId: Number,
-          value: String,
-          votes: Number
-        })
+        const option = await options.create(data)
+
+        expect(option).to.have.interface(Option)
       })
 
     })
 
-    context('when an option already exists', () => {
+    context('when the option already exists', () => {
 
       it('is not inserted', async () => {
 
-        const err = await rejected(options.create({ pollId: 1, value: 'red' }))
+        const data = { pollId: 1, value: 'red' }
+
+        const err = await rejected(options.create(data))
 
         expect(err.message).to.include('duplicate')
       })

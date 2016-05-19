@@ -7,15 +7,17 @@ import { getPolls, getPoll,
          postPoll, deletePoll, getPollByUserSlug } from '../polls-handlers'
 
 
-const mockPoll = {
-  question: 'What is your favorite dog?',
-  options: [{ value: 'Basenji' }, { value: 'Pom-Chi'}]
-}
-
 describe('polls-handlers', () => {
 
+  const mockPoll = {
+    question: 'What is your favorite dog?',
+    options: [{ value: 'Basenji' }, { value: 'Pom-Chi'}]
+  }
+
   const polls = pollsData()
+
   const setUser = (_, res, next) => (res.locals.user = { id: 1 }) && next()
+
   const app = express()
     .get('/polls', getPolls(polls))
     .post('/polls', setUser, postPoll(polls))
@@ -23,6 +25,7 @@ describe('polls-handlers', () => {
     .get('/polls/:pollId', getPoll(polls))
     .get('/user/:username/:slug', getPollByUserSlug(polls))
     .use(errorHandler)
+
   const client = request(app)
 
   describe('getPolls', () => {
@@ -35,11 +38,11 @@ describe('polls-handlers', () => {
 
       polls.list.resolves([{ id: 1, ...mockPoll }])
 
-      const { body: results } = await client
+      const { body } = await client
         .get('/polls')
         .expect(200)
 
-      expect(results).to.have.property('length', 1)
+      expect(body).to.have.property('length', 1)
     })
   })
 

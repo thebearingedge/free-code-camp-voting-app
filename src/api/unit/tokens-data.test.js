@@ -5,11 +5,9 @@ import { tokenExpiry } from '../../config'
 import { tokensData } from '../tokens-data'
 
 
-const mockToken = 'foo-bar-baz'
-
-
 describe('tokens-data', () => {
 
+  const mockToken = 'foo-bar-baz'
   let tokens
 
   before(() => (tokens = tokensData(redis)))

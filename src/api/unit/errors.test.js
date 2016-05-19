@@ -48,11 +48,11 @@ describe('errors', () => {
 
         error.throw.throws(new ValidationError('boo'))
 
-        const res = await client
+        const { body } = await client
           .get('/')
           .expect(400)
 
-        expect(res.body).to.have.property('error', 'Bad Request')
+        expect(body).to.have.property('error', 'Bad Request')
       })
     })
 
@@ -62,12 +62,13 @@ describe('errors', () => {
 
         error.throw.throws(new Error('boo'))
 
-        const res = await client
+        const { body } = await client
           .get('/')
           .expect(500)
 
-        expect(res.body).to.have.interface({
-          error: String
+        expect(body).to.have.interface({
+          error: String,
+          statusCode: Number
         })
       })
 

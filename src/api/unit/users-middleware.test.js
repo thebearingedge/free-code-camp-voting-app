@@ -35,7 +35,8 @@ describe('users-middleware', () => {
       .use(json())
       .post('/api/signup', postUser(users))
       .post('/api/authenticate', authenticate(users), onLogin)
-      .delete('/api/polls/:pollId', protect(), checkPollOwner(users), onDelete)
+      .use(protect())
+      .delete('/api/polls/:pollId', checkPollOwner(users), onDelete)
       .use(errorHandler)
 
     client = request(app)

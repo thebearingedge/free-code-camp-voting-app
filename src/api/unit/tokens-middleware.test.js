@@ -10,26 +10,31 @@ import { protect } from '../tokens-middleware'
 
 describe('tokens-middleware', () => {
 
-  const tokens = tokensData()
-  const app = express()
-    .get('/protected', protect(tokens), (_, res) => {
-
-      expect(res.locals.user).to.include({ id: 1, username: 'foo' })
-      res.end()
-    })
-    .use(errorHandler)
-  const client = request(app)
-  const goodToken = jwt.sign({ id: 1, username: 'foo' }, tokenSecret)
+  const mockUser = { id: 1, username: 'foo' }
+  const goodToken = jwt.sign(mockUser, tokenSecret)
   const badToken = jwt.sign({ id: 666 }, 'fake-secret')
+
+  const tokens = tokensData()
+
+  const app = express()
+    .get('/protected', protect(tokens), (_, res) =>
+
+      expect(res.locals.user).to.include(mockUser) && res.end()
+    )
+    .use(errorHandler)
+
+  const client = request(app)
 
   beforeEach(() => {
     stub(tokens, 'get')
     stub(tokens, 'set')
+    stub(tokens, 'unset')
   })
 
   afterEach(() => {
     tokens.get.restore()
     tokens.set.restore()
+    tokens.unset.restore()
   })
 
   describe('protect', () => {
@@ -38,11 +43,11 @@ describe('tokens-middleware', () => {
 
       it('returns a Forbidden error', async () => {
 
-        const res = await client
+        const { body } = await client
           .get('/protected')
           .expect(403)
 
-        expect(res.body).to.have.property('error', 'Forbidden')
+        expect(body).to.have.property('error', 'Forbidden')
       })
 
     })
@@ -53,12 +58,12 @@ describe('tokens-middleware', () => {
 
         tokens.get.resolves(null)
 
-        const res = await client
+        const { body } = await client
           .get('/protected')
           .set('x-access-token', goodToken)
           .expect(403)
 
-        expect(res.body).to.have.property('error', 'Forbidden')
+        expect(body).to.have.property('error', 'Forbidden')
       })
 
     })
@@ -69,12 +74,13 @@ describe('tokens-middleware', () => {
 
         tokens.get.resolves(badToken)
 
-        const res = await client
+        const { body } = await client
           .get('/protected')
           .set('x-access-token', badToken)
           .expect(403)
 
-        expect(res.body).to.have.property('error', 'Forbidden')
+        expect(body).to.have.property('error', 'Forbidden')
+        expect(tokens.unset).to.have.been.calledWithExactly(badToken)
       })
 
     })

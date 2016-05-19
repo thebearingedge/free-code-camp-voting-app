@@ -18,7 +18,7 @@ export const protect = tokens => wrap(async (req, res, next) => {
 
   const token = req.get('x-access-token')
 
-  if (!token) throw new Forbidden('action requires authentication')
+  if (!token) throw new Forbidden('authentication required')
 
   const issued = await tokens.get(token)
 
@@ -29,6 +29,8 @@ export const protect = tokens => wrap(async (req, res, next) => {
     res.locals.user = await verifyToken(token)
   }
   catch (err) {
+
+    await tokens.unset(token)
 
     throw new Forbidden('invalid access token')
   }

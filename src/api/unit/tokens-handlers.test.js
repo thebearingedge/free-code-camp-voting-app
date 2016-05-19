@@ -12,6 +12,7 @@ import { issueToken, deleteToken } from '../tokens-handlers'
 describe('tokens-handlers', () => {
 
   const tokens = tokensData()
+
   const app = express()
     .use((_, res, next) =>
       (res.locals.user = { id: 1, username: 'foo' }) && next()
@@ -19,6 +20,7 @@ describe('tokens-handlers', () => {
     .post('/authenticate', issueToken(tokens))
     .delete('/authenticate', deleteToken(tokens))
     .use(errorHandler)
+
   const client = request(app)
 
   beforeEach(() => {
@@ -35,13 +37,13 @@ describe('tokens-handlers', () => {
 
     it('creates a webtoken from req.user', async () => {
 
-      const res = await client
+      const { body } = await client
         .post('/authenticate')
         .expect(201)
 
-      expect(res.body).to.have.interface(Auth)
+      expect(body).to.have.interface(Auth)
 
-      const verified = jwt.verify(res.body.token, tokenSecret)
+      const verified = jwt.verify(body.token, tokenSecret)
 
       expect(verified).to.include({
         id: 1,
