@@ -1,9 +1,9 @@
 
 import 'babel-polyfill'
 import express from 'express'
-import api from './api'
+import router from './router'
 import { port } from '../config'
 
 express()
-  .use('/api', api)
+  .use('/api', router)
   .listen(port, _ => console.log(`listening on ${port}`))

@@ -4,7 +4,7 @@ import express from 'express'
 import jwt from 'jsonwebtoken'
 import { tokenSecret } from '../../config'
 import { knex, redis } from '../core'
-import api from '../api'
+import router from '../router'
 import { Profile, Poll, PollListItem,
          Option, Vote } from '../fixtures/interfaces'
 
@@ -18,7 +18,7 @@ describe('an authenticated user', () => {
     await knex.seed.run()
 
     const app = express()
-      .use('/api', api)
+      .use('/api', router)
 
     const user = await knex
       .select('id', 'username')

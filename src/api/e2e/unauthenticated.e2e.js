@@ -2,7 +2,7 @@
 import { expect, request } from '@thebearingedge/test-utils'
 import express from 'express'
 import { knex } from '../core'
-import api from '../api'
+import router from '../router'
 import { Profile, Poll, PollListItem, Auth, Vote } from '../fixtures/interfaces'
 
 
@@ -15,7 +15,7 @@ describe('an unauthenticated user', () => {
     await knex.seed.run()
 
     const app = express()
-      .use('/api', api)
+      .use('/api', router)
 
     client = request(app)
   })
