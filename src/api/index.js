@@ -18,7 +18,7 @@ import { issueToken, deleteToken } from './tokens-handlers'
 import { getPolls, getPoll,
          postPoll, deletePoll, getPollByUserSlug } from './polls-handlers'
 
-import { errorHandler, notFoundHandler } from './errors'
+import { errorHandler, routeNotFound } from './errors'
 
 
 const users = usersData(knex)
@@ -55,5 +55,5 @@ export default new Router()
   .use('/authenticate', authRoutes)
   .use('/polls', pollsRoutes)
   .use('/user', userRoutes)
-  .use('*', notFoundHandler)
+  .use('*', routeNotFound)
   .use(errorHandler)

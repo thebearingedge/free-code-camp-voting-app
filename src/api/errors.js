@@ -65,7 +65,7 @@ export class NotFound extends ClientError {
 }
 
 
-export const notFoundHandler = ({ originalUrl }) => {
+export const routeNotFound = ({ originalUrl }) => {
 
   throw new NotFound(`route '${originalUrl}' does not exist`)
 }

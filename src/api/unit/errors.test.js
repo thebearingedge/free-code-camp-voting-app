@@ -2,7 +2,7 @@
 import { expect, request, stub } from '@thebearingedge/test-utils'
 import express from 'express'
 import wrap from 'express-async-wrap'
-import { errorHandler, notFoundHandler,
+import { errorHandler, routeNotFound,
          Forbidden, ValidationError } from '../errors'
 
 
@@ -12,7 +12,7 @@ describe('errors', () => {
 
   const app = express()
     .use('/', wrap(async (_, __, next) => error.throw(next)))
-    .use('*', notFoundHandler)
+    .use('*', routeNotFound)
     .use(errorHandler)
 
   const client = request(app)
@@ -76,7 +76,7 @@ describe('errors', () => {
 
   })
 
-  describe('notFoundHandler', () => {
+  describe('routeNotFound', () => {
 
     it('returns a JSON 404 body', async () => {
 
