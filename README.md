@@ -3,7 +3,6 @@ Free Code Camp - Build a Voting App
 
 #### TODO
 
-- add unique `(user_id, slug)` to polls
 - make `polls.pollExists` for `postPolls`
 - reorganize src dir
 - [:userId should be :username](https://github.com/thebearingedge/free-code-camp-voting-app/blob/master/src/api/unit/users-handlers.test.js#L18)
