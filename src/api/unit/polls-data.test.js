@@ -59,6 +59,7 @@ describe('polls-data', () => {
       const poll = {
         userId: 1,
         question: 'What is your favorite dog?',
+        slug: 'what-is-your-favorite-dog',
         options: [{ value: 'Basenji' }, { value: 'Pom-Chi'}]
       }
 
@@ -105,15 +106,42 @@ describe('polls-data', () => {
 
     })
 
+    context('when the poll does not exist', () => {
+
+      it('returns null', async () => {
+
+        const poll = await polls.findByUserSlug('qux', 'how-do')
+
+        expect(poll).to.be.null
+      })
+
+    })
+
   })
 
-  context('when the poll does not exist', () => {
+  describe('pollExists', () => {
 
-    it('returns null', async () => {
+    context('when the poll exists', () => {
 
-      const poll = await polls.findByUserSlug('qux', 'how-do')
+      it('returns true', async () => {
 
-      expect(poll).to.be.null
+        const exists = await polls
+          .pollExists(1, 'what-is-your-favorite-color')
+
+        expect(exists).to.be.true
+      })
+    })
+
+    context('when the poll does not exist', () => {
+
+      it('returns false', async () => {
+
+        const exists = await polls
+          .pollExists(1, 'what-is-your-favorite-dog')
+
+        expect(exists).to.be.false
+      })
+
     })
 
   })

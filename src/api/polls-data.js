@@ -1,5 +1,5 @@
 
-import { snakeKeys, camelKeys, lowerSlug } from './utils'
+import { snakeKeys, camelKeys } from './utils'
 
 
 export const pollsData = knex => ({
@@ -39,8 +39,7 @@ export const pollsData = knex => ({
 
   async create(data) {
 
-    const { userId, question, options } = data
-    const slug = lowerSlug(question)
+    const { userId, question, slug, options } = data
     const poll = { userId, question, slug }
 
     return knex.transaction(async trx => {
@@ -80,6 +79,18 @@ export const pollsData = knex => ({
     if (!found) return null
 
     return this.findById(found.id)
+  },
+
+
+  async pollExists(userId, slug) {
+
+    const { exists } = await knex
+      .select(knex.raw('count(*)::int::bool as exists'))
+      .from('polls')
+      .where(snakeKeys({ userId, slug }))
+      .first()
+
+    return exists
   }
 
 })

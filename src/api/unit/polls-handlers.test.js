@@ -1,6 +1,7 @@
 
 import { expect, stub, request } from '@thebearingedge/test-utils'
 import express from 'express'
+import { json } from 'body-parser'
 import { errorHandler } from '../errors'
 import { pollsData } from '../polls-data'
 import { getPolls, getPoll,
@@ -16,11 +17,14 @@ describe('polls-handlers', () => {
 
   const polls = pollsData()
 
-  const setUser = (_, res, next) => (res.locals.user = { id: 1 }) && next()
+  const protect = _ => (_, res, next) =>
+
+    (res.locals.user = { id: 1 }) && next()
 
   const app = express()
+    .use(json())
     .get('/polls', getPolls(polls))
-    .post('/polls', setUser, postPoll(polls))
+    .post('/polls', protect(), postPoll(polls))
     .delete('/polls/:pollId', deletePoll(polls))
     .get('/polls/:pollId', getPoll(polls))
     .get('/user/:username/:slug', getPollByUserSlug(polls))
@@ -80,16 +84,40 @@ describe('polls-handlers', () => {
 
   describe('postPoll', () => {
 
-    beforeEach(() => stub(polls, 'create'))
+    beforeEach(() => {
+      stub(polls, 'create')
+      stub(polls, 'pollExists')
+    })
 
-    afterEach(() => polls.create.restore())
+    afterEach(() => {
+      polls.create.restore()
+      polls.pollExists.restore()
+    })
 
-    it('handles new polls', async () => {
+    context('when a poll does not already exist', () => {
 
-      await client
-        .post('/polls')
-        .send(mockPoll)
-        .expect(201)
+      it('handles new polls', async () => {
+
+        await client
+          .post('/polls')
+          .send(mockPoll)
+          .expect(201)
+      })
+    })
+
+    context('when a poll already exists', () => {
+
+      it('returns a Bad Request error', async () => {
+
+        polls.pollExists.resolves(true)
+
+        const { body } = await client
+          .post('/polls')
+          .send(mockPoll)
+          .expect(400)
+
+        expect(body).to.have.property('error', 'Bad Request')
+      })
     })
 
   })

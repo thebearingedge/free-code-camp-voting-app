@@ -1,8 +1,8 @@
 
 import joi from 'joi'
 import wrap from 'express-async-wrap'
-import { validate } from './utils'
-import { NotFound } from './errors'
+import { validate, lowerSlug } from './utils'
+import { NotFound, BadRequest } from './errors'
 
 
 export const optionSchema = joi.object().keys({
@@ -38,11 +38,17 @@ export const getPoll = polls => wrap(async ({ params }, res, next) => {
 
 export const postPoll = polls => wrap(async ({ body }, res, next) => {
 
-  const { id: userId } = res.locals.user
-
   const poll = await validate(body, pollSchema)
 
-  const created = await polls.create({ userId, ...poll })
+  const { id: userId } = res.locals.user
+
+  const slug = lowerSlug(body.question)
+
+  const exists = await polls.pollExists(userId, slug)
+
+  if (exists) throw new BadRequest(`duplicate poll ${slug}`)
+
+  const created = await polls.create({ userId, slug, ...poll })
 
   res.status(201).json(created)
 })

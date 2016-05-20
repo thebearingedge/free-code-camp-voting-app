@@ -110,6 +110,20 @@ describe('an authenticated user', () => {
     expect(body).to.have.interface(Poll)
   })
 
+  it('cannot create a duplicate poll', async () => {
+
+    const newPoll = {
+      question: 'What is your favorite dog?',
+      options: [{ value: 'Basenji' }, { value: 'Pom-Chi' } ]
+    }
+
+    await client
+      .post('/api/polls')
+      .set('x-access-token', token)
+      .send(newPoll)
+      .expect(400)
+  })
+
   it('can delete its own poll', async () => {
 
     await client
