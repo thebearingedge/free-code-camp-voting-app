@@ -1,7 +1,9 @@
 
 import { Router } from 'express'
 import { json } from 'body-parser'
+
 import { knex, redis } from './core'
+
 import { usersData } from './users-data'
 import { tokensData } from './tokens-data'
 import { pollsData } from './polls-data'

@@ -5,9 +5,9 @@
   "description": "Free Code Camp - Build a Voting App",
   "main": "index.js",
   "scripts": {
-    "istanbul": "babel-node node_modules/.bin/babel-istanbul cover",
-    "cover:api:unit": "npm run -s istanbul -- --config .api-unit.yml _mocha --",
-    "cover:api:e2e": "npm run -s istanbul -- --config .api-e2e.yml _mocha --",
+    "cover": "babel-node node_modules/.bin/babel-istanbul cover",
+    "cover:api:unit": "npm run -s cover -- --config .api-unit.yml _mocha --",
+    "cover:api:e2e": "npm run -s cover -- --config .api-e2e.yml _mocha --",
     "lint": "eslint src/**/*.js",
     "mocha": "mocha --compilers js:babel-register -r babel-polyfill",
     "api:unit": "SLOW_TESTS=true npm run -s mocha -- src/api/unit",
@@ -25,7 +25,7 @@
     "seed:make": "npm run -s knex seed:make --",
     "seed:run": "npm run -s knex seed:run",
     "build:api": "rimraf build && cd src && babel api/*.js config.js -d ../build",
-    "dev": "npm-watch",
+    "start:dev": "npm-watch",
     "start": "node build/api"
   },
   "watch": {
