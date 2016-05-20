@@ -4,7 +4,7 @@ import express from 'express'
 import jwt from 'jsonwebtoken'
 import { tokenSecret } from '../../config'
 import { knex, redis } from '../core'
-import api from '../'
+import api from '../api'
 import { Profile, Poll, PollListItem,
          Option, Vote } from '../fixtures/interfaces'
 

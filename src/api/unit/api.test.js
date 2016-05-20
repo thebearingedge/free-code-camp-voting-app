@@ -1,6 +1,6 @@
 
 import { expect } from '@thebearingedge/test-utils'
-import api from '../'
+import api from '../api'
 
 describe('api', () => {
 

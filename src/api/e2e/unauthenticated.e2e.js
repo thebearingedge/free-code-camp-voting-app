@@ -2,7 +2,7 @@
 import { expect, request } from '@thebearingedge/test-utils'
 import express from 'express'
 import { knex } from '../core'
-import api from '../'
+import api from '../api'
 import { Profile, Poll, PollListItem, Auth, Vote } from '../fixtures/interfaces'
 
 

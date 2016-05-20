@@ -6,17 +6,17 @@
   "main": "index.js",
   "scripts": {
     "istanbul": "babel-node node_modules/.bin/babel-istanbul cover",
-    "istanbul:api:unit": "npm run -s istanbul -- --config .api-unit.yml _mocha --",
-    "istanbul:api:e2e": "npm run -s istanbul -- --config .api-e2e.yml _mocha --",
+    "cover:api:unit": "npm run -s istanbul -- --config .api-unit.yml _mocha --",
+    "cover:api:e2e": "npm run -s istanbul -- --config .api-e2e.yml _mocha --",
     "lint": "eslint src/**/*.js",
     "mocha": "mocha --compilers js:babel-register -r babel-polyfill",
     "api:unit": "SLOW_TESTS=true npm run -s mocha -- src/api/unit",
     "api:unit:watch": "npm run -s mocha -- src/api/unit -w -R min",
+    "api:cover:unit": "SLOW_TESTS=true npm run -s cover:api:unit -- src/api/unit",
     "api:e2e": "SLOW_TESTS=true npm run -s mocha -- src/api/e2e",
     "api:e2e:watch": "npm run -s mocha -- src/api/e2e -w -R min",
-    "api:cover:unit": "SLOW_TESTS=true npm run -s istanbul:api:unit -- src/api/unit",
-    "api:cover:e2e": "SLOW_TESTS=true npm run -s istanbul:api:e2e -- src/api/e2e",
-    "api:watch": "babel-node src/app",
+    "api:cover:e2e": "SLOW_TESTS=true npm run -s cover:api:e2e -- src/api/e2e",
+    "api:watch": "babel-node src/api",
     "knex": "babel-node node_modules/.bin/knex --cwd src --",
     "db:make": "npm run -s knex migrate:make --",
     "db:up": "npm run -s knex migrate:latest",
@@ -24,12 +24,13 @@
     "db:cycle": "npm run -s db:down && npm run -s db:up",
     "seed:make": "npm run -s knex seed:make --",
     "seed:run": "npm run -s knex seed:run",
-    "dev": "npm-watch"
+    "build:api": "rimraf build && cd src && babel api/*.js config.js -d ../build",
+    "dev": "npm-watch",
+    "start": "node build/api"
   },
   "watch": {
     "api:watch": {
       "patterns": [
-        "src/app.js",
         "src/api/**.js"
       ]
     }
