@@ -1,4 +1,5 @@
 
+import 'babel-polyfill'
 import express from 'express'
 import api from './api'
 import { port } from './config'

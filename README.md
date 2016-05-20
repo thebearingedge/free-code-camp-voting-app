@@ -9,5 +9,4 @@ Free Code Camp - Build a Voting App
 - use a `tokenHeaders` object for `authenticated` e2e tests
 - refactor npm scripts
 - remove direct `supertest` dependencies (they are in `test-utils`)
-- `import 'babel-polyfill'`
 - start build script
