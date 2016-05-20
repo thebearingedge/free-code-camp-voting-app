@@ -15,7 +15,7 @@ describe('users-handlers', () => {
     users = usersData()
 
     const app = express()
-      .get('/api/users/:userId', getUserByName(users))
+      .get('/api/users/:username', getUserByName(users))
       .use(errorHandler)
 
     client = request(app)
@@ -34,7 +34,7 @@ describe('users-handlers', () => {
         users.findByUsername.resolves({ id: 1, username: 'foo' })
 
         await client
-          .get('/api/users/1')
+          .get('/api/users/foo')
           .expect(200)
       })
 
@@ -47,7 +47,7 @@ describe('users-handlers', () => {
         users.findByUsername.resolves(null)
 
         const { body } = await client
-          .get('/api/users/1')
+          .get('/api/users/foo')
           .expect(404)
 
         expect(body).to.have.property('error', 'Not Found')
