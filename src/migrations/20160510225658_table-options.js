@@ -11,4 +11,4 @@ export const up = ({ schema }) =>
 
 export const down = ({ raw }) =>
 
-  raw('drop table if exists "options" cascade')
+  raw('drop table "options" cascade')

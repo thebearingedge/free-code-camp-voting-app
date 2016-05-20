@@ -16,5 +16,5 @@ export const up = knex => {
 
 export const down = ({ raw }) =>
 
-  raw('drop view if exists "options_view" cascade')
+  raw('drop view "options_view" cascade')
 
