@@ -11,7 +11,7 @@ import { Profile, Poll, PollListItem,
 
 describe('an authenticated user', () => {
 
-  let client, token
+  let client, tokenHeaders
 
   before(async () => {
 
@@ -25,7 +25,9 @@ describe('an authenticated user', () => {
       .from('users')
       .first()
 
-    token = jwt.sign(user, tokenSecret)
+    const token = jwt.sign(user, tokenSecret)
+
+    tokenHeaders = { 'x-access-token': token }
 
     client = request(app)
 
@@ -36,7 +38,7 @@ describe('an authenticated user', () => {
 
     const { body } = await client
       .get('/api/user/foo')
-      .set('x-access-token', token)
+      .set(tokenHeaders)
       .expect(200)
 
     expect(body).to.have.interface(Profile)
@@ -46,7 +48,7 @@ describe('an authenticated user', () => {
 
     const { body } = await client
       .get('/api/user/foo/what-is-your-favorite-color')
-      .set('x-access-token', token)
+      .set(tokenHeaders)
       .expect(200)
 
     expect(body).to.have.interface(Poll)
@@ -56,7 +58,7 @@ describe('an authenticated user', () => {
 
     const { body } = await client
       .get('/api/polls')
-      .set('x-access-token', token)
+      .set(tokenHeaders)
       .expect(200)
 
     expect(body[0]).to.have.interface(PollListItem)
@@ -66,7 +68,7 @@ describe('an authenticated user', () => {
 
     const { body } = await client
       .get('/api/polls/1')
-      .set('x-access-token', token)
+      .set(tokenHeaders)
       .expect(200)
 
     expect(body).to.have.interface(Poll)
@@ -76,7 +78,7 @@ describe('an authenticated user', () => {
 
     const { body } = await client
       .post('/api/vote')
-      .set('x-access-token', token)
+      .set(tokenHeaders)
       .send({ optionId: 1 })
       .expect(201)
 
@@ -87,7 +89,7 @@ describe('an authenticated user', () => {
 
     const { body } = await client
       .post('/api/polls/1/options')
-      .set('x-access-token', token)
+      .set(tokenHeaders)
       .send({ value: 'yellow' })
       .expect(201)
 
@@ -103,7 +105,7 @@ describe('an authenticated user', () => {
 
     const { body } = await client
       .post('/api/polls')
-      .set('x-access-token', token)
+      .set(tokenHeaders)
       .send(newPoll)
       .expect(201)
 
@@ -119,7 +121,7 @@ describe('an authenticated user', () => {
 
     await client
       .post('/api/polls')
-      .set('x-access-token', token)
+      .set(tokenHeaders)
       .send(newPoll)
       .expect(400)
   })
@@ -128,7 +130,7 @@ describe('an authenticated user', () => {
 
     await client
       .delete('/api/polls/2')
-      .set('x-access-token', token)
+      .set(tokenHeaders)
       .expect(204)
   })
 
@@ -136,7 +138,7 @@ describe('an authenticated user', () => {
 
     await client
       .delete('/api/authenticate')
-      .set('x-access-token', token)
+      .set(tokenHeaders)
       .expect(204)
   })
 
