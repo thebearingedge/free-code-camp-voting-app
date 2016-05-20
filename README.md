@@ -3,4 +3,5 @@ Free Code Camp - Build a Voting App
 
 #### TODO
 
-- refactor npm scripts
+- review test output messages
+- review/update dependencies
