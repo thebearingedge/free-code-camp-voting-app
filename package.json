@@ -61,7 +61,7 @@
   "dependencies": {
     "babel-polyfill": "6.9.0",
     "bcrypt-as-promised": "1.1.0",
-    "bluebird": "3.3.5",
+    "bluebird": "3.4.0",
     "body-parser": "1.15.1",
     "deep-clone": "2.0.2",
     "es6-error": "3.0.0",
