@@ -12,7 +12,7 @@ export const optionSchema = joi.object().keys({
 
 export const pollSchema = joi.object().keys({
   question: joi.string().required(),
-  options: joi.array().min(1).items(optionSchema).required()
+  options: joi.array().min(1).items(optionSchema).required().unique()
 })
 
 

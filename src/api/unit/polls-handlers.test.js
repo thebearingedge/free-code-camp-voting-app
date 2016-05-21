@@ -12,7 +12,7 @@ describe('polls-handlers', () => {
 
   const mockPoll = {
     question: 'What is your favorite dog?',
-    options: [{ value: 'Basenji' }, { value: 'Pom-Chi'}]
+    options: [{ value: 'Basenji' }, { value: 'Pom-Chi' }]
   }
 
   const polls = pollsData()
@@ -103,6 +103,7 @@ describe('polls-handlers', () => {
           .send(mockPoll)
           .expect(201)
       })
+
     })
 
     context('when a poll already exists', () => {
@@ -118,6 +119,26 @@ describe('polls-handlers', () => {
 
         expect(body).to.have.property('error', 'Bad Request')
       })
+
+    })
+
+    context('when a poll includes duplicate options', () => {
+
+      it('returns a Bad Request error', async () => {
+
+        const mockPoll = {
+          question: 'What is your favorite pizza topping?',
+          options: [{ value: 'pepperoni' }, { value: 'pepperoni' }]
+        }
+
+        const { body } = await client
+          .post('/polls')
+          .send(mockPoll)
+          .expect(400)
+
+        expect(body).to.have.property('error', 'Bad Request')
+      })
+
     })
 
   })
