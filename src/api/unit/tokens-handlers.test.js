@@ -35,7 +35,7 @@ describe('tokens-handlers', () => {
 
   describe('issueToken', () => {
 
-    it('creates a webtoken from req.user', async () => {
+    it('creates a webtoken from res.locals.user', async () => {
 
       const { body } = await client
         .post('/authenticate')
@@ -61,6 +61,8 @@ describe('tokens-handlers', () => {
         .delete('/authenticate')
         .set('x-access-token', 'foo')
         .expect(204)
+
+      expect(tokens.unset).to.have.been.calledWithExactly('foo')
     })
   })
 

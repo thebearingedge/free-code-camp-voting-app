@@ -18,7 +18,7 @@ describe('users-data', () => {
 
   describe('nameExists', () => {
 
-    it('confirms the existence of a user', async () => {
+    it('confirms the existence of a username', async () => {
 
       const exists = await users.nameExists('foo')
 
@@ -40,7 +40,7 @@ describe('users-data', () => {
 
     })
 
-    context('when a user does not exits', () => {
+    context('when a user does not exist', () => {
 
       it('returns null', async () => {
 
@@ -53,13 +53,13 @@ describe('users-data', () => {
 
   })
 
-  describe('findWithHash', () => {
+  describe('findHash', () => {
 
     context('when a user exists', () => {
 
       it('returns the user', async () => {
 
-        const user = await users.findWithHash('foo')
+        const user = await users.findHash('foo')
 
         expect(user).to.have.interface({ id: Number, hash: String })
       })
@@ -70,7 +70,7 @@ describe('users-data', () => {
 
       it('returns null', async () => {
 
-        const user = await users.findWithHash('bar')
+        const user = await users.findHash('bar')
 
         expect(user).to.be.null
       })

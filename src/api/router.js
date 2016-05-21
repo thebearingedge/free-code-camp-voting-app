@@ -8,7 +8,6 @@ import { usersData } from './users-data'
 import { tokensData } from './tokens-data'
 import { pollsData } from './polls-data'
 import { optionsData } from './options-data'
-import { votesData } from './votes-data'
 
 import { protect } from './tokens-middleware'
 import { authenticate, postUser, checkPollOwner } from './users-middleware'
@@ -25,7 +24,6 @@ import { errorHandler, routeNotFound } from './errors'
 
 const users = usersData(knex)
 const polls = pollsData(knex)
-const votes = votesData(knex)
 const options = optionsData(knex)
 const tokens = tokensData(redis)
 
@@ -52,7 +50,7 @@ const userRoutes = new Router()
 
 export default new Router()
   .use(json())
-  .post('/vote', postVote(votes))
+  .post('/vote', postVote(options))
   .post('/signup', postUser(users))
   .use('/authenticate', authRoutes)
   .use('/polls', pollsRoutes)

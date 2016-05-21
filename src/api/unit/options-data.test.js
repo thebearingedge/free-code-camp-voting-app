@@ -1,7 +1,7 @@
 
 import { begin, expect, rejected } from '@thebearingedge/test-utils'
 import { knex } from '../core'
-import { Option } from '../fixtures/interfaces'
+import { Option, Vote } from '../fixtures/interfaces'
 import { optionsData } from '../options-data'
 
 
@@ -29,6 +29,17 @@ describe('options-data', () => {
 
     })
 
+    context('when an option exists', () => {
+
+      it('returns the option', async () => {
+
+        const option = await options.findById(3)
+
+        expect(option).to.have.interface(Option)
+      })
+
+    })
+
   })
 
   describe('create', () => {
@@ -48,7 +59,7 @@ describe('options-data', () => {
 
     context('when the option already exists', () => {
 
-      it('is not inserted', async () => {
+      it('does not insert the option', async () => {
 
         const data = { pollId: 1, value: 'red' }
 
@@ -57,6 +68,75 @@ describe('options-data', () => {
         expect(err.message).to.include('duplicate')
       })
 
+    })
+
+  })
+
+  describe('valueExists', () => {
+
+    context('when an option exists', () => {
+
+      it('returns true', async () => {
+
+        const pollId = 1
+        const value = 'red'
+
+        const exists = await options.valueExists(pollId, value)
+
+        expect(exists).to.be.true
+      })
+
+    })
+
+    context('when an option does not exist', () => {
+
+      it('returns false', async () => {
+
+        const pollId = 1
+        const value = 'yellow'
+
+        const exists = await options.valueExists(pollId, value)
+
+        expect(exists).to.be.false
+      })
+
+    })
+
+  })
+
+  describe('optionExists', () => {
+
+    context('when an option exists', () => {
+
+      it('returns true', async () => {
+
+        const exists = await options.optionExists(1)
+
+        expect(exists).to.be.true
+      })
+
+    })
+
+    context('when an option does not exist', () => {
+
+      it('returns false', async () => {
+
+        const exists = await options.optionExists(1000)
+
+        expect(exists).to.be.false
+      })
+
+    })
+
+  })
+
+  describe('addVote', () => {
+
+    it('registers a vote with an option', async () => {
+
+      const vote = await options.addVote({ optionId: 1 })
+
+      expect(vote).to.have.interface(Vote)
     })
 
   })

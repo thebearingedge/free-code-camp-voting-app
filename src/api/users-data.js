@@ -35,7 +35,7 @@ export const usersData = knex => ({
   },
 
 
-  async findWithHash(username) {
+  async findHash(username) {
 
     const user = await knex
       .select('id', 'password as hash')
@@ -64,12 +64,13 @@ export const usersData = knex => ({
 
   async isPollOwner(userId, pollId) {
 
-    return knex
-      .select(knex.raw('count(*)::int::bool as exists'))
+    const { isOwner } = await knex
+      .select(knex.raw('count(*)::int::bool as "isOwner"'))
       .from('polls')
       .where(snakeKeys({ id: pollId, userId }))
       .first()
-      .then(({ exists }) => exists)
+
+    return isOwner
   }
 
 })

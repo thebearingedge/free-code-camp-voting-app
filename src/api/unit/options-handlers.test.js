@@ -1,19 +1,20 @@
 
 import { expect, stub, request } from '@thebearingedge/test-utils'
 import express from 'express'
+import { json } from 'body-parser'
 import { errorHandler } from '../errors'
 import { optionsData } from '../options-data'
-import { Option } from '../fixtures/interfaces'
 import { postOption } from '../options-handlers'
 
 
 describe('options-handlers', () => {
 
-  const mockOption = { pollId: 1, value: 'yellow' }
+  const mockOption = { value: 'yellow' }
 
   const options = optionsData()
 
   const app = express()
+    .use(json())
     .post('/options', postOption(options))
     .use(errorHandler)
 
@@ -21,20 +22,44 @@ describe('options-handlers', () => {
 
   describe('postOption', () => {
 
-    beforeEach(() => stub(options, 'create'))
+    beforeEach(() => {
+      stub(options, 'create')
+      stub(options, 'valueExists')
+    })
 
-    afterEach(() => options.create.restore())
+    afterEach(() => {
+      options.create.restore()
+      options.valueExists.restore()
+    })
 
-    it('adds an option to a poll', async () => {
+    context('when the option does not already exist', () => {
 
-      options.create.resolves({ id: 4, votes: 0, ...mockOption })
+      it('adds an option to a poll', async () => {
 
-      const { body } = await client
-        .post('/options')
-        .send(mockOption)
-        .expect(201)
+        options.valueExists.resolves(false)
+        options.create.resolves()
 
-      expect(body).to.have.interface(Option)
+        await client
+          .post('/options')
+          .send(mockOption)
+          .expect(201)
+      })
+    })
+
+    context('when the option already exists', () => {
+
+      it('returns a Bad Request error', async () => {
+
+        options.valueExists.resolves(true)
+
+        const { body } = await client
+          .post('/options')
+          .send(mockOption)
+          .expect(400)
+
+        expect(body).to.have.property('error', 'Bad Request')
+      })
+
     })
 
   })

@@ -1,7 +1,7 @@
 
 import { begin, expect } from '@thebearingedge/test-utils'
 import { knex } from '../core'
-import { PollListItem, Poll, Option } from '../fixtures/interfaces'
+import { PollListItem, Poll, Option, Vote } from '../fixtures/interfaces'
 import { pollsData } from '../polls-data'
 
 

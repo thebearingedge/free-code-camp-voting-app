@@ -126,6 +126,17 @@ describe('an authenticated user', () => {
       .expect(400)
   })
 
+  it('cannot create a duplicate poll option', async () => {
+
+    const newOption = { value: 'red' }
+
+    await client
+      .post('/api/polls/1/options')
+      .set(tokenHeaders)
+      .send(newOption)
+      .expect(400)
+  })
+
   it('can delete its own poll', async () => {
 
     await client

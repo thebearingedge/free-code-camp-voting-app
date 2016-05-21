@@ -46,13 +46,13 @@ describe('users-middleware', () => {
 
     beforeEach(() => {
       stub(users, 'nameExists')
-      stub(users, 'findWithHash')
+      stub(users, 'findHash')
       stub(users, 'create')
     })
 
     afterEach(() => {
       users.nameExists.restore()
-      users.findWithHash.restore()
+      users.findHash.restore()
       users.create.restore()
     })
 
@@ -61,7 +61,7 @@ describe('users-middleware', () => {
       it('sets the new user on locals', async () => {
 
         users.nameExists.resolves(false)
-        users.findWithHash.resolves({ ...mockUser, hash: hashed })
+        users.findHash.resolves({ ...mockUser, hash: hashed })
         users.create.resolves(omit(mockUser, 'password'))
 
         await client
@@ -93,15 +93,15 @@ describe('users-middleware', () => {
 
   describe('authenticate', () => {
 
-    beforeEach(() => stub(users, 'findWithHash'))
+    beforeEach(() => stub(users, 'findHash'))
 
-    afterEach(() => users.findWithHash.restore())
+    afterEach(() => users.findHash.restore())
 
     context('when the username is not found', () => {
 
       it('returns a Forbidden error', async () => {
 
-        users.findWithHash.resolves(null)
+        users.findHash.resolves(null)
 
         const res = await client
           .post('/api/authenticate')
@@ -117,7 +117,7 @@ describe('users-middleware', () => {
 
       slow('returns a Forbidden error', async () => {
 
-        users.findWithHash.resolves({ ...mockUser, hash: hashed })
+        users.findHash.resolves({ ...mockUser, hash: hashed })
 
         const res = await client
           .post('/api/authenticate')
@@ -131,9 +131,9 @@ describe('users-middleware', () => {
 
     context('when the username and password match', () => {
 
-      slow('advances to the login handler', async () => {
+      slow('advances to the authentication handler', async () => {
 
-        users.findWithHash.resolves({ ...mockUser, hash: hashed })
+        users.findHash.resolves({ ...mockUser, hash: hashed })
 
         await client
           .post('/api/authenticate')
