@@ -13,9 +13,9 @@
     "api:unit": "SLOW_TESTS=true npm run -s mocha -- src/api/unit",
     "api:unit:watch": "npm run -s mocha -- src/api/unit -w -R min",
     "api:cover:unit": "SLOW_TESTS=true npm run -s cover:api:unit -- src/api/unit",
-    "api:e2e": "SLOW_TESTS=true npm run -s mocha -- src/api/e2e",
-    "api:e2e:watch": "npm run -s mocha -- src/api/e2e -w -R min",
-    "api:cover:e2e": "SLOW_TESTS=true npm run -s cover:api:e2e -- src/api/e2e",
+    "api:e2e": "npm run -s mocha -- src/api/e2e",
+    "api:e2e:watch": "npm run -s api:e2e -- -w -R min",
+    "api:cover:e2e": "npm run -s cover:api:e2e -- src/api/e2e",
     "api:watch": "babel-node src/api",
     "knex": "babel-node node_modules/.bin/knex --cwd src --",
     "db:make": "npm run -s knex migrate:make --",
@@ -67,11 +67,13 @@
     "es6-error": "3.0.0",
     "express": "4.13.4",
     "express-async-wrap": "1.0.0",
+    "global": "4.3.0",
     "joi": "8.1.0",
     "jsonwebtoken": "7.0.0",
     "knex": "0.11.3",
     "pg": "4.5.5",
     "redis": "2.6.0-2",
+    "redux": "3.5.2",
     "slug": "0.9.1"
   }
 }
