@@ -1,0 +1,6 @@
+
+export const FETCH_LOADING = 'FETCH_LOADING'
+
+export const FETCH_LOADED = 'FETCH_LOADED'
+
+export const FETCH_FAILED = 'FETCH_FAILED'
