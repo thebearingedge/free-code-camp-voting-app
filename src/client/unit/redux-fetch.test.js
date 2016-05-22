@@ -44,10 +44,8 @@ describe('redux-fetch', () => {
 
     dispatch({
       type: FETCH,
-      meta: {
-        request: FETCH_LOADING
-      }
-    }).catch(done)
+      meta: { request: FETCH_LOADING }
+    })
   })
 
   it('dispatches a success action', done => {
@@ -65,10 +63,8 @@ describe('redux-fetch', () => {
 
     dispatch({
       type: FETCH,
-      meta: {
-        success: FETCH_LOADED
-      }
-    }).catch(done)
+      meta: { success: FETCH_LOADED }
+    })
   })
 
   it('dispatches a failure action', done => {
@@ -86,10 +82,8 @@ describe('redux-fetch', () => {
 
     dispatch({
       type: FETCH,
-      meta: {
-        failure: FETCH_FAILED
-      }
-    }).catch(done)
+      meta: { failure: FETCH_FAILED }
+    })
   })
 
   it('makes a GET request', done => {
@@ -111,10 +105,8 @@ describe('redux-fetch', () => {
         url: '/foo',
         params: { bar: 'baz' }
       },
-      meta: {
-        success: FETCH_LOADED
-      }
-    }).catch(done)
+      meta: { success: FETCH_LOADED }
+    })
   })
 
   it('makes a PUT request', done => {
@@ -139,10 +131,8 @@ describe('redux-fetch', () => {
         method: 'put',
         body
       },
-      meta: {
-        success: FETCH_LOADED
-      }
-    }).catch(done)
+      meta: { success: FETCH_LOADED }
+    })
   })
 
 })

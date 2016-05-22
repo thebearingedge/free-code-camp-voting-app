@@ -34,6 +34,3 @@ export const reduxFetch = (fetch, handlers) =>
       .then(data => onSuccess && dispatch(onSuccess(data)))
       .catch(err => onFailure && dispatch(onFailure(err)))
   }
-
-
-export default reduxFetch
