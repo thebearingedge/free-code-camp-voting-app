@@ -35,6 +35,10 @@ module.exports = config => config.set({
         sourceMap: 'inline'
       }],
       ['browserify-babel-istanbul', {
+        ignore: [
+          '__setup__.js', '**/unit/**', '**/e2e/**',
+          '**/fixtures/**', '**/index.js'
+        ]
       }]
     ]
   },
@@ -42,6 +46,10 @@ module.exports = config => config.set({
   reporters: ['mocha'],
 
   mochaReporter: { output: 'autowatch' },
+
+  coverageReporter: {
+    dir: '../coverage/client-unit'
+  },
 
   port: 9876,
 
