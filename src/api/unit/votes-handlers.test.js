@@ -1,5 +1,6 @@
 
-import { expect, stub, request } from '@thebearingedge/test-utils'
+import { expect, stub } from '@thebearingedge/test-utils'
+import request from 'supertest-as-promised'
 import express from 'express'
 import { json } from 'body-parser'
 import { optionsData } from '../options-data'
