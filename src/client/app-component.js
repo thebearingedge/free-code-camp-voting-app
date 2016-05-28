@@ -1,13 +1,17 @@
 
 import React from 'react'
+import { connect } from 'react-redux'
 
 
-const App = ({ children }) =>
+const App = ({ children, user }) =>
 
   <div>
-    <h1>Hello App</h1>
+    <h1>Hello { user.username || 'App' }</h1>
     { children }
   </div>
 
 
-export default App
+const mapState = ({ user }, props) => ({ ...props, user })
+
+
+export default connect(mapState)(App)

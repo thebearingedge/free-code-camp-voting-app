@@ -30,6 +30,7 @@
     "seed:run": "npm run -s knex seed:run",
     "build:api": "rimraf build && cd src && babel api/*.js index.js config.js -d ../build",
     "bundle": "browserify src/client/index.js > build/public/bundle.js",
+    "bundle:watch": "watchify src/client/index.js -o build/public/bundle.js -vd",
     "build:client": "rimraf build/public && mkdirp build/public && npm run -s bundle",
     "start": "node build",
     "html": "jade src/client/index.jade --pretty --out build/public"
@@ -97,9 +98,12 @@
     "react": "15.1.0",
     "react-dom": "15.1.0",
     "react-redux": "4.4.5",
+    "react-redux-form": "0.13.1",
     "react-router": "2.4.1",
+    "react-router-redux": "4.0.4",
     "redis": "2.6.0-2",
     "redux": "3.5.2",
+    "redux-thunk": "2.1.0",
     "slug": "0.9.1"
   }
 }
