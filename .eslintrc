@@ -13,10 +13,11 @@
   },
   "plugins": ["react"],
   "settings": {
-    "pragma": "React"
+    "react": { "pragma": "React" }
   },
   "rules": {
-    "jsx-uses-react": true,
+    "react/jsx-uses-react": 2,
+    "react/jsx-uses-vars": 2,
     "accessor-pairs": 2,
     "array-bracket-spacing": 0,
     "block-scoped-var": 0,
