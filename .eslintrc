@@ -2,13 +2,21 @@
   "parser": "babel-eslint",
   "parserOptions": {
     "ecmaVersion": 6,
-    "sourceType": "module"
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
   },
   "env": {
     "node": true,
     "es6": true
   },
+  "plugins": ["react"],
+  "settings": {
+    "pragma": "React"
+  },
   "rules": {
+    "jsx-uses-react": true,
     "accessor-pairs": 2,
     "array-bracket-spacing": 0,
     "block-scoped-var": 0,
