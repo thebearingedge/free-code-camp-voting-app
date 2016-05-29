@@ -13,17 +13,16 @@ import { modelReducer, formReducer } from 'react-redux-form'
 import { syncHistoryWithStore,
          routerMiddleware, routerReducer } from 'react-router-redux'
 
-
 import routes from './routes'
 
 
 const loginState = {}
 
+const user = JSON.parse(localStorage.getItem('user') || '{}')
 
-const userReducer = (state = {}, { type, payload }) =>
+const userReducer = (state = user, { type, payload }) =>
 
   type === 'LOGIN_SUCCEEDED' ? payload : state
-
 
 const rootReducer = combineReducers({
   user: userReducer,
@@ -31,18 +30,18 @@ const rootReducer = combineReducers({
   login: modelReducer('login', loginState),
   loginForm: formReducer('login', loginState)
 })
-const navigationMiddlware = routerMiddleware(browserHistory)
+
 const middlewares = [
-  navigationMiddlware,
+  routerMiddleware(browserHistory),
   thunk.withExtraArgument({ fetch, localStorage })
 ]
+
 const store = applyMiddleware(...middlewares)(createStore)(rootReducer)
+
 const history = syncHistoryWithStore(browserHistory, store)
 
 
 window.addEventListener('DOMContentLoaded', _ => {
-
-  store.subscribe(_ => console.log(store.getState()))
 
   render(
     <Provider store={ store }>

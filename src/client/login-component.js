@@ -1,7 +1,7 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { Form, Field } from 'react-redux-form'
+import { Form, Field, actions as formActions } from 'react-redux-form'
 import { push } from 'react-router-redux'
 
 
@@ -19,7 +19,7 @@ export const LoginForm = ({ dispatch }) =>
     <Field model='login.password'>
       <input id='password' type='password' required/>
     </Field>
-    <input type='submit' value='submit'/>
+    <input type='submit' value='login'/>
   </Form>
 
 
@@ -37,7 +37,7 @@ export const handleSubmit = dispatch => model =>
     })
     .then(res => res.json())
     .then(setUser(localStorage))
-    .then(loginSucceeded(dispatch))
+    .then(onLogin(dispatch))
   )
 
 
@@ -46,6 +46,12 @@ export const setUser = localStorage => user =>
   localStorage.setItem('user', JSON.stringify(user)) || user
 
 
-export const loginSucceeded = dispatch => user =>
+export const loginSucceeded = user => ({ type: LOGIN_SUCCEEDED, payload: user })
 
-  [{ type: LOGIN_SUCCEEDED, payload: user }, push('/')].forEach(dispatch)
+
+export const clear = _ => formActions.change('login', {})
+
+
+export const onLogin = dispatch => user =>
+
+  [loginSucceeded(user), push('/'), clear()].forEach(dispatch)
