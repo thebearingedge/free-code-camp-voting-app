@@ -4,11 +4,11 @@ import tracery from 'tracery'
 
 export const PollListItem = {
   id: Number,
-  username: String,
-  question: String,
   slug: String,
+  votes: Number,
   userId: Number,
-  votes: Number
+  username: String,
+  question: String
 }
 
 export const Profile = {
@@ -19,29 +19,30 @@ export const Profile = {
 
 export const Poll = {
   id: Number,
+  slug: String,
+  votes: Number,
+  userId: Number,
   username: String,
   question: String,
-  slug: String,
-  userId: Number,
-  votes: Number,
   options: [tracery(Option)]
 }
 
 export const Auth = {
   id: Number,
-  username: String,
-  token: String
+  token: String,
+  username: String
 }
 
 export const Vote = {
   id: Number,
-  optionId: Number,
-  date: String
+  date: String,
+  pollId: Number,
+  optionId: Number
 }
 
 export const Option = {
   id: Number,
   value: String,
-  pollId: Number,
-  votes: Number
+  votes: Number,
+  pollId: Number
 }

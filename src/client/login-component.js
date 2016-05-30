@@ -10,7 +10,7 @@ const LOGIN_SUCCEEDED = 'LOGIN_SUCCEEDED'
 
 export const LoginForm = ({ dispatch }) =>
 
-  <Form model='login' onSubmit={ handleSubmit(dispatch) }>
+  <Form model='login' onSubmit={ handleLogin(dispatch) }>
     <label for='username'>Username</label>
     <Field model='login.username'>
       <input id='username' type='text' required/>
@@ -26,7 +26,7 @@ export const LoginForm = ({ dispatch }) =>
 export default connect()(LoginForm)
 
 
-export const handleSubmit = dispatch => model =>
+export const handleLogin = dispatch => model =>
 
   dispatch((_, __, { fetch, localStorage }) =>
 
@@ -36,12 +36,12 @@ export const handleSubmit = dispatch => model =>
       body: JSON.stringify(model)
     })
     .then(res => res.json())
-    .then(setUser(localStorage))
+    .then(storeUser(localStorage))
     .then(onLogin(dispatch))
   )
 
 
-export const setUser = localStorage => user =>
+export const storeUser = localStorage => user =>
 
   localStorage.setItem('user', JSON.stringify(user)) || user
 

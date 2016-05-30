@@ -61,9 +61,10 @@ export const optionsData = knex => ({
       .returning('id')
 
     const vote = await knex
-      .select('id', 'option_id', knex.raw('date::text'))
-      .from('votes')
-      .where({ id })
+      .select('v.id', 'v.option_id', 'o.poll_id', knex.raw('v.date::text'))
+      .from('votes as v')
+      .innerJoin('options as o', 'v.option_id', 'o.id')
+      .where('v.id', id)
       .first()
 
     return camelKeys(vote)
