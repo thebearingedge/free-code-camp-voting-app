@@ -2,45 +2,29 @@
 import { window, document, fetch, localStorage } from 'global'
 
 import React from 'react'
-import { render } from 'react-dom'
-
-import { Router, browserHistory } from 'react-router'
-
-import { createStore, combineReducers, applyMiddleware } from 'redux'
-import { ReduxAsyncConnect, reducer as reduxAsyncConnect } from 'redux-connect'
 import thunk from 'redux-thunk'
+import { render } from 'react-dom'
 import { Provider } from 'react-redux'
-import { modelReducer, formReducer } from 'react-redux-form'
-import { syncHistoryWithStore,
-         routerMiddleware, routerReducer } from 'react-router-redux'
+import { ReduxAsyncConnect } from 'redux-connect'
+import { Router, browserHistory } from 'react-router'
+import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux'
 
 import routes from './routes'
-import { userReducer, pollReducer,
-         pollsReducer, userVotesReducer } from './reducers'
+import createAppStore from './app-store'
 
 
-const loginState = {}
-const user = JSON.parse(localStorage.getItem('user') || '{}')
-const userVotes = JSON.parse(localStorage.getItem('userVotes') || '{}')
+const login = {}
+const user = JSON.parse(localStorage.getItem('user')) || {}
+const votes = JSON.parse(localStorage.getItem('votes')) || {}
 
-const rootReducer = combineReducers({
-  reduxAsyncConnect,
-  poll: pollReducer,
-  polls: pollsReducer,
-  routing: routerReducer,
-  user: userReducer(user),
-  userVotes: userVotesReducer(userVotes),
-  login: modelReducer('login', loginState),
-  loginForm: formReducer('login', loginState)
-})
+const initialState = { user, votes, login }
 
 const middlewares = [
   routerMiddleware(browserHistory),
   thunk.withExtraArgument({ fetch, localStorage })
 ]
 
-const store = applyMiddleware(...middlewares)(createStore)(rootReducer)
-
+const store = createAppStore(middlewares, initialState)
 const history = syncHistoryWithStore(browserHistory, store)
 
 
@@ -51,11 +35,9 @@ const asyncState = props =>
 
 window.addEventListener('DOMContentLoaded', _ => {
 
-  const app = document.querySelector('#app')
-
   render(
     <Provider store={ store } key='provider'>
       <Router render={ asyncState } history={ history } routes={ routes }/>
     </Provider>
-  , app)
+  , document.querySelector('#app'))
 })

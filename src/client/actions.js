@@ -17,7 +17,6 @@ export const pollLoaded = poll => ({
 
 export const POLLS_LOADED = 'POLLS_LOADED'
 
-
 export const pollsLoaded = polls => ({
   type: POLLS_LOADED,
   payload: polls
@@ -29,4 +28,12 @@ export const LOGIN_SUCCEEDED = 'LOGIN_SUCCEEDED'
 export const loginSucceeded = user => ({
   type: LOGIN_SUCCEEDED,
   payload: user
+})
+
+
+export const PROFILE_LOADED = 'PROFILE_LOADED'
+
+export const profileLoaded = profile => ({
+  type: PROFILE_LOADED,
+  payload: profile
 })

@@ -1,9 +1,9 @@
 
-import { POLL_LOADED, POLLS_LOADED,
+import { POLL_LOADED, POLLS_LOADED, PROFILE_LOADED,
          VOTE_SUCCEEDED, LOGIN_SUCCEEDED } from './actions'
 
 
-export const pollReducer = (state = { options: [] }, { type, payload }) => {
+export const poll = (state = { options: [] }, { type, payload }) => {
 
   if (type === POLL_LOADED) return payload
 
@@ -26,20 +26,27 @@ export const pollReducer = (state = { options: [] }, { type, payload }) => {
 }
 
 
-export const pollsReducer = (state = [], { type, payload }) =>
+export const polls = (state = [], { type, payload }) =>
 
   type === POLLS_LOADED ? payload : state
 
 
-export const userVotesReducer = votes => (state = votes, { type, payload }) =>
+export const votes = (state = {}, { type, payload }) =>
 
   type === VOTE_SUCCEEDED
     ? { ...state, [payload.vote.pollId]: payload.vote }
     : state
 
 
-export const userReducer = user => (state = user, { type, payload }) =>
+export const user = (state = {}, { type, payload }) =>
 
   type === LOGIN_SUCCEEDED
+    ? payload
+    : state
+
+
+export const profile = (state = {}, { type, payload }) =>
+
+  type === PROFILE_LOADED
     ? payload
     : state

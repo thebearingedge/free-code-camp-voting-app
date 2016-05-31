@@ -1,8 +1,9 @@
 
 import App from './app-component'
-import Login from './login-component'
-import PollsList from './polls-list-component'
 import Poll from './poll-component'
+import Login from './login-component'
+import Profile from './profile-component'
+import PollsList from './polls-list-component'
 
 
 export default [
@@ -12,7 +13,11 @@ export default [
     indexRoute: { component: PollsList },
     childRoutes: [
       {
-        path: ':username/:slug',
+        path: 'user/:username',
+        component: Profile
+      },
+      {
+        path: 'poll/:username/:slug',
         component: Poll
       }
     ]
