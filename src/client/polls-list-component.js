@@ -35,7 +35,7 @@ const onPollsLoaded = dispatch => polls => {
 }
 
 
-const asyncProps = [
+const asyncState = [
   {
     key: 'polls',
     promise: ({ helpers, store }) => {
@@ -54,4 +54,4 @@ const asyncProps = [
 const mapState = ({ polls }, props) => ({ ...props, polls })
 
 
-export default asyncConnect(asyncProps)(connect(mapState)(PollsList))
+export default asyncConnect(asyncState)(connect(mapState)(PollsList))

@@ -37,12 +37,12 @@ export const handleVote = (dispatch, optionIndex, optionId) => _ =>
   )
 
 
-export const onVoteSucceeded = (dispatch, optionIndex) => vote =>
+const onVoteSucceeded = (dispatch, optionIndex) => vote =>
 
   dispatch(voteSucceeded({ optionIndex, vote }))
 
 
-export const onPollLoaded = dispatch => poll => {
+const onPollLoaded = dispatch => poll => {
 
   dispatch(pollLoaded(poll))
 
