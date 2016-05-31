@@ -8,7 +8,6 @@ import { Router, browserHistory } from 'react-router'
 
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { ReduxAsyncConnect, reducer as reduxAsyncConnect } from 'redux-connect'
-import { LOAD_SUCCESS } from 'redux-connect/lib/store'
 import thunk from 'redux-thunk'
 import { Provider } from 'react-redux'
 import { modelReducer, formReducer } from 'react-redux-form'
@@ -33,16 +32,16 @@ const userReducer = (state = user, { type, payload }) =>
 
 const votesReducer = (state = votes, { type, payload }) =>
 
-  type === 'VOTE_SUCCEEDED'
-    ? { [payload.vote.pollId]: payload.vote, ...state }
+  type === 'VOTE_SUCCESS'
+    ? { ...state, [payload.vote.pollId]: payload.vote }
     : state
 
 
 const pollReducer = (state = { options: [] }, { type, payload }) => {
 
-  if (type !== 'VOTE_SUCCEEDED' && type !== LOAD_SUCCESS) return state
+  if (type === 'POLL_LOADED') return payload
 
-  if (type === LOAD_SUCCESS) return payload.key === 'poll' ? payload.data : state
+  if (type !== 'VOTE_SUCCESS') return state
 
   const { optionIndex: index, vote } = payload
 
@@ -53,13 +52,11 @@ const pollReducer = (state = { options: [] }, { type, payload }) => {
 
   const upVoted = { ...option, votes: option.votes + 1 }
 
-  const updated = {
+  return {
     ...state,
     votes: state.votes + 1,
     options: [...options.slice(0, index), upVoted, ...options.slice(index + 1)]
   }
-
-  return updated
 }
 
 
@@ -83,16 +80,18 @@ const store = applyMiddleware(...middlewares)(createStore)(rootReducer)
 const history = syncHistoryWithStore(browserHistory, store)
 
 
-const asyncProps = props =>
+const asyncState = props =>
 
   <ReduxAsyncConnect { ...props } helpers={{ fetch }}/>
 
 
 window.addEventListener('DOMContentLoaded', _ => {
 
+  const app = document.querySelector('#app')
+
   render(
     <Provider store={ store } key='provider'>
-      <Router render={ asyncProps } history={ history } routes={ routes }/>
+      <Router render={ asyncState } history={ history } routes={ routes }/>
     </Provider>
-  , document.querySelector('#app'))
+  , app)
 })

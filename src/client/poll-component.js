@@ -4,7 +4,8 @@ import { connect } from 'react-redux'
 import { asyncConnect } from 'redux-connect'
 
 
-export const VOTE_SUCCEEDED = 'VOTE_SUCCEEDED'
+export const VOTE_SUCCESS = 'VOTE_SUCCESS'
+export const POLL_LOADED = 'POLL_LOADED'
 
 
 export const Poll = ({ poll, dispatch }) =>
@@ -13,7 +14,7 @@ export const Poll = ({ poll, dispatch }) =>
     <ul>
       { poll.options.map(({ id, pollId, value, votes }, index) =>
           <li key={ id }>
-            <button onClick={ handleVote(dispatch, index, { id, pollId }) }>
+            <button onClick={ handleVote(dispatch, index, id) }>
               { value } { votes }
             </button>
           </li>
@@ -22,51 +23,60 @@ export const Poll = ({ poll, dispatch }) =>
   </div>
 
 
-const handleVote = (dispatch, optionIndex, { id, pollId }) => e => {
+export const handleVote = (dispatch, optionIndex, optionId) => _ =>
 
-  e.preventDefault()
-
-  return dispatch((_, getState, { fetch, localStorage }) =>
+  dispatch((_, getState, { fetch, localStorage }) =>
 
     fetch('/api/vote', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ optionId: id })
+      body: JSON.stringify({ optionId })
     })
     .then(res => res.json())
-    .then(voteSucceeded(dispatch, optionIndex))
-    .then(storeVotes(localStorage, getState))
+    .then(onVoteSuccess(dispatch, optionIndex))
+    .then(persistVotes(localStorage, getState))
   )
-}
 
 
-const voteSucceeded = (dispatch, optionIndex) => vote =>
+export const onVoteSuccess = (dispatch, optionIndex) => vote =>
 
   dispatch({
-    type: VOTE_SUCCEEDED,
+    type: VOTE_SUCCESS,
     payload: { optionIndex, vote }
   })
 
 
-const storeVotes = (localStorage, getState) => _ =>
+export const onPollLoaded = dispatch => poll => {
+
+  dispatch({ type: POLL_LOADED, payload: poll })
+
+  return poll
+}
+
+
+export const persistVotes = (localStorage, getState) => _ =>
 
   localStorage.setItem('votes', JSON.stringify(getState().votes))
 
 
-const asyncProps = [
+const asyncState = [
   {
     key: 'poll',
-    promise({ params, helpers }) {
+    promise({ helpers, store, params }) {
 
       const { fetch } = helpers
+      const { dispatch } = store
       const { username, slug } = params
 
       return fetch(`/api/user/${username}/${slug}`)
         .then(res => res.json())
+        .then(onPollLoaded(dispatch))
     }
   }
 ]
 
+
 const mapState = ({ poll }, props) => ({ ...props, poll })
 
-export default asyncConnect(asyncProps)(connect(mapState)(Poll))
+
+export default asyncConnect(asyncState)(connect(mapState)(Poll))
