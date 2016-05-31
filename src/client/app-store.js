@@ -21,5 +21,7 @@ export default function createAppStore(middlewares, initialState) {
     loginForm: formReducer('login')
   })
 
-  return createStore(rootReducer, initialState, applyMiddleware(...middlewares))
+  const enhancer = applyMiddleware(...middlewares)
+
+  return createStore(rootReducer, initialState, enhancer)
 }

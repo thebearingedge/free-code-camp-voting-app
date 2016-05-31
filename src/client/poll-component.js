@@ -6,14 +6,14 @@ import { asyncConnect } from 'redux-connect'
 import { pollLoaded, voteSucceeded } from './actions'
 
 
-export const Poll = ({ poll, userVotes, dispatch }) =>
+export const Poll = ({ poll, votes, dispatch }) =>
 
   <div>
     <p>{ poll.question }</p>
     <ul>
       { poll.options.map((option, index) =>
           <li key={ option.id }>
-            <button onClick={ castVote(dispatch, index, option, userVotes) }>
+            <button onClick={ castVote(dispatch, index, option, votes) }>
               { option.value } { option.votes }
             </button>
           </li>
@@ -22,13 +22,13 @@ export const Poll = ({ poll, userVotes, dispatch }) =>
   </div>
 
 
-export const castVote = (dispatch, optionIndex, option, userVotes) => _ =>
+export const castVote = (dispatch, optionIndex, option, votes) => _ =>
 
   dispatch((_, getState, { fetch, localStorage }) => {
 
     const { id: optionId, pollId } = option
 
-    if (userVotes[pollId]) return Promise.resolve()
+    if (votes[pollId]) return Promise.resolve()
 
     return fetch('/api/vote', {
       method: 'POST',
@@ -56,7 +56,7 @@ const onPollLoaded = dispatch => poll => {
 
 export const persistVotes = (localStorage, getState) => _ =>
 
-  localStorage.setItem('userVotes', JSON.stringify(getState().userVotes))
+  localStorage.setItem('votes', JSON.stringify(getState().votes))
 
 
 const asyncState = [
@@ -76,7 +76,7 @@ const asyncState = [
 ]
 
 
-const mapState = ({ poll, userVotes }, props) => ({ ...props, poll, userVotes })
+const mapState = ({ poll, votes }, props) => ({ ...props, poll, votes })
 
 
 export default asyncConnect(asyncState)(connect(mapState)(Poll))
