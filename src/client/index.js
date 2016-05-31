@@ -15,57 +15,20 @@ import { syncHistoryWithStore,
          routerMiddleware, routerReducer } from 'react-router-redux'
 
 import routes from './routes'
+import { userReducer, pollReducer, pollsReducer, votesReducer } from './reducers'
 
 
 const loginState = {}
-
 const user = JSON.parse(localStorage.getItem('user') || '{}')
 const votes = JSON.parse(localStorage.getItem('votes') || '{}')
 
-
-const userReducer = (state = user, { type, payload }) =>
-
-  type === 'LOGIN_SUCCEEDED'
-    ? payload
-    : state
-
-
-const votesReducer = (state = votes, { type, payload }) =>
-
-  type === 'VOTE_SUCCESS'
-    ? { ...state, [payload.vote.pollId]: payload.vote }
-    : state
-
-
-const pollReducer = (state = { options: [] }, { type, payload }) => {
-
-  if (type === 'POLL_LOADED') return payload
-
-  if (type !== 'VOTE_SUCCESS') return state
-
-  const { optionIndex: index, vote } = payload
-
-  if (vote.pollId !== state.id) return state
-
-  const { options } = state
-  const option = options[index]
-
-  const upVoted = { ...option, votes: option.votes + 1 }
-
-  return {
-    ...state,
-    votes: state.votes + 1,
-    options: [...options.slice(0, index), upVoted, ...options.slice(index + 1)]
-  }
-}
-
-
 const rootReducer = combineReducers({
   reduxAsyncConnect,
-  user: userReducer,
   poll: pollReducer,
-  votes: votesReducer,
+  polls: pollsReducer,
   routing: routerReducer,
+  user: userReducer(user),
+  votes: votesReducer(votes),
   login: modelReducer('login', loginState),
   loginForm: formReducer('login', loginState)
 })

@@ -3,12 +3,11 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { asyncConnect } from 'redux-connect'
 
-
-export const VOTE_SUCCESS = 'VOTE_SUCCESS'
-export const POLL_LOADED = 'POLL_LOADED'
+import { pollLoaded, voteSucceeded } from './actions'
 
 
 export const Poll = ({ poll, dispatch }) =>
+
   <div>
     <p>{ poll.question }</p>
     <ul>
@@ -33,22 +32,19 @@ export const handleVote = (dispatch, optionIndex, optionId) => _ =>
       body: JSON.stringify({ optionId })
     })
     .then(res => res.json())
-    .then(onVoteSuccess(dispatch, optionIndex))
+    .then(onVoteSucceeded(dispatch, optionIndex))
     .then(persistVotes(localStorage, getState))
   )
 
 
-export const onVoteSuccess = (dispatch, optionIndex) => vote =>
+export const onVoteSucceeded = (dispatch, optionIndex) => vote =>
 
-  dispatch({
-    type: VOTE_SUCCESS,
-    payload: { optionIndex, vote }
-  })
+  dispatch(voteSucceeded({ optionIndex, vote }))
 
 
 export const onPollLoaded = dispatch => poll => {
 
-  dispatch({ type: POLL_LOADED, payload: poll })
+  dispatch(pollLoaded(poll))
 
   return poll
 }

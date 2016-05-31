@@ -4,8 +4,7 @@ import { connect } from 'react-redux'
 import { Form, Field, actions as formActions } from 'react-redux-form'
 import { push } from 'react-router-redux'
 
-
-const LOGIN_SUCCEEDED = 'LOGIN_SUCCEEDED'
+import { loginSucceeded } from './actions'
 
 
 export const LoginForm = ({ dispatch }) =>
@@ -23,9 +22,6 @@ export const LoginForm = ({ dispatch }) =>
   </Form>
 
 
-export default connect()(LoginForm)
-
-
 export const handleLogin = dispatch => model =>
 
   dispatch((_, __, { fetch, localStorage }) =>
@@ -36,22 +32,22 @@ export const handleLogin = dispatch => model =>
       body: JSON.stringify(model)
     })
     .then(res => res.json())
-    .then(storeUser(localStorage))
+    .then(persistUser(localStorage))
     .then(onLogin(dispatch))
   )
 
 
-export const storeUser = localStorage => user =>
+export const persistUser = localStorage => user =>
 
   localStorage.setItem('user', JSON.stringify(user)) || user
 
 
-export const loginSucceeded = user => ({ type: LOGIN_SUCCEEDED, payload: user })
-
-
-export const clear = _ => formActions.change('login', {})
+export const clearLogin = _ => formActions.change('login', {})
 
 
 export const onLogin = dispatch => user =>
 
-  [loginSucceeded(user), push('/'), clear()].forEach(dispatch)
+  [loginSucceeded(user), push('/'), clearLogin()].forEach(dispatch)
+
+
+export default connect()(LoginForm)
