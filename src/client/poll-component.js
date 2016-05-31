@@ -6,15 +6,15 @@ import { asyncConnect } from 'redux-connect'
 import { pollLoaded, voteSucceeded } from './actions'
 
 
-export const Poll = ({ poll, dispatch }) =>
+export const Poll = ({ poll, userVotes, dispatch }) =>
 
   <div>
     <p>{ poll.question }</p>
     <ul>
-      { poll.options.map(({ id, pollId, value, votes }, index) =>
-          <li key={ id }>
-            <button onClick={ handleVote(dispatch, index, id) }>
-              { value } { votes }
+      { poll.options.map((option, index) =>
+          <li key={ option.id }>
+            <button onClick={ castVote(dispatch, index, option, userVotes) }>
+              { option.value } { option.votes }
             </button>
           </li>
         ) }
@@ -22,11 +22,15 @@ export const Poll = ({ poll, dispatch }) =>
   </div>
 
 
-export const handleVote = (dispatch, optionIndex, optionId) => _ =>
+export const castVote = (dispatch, optionIndex, option, userVotes) => _ =>
 
-  dispatch((_, getState, { fetch, localStorage }) =>
+  dispatch((_, getState, { fetch, localStorage }) => {
 
-    fetch('/api/vote', {
+    const { id: optionId, pollId } = option
+
+    if (userVotes[pollId]) return Promise.resolve()
+
+    return fetch('/api/vote', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ optionId })
@@ -34,7 +38,7 @@ export const handleVote = (dispatch, optionIndex, optionId) => _ =>
     .then(res => res.json())
     .then(onVoteSucceeded(dispatch, optionIndex))
     .then(persistVotes(localStorage, getState))
-  )
+  })
 
 
 const onVoteSucceeded = (dispatch, optionIndex) => vote =>
@@ -52,7 +56,7 @@ const onPollLoaded = dispatch => poll => {
 
 export const persistVotes = (localStorage, getState) => _ =>
 
-  localStorage.setItem('votes', JSON.stringify(getState().votes))
+  localStorage.setItem('userVotes', JSON.stringify(getState().userVotes))
 
 
 const asyncState = [
@@ -72,7 +76,7 @@ const asyncState = [
 ]
 
 
-const mapState = ({ poll }, props) => ({ ...props, poll })
+const mapState = ({ poll, userVotes }, props) => ({ ...props, poll, userVotes })
 
 
 export default asyncConnect(asyncState)(connect(mapState)(Poll))

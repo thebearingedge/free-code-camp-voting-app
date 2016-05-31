@@ -15,12 +15,13 @@ import { syncHistoryWithStore,
          routerMiddleware, routerReducer } from 'react-router-redux'
 
 import routes from './routes'
-import { userReducer, pollReducer, pollsReducer, votesReducer } from './reducers'
+import { userReducer, pollReducer,
+         pollsReducer, userVotesReducer } from './reducers'
 
 
 const loginState = {}
 const user = JSON.parse(localStorage.getItem('user') || '{}')
-const votes = JSON.parse(localStorage.getItem('votes') || '{}')
+const userVotes = JSON.parse(localStorage.getItem('userVotes') || '{}')
 
 const rootReducer = combineReducers({
   reduxAsyncConnect,
@@ -28,7 +29,7 @@ const rootReducer = combineReducers({
   polls: pollsReducer,
   routing: routerReducer,
   user: userReducer(user),
-  votes: votesReducer(votes),
+  userVotes: userVotesReducer(userVotes),
   login: modelReducer('login', loginState),
   loginForm: formReducer('login', loginState)
 })

@@ -31,7 +31,7 @@ export const pollsReducer = (state = [], { type, payload }) =>
   type === POLLS_LOADED ? payload : state
 
 
-export const votesReducer = votes => (state = votes, { type, payload }) =>
+export const userVotesReducer = votes => (state = votes, { type, payload }) =>
 
   type === VOTE_SUCCEEDED
     ? { ...state, [payload.vote.pollId]: payload.vote }
