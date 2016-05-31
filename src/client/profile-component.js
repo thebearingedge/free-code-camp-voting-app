@@ -15,7 +15,7 @@ export const Profile = ({ user, profile }) => {
 
   return (
     <div>
-      <h3>{ userId === profileId ? 'Your' : username + '\'s' } polls</h3>
+      <h3>{ userId === profileId ? 'My' : `${username}'s` } Polls</h3>
       <ul>
       { polls.map(({ id, question, slug, votes }) =>
           <li key={ id }>
