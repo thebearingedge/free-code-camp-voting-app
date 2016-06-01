@@ -9,7 +9,7 @@ const App = ({ children, user }) =>
 
   <div>
     <Header user={ user }/>
-    { children }
+    <div className='container'>{ children }</div>
   </div>
 
 

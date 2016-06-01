@@ -10,15 +10,21 @@ import { loginSucceeded } from './actions'
 export const LoginForm = ({ dispatch }) =>
 
   <Form model='login' onSubmit={ handleLogin(dispatch) }>
-    <label for='username'>Username</label>
-    <Field model='login.username'>
-      <input id='username' type='text' required/>
-    </Field>
-    <label for='password'>Password</label>
-    <Field model='login.password'>
-      <input id='password' type='password' required/>
-    </Field>
-    <input type='submit' value='login'/>
+    <fieldset className='form-group'>
+      <label for='username'>Username</label>
+      <Field model='login.username'>
+        <input id='username' type='text' className='form-control' required/>
+      </Field>
+    </fieldset>
+    <fieldset className='form-group'>
+      <label for='password'>Password</label>
+      <Field model='login.password'>
+        <input id='password' type='password' className='form-control' required/>
+      </Field>
+    </fieldset>
+    <fieldset className='form-group'>
+      <input type='submit' className='btn' value='login'/>
+    </fieldset>
   </Form>
 
 
@@ -42,12 +48,9 @@ export const persistUser = localStorage => user =>
   localStorage.setItem('user', JSON.stringify(user)) || user
 
 
-export const clearLogin = _ => formActions.change('login', {})
-
-
 export const onLogin = dispatch => user =>
 
-  [loginSucceeded(user), push('/'), clearLogin()].forEach(dispatch)
+  [loginSucceeded(user), push('/')].forEach(dispatch)
 
 
 export default connect()(LoginForm)

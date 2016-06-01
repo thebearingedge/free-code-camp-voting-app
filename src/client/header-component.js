@@ -9,32 +9,41 @@ import { logoutSucceeded } from './actions'
 
 export const Header = props =>
 
-  <nav className='navbar navbar-light'>
+  <nav className='navbar navbar-full navbar-dark bg-inverse'>
     <Link to='/' className='navbar-brand'><span>Votif&nbsp;</span></Link>
-    { props.user.username
-        ? <Authenticated { ...props }/>
-        : <Unauthenticated/> }
+    <div className='pull-xs-right'>
+      { props.user.username
+          ? <Authenticated { ...props }/>
+          : <Unauthenticated/> }
+    </div>
   </nav>
 
 
 const Authenticated = ({ user, dispatch }) =>
 
-  <span>
-    <button className='btn' onClick={ handleLogout(user, dispatch) }>
-      Log Out
-    </button>
-  </span>
+  <ul className='nav navbar-nav'>
+    <NavLink to='/' onClick={ handleLogout(user, dispatch) }>Log Out</NavLink>
+  </ul>
 
 
 const Unauthenticated = _ =>
 
-  <span>
-    <Link to='/register'><button className='btn'>Join</button></Link>
-    <Link to='/login'><button className='btn'>Login</button></Link>
-  </span>
+  <ul className='nav navbar-nav'>
+    <NavLink to='/register'>Join</NavLink>
+    <NavLink to='/login'>Login</NavLink>
+  </ul>
 
 
-const handleLogout = ({ token }, dispatch) => _ =>
+const NavLink = props =>
+
+  <li className='nav-item'>
+    <Link { ...props } className='nav-link'/>
+  </li>
+
+
+const handleLogout = ({ token }, dispatch) => event =>
+
+  event.preventDefault() ||
 
   dispatch((_, __, { fetch, localStorage }) =>
 

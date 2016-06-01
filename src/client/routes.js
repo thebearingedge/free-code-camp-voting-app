@@ -13,16 +13,10 @@ export default [
     component: App,
     indexRoute: { component: PollsList },
     childRoutes: [
-      {
-        path: 'user/:username',
-        component: Profile
-      },
-      {
-        path: 'poll/:username/:slug',
-        component: Poll
-      }
+      { path: 'user/:username', component: Profile },
+      { path: 'poll/:username/:slug', component: Poll },
+      { path: 'login', component: Login },
+      { path: 'register', component: Register }
     ]
-  },
-  { path: '/login', component: Login },
-  { path: '/register', component: Register }
+  }
 ]
