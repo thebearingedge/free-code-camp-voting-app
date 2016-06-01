@@ -1,6 +1,6 @@
 
 import { POLL_LOADED, POLLS_LOADED, PROFILE_LOADED,
-         VOTE_SUCCEEDED, LOGIN_SUCCEEDED } from './actions'
+         VOTE_SUCCEEDED, LOGIN_SUCCEEDED, LOGOUT_SUCCEEDED } from './actions'
 
 
 export const poll = (state = { options: [] }, { type, payload }) => {
@@ -38,11 +38,15 @@ export const votes = (state = {}, { type, payload }) =>
     : state
 
 
-export const user = (state = {}, { type, payload }) =>
+export const user = (state = {}, { type, payload }) => {
 
-  type === LOGIN_SUCCEEDED
-    ? payload
-    : state
+  switch (type) {
+    case LOGIN_SUCCEEDED: return payload
+    case LOGOUT_SUCCEEDED: return {}
+    default:
+      return state
+  }
+}
 
 
 export const profile = (state = {}, { type, payload }) =>

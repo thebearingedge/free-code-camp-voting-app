@@ -37,3 +37,10 @@ export const profileLoaded = profile => ({
   type: PROFILE_LOADED,
   payload: profile
 })
+
+
+export const LOGOUT_SUCCEEDED = 'LOGOUT_SUCCEEDED'
+
+export const logoutSucceeded = _ => ({
+  type: LOGOUT_SUCCEEDED
+})

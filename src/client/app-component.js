@@ -2,11 +2,13 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
+import Header from './header-component'
+
 
 const App = ({ children, user }) =>
 
   <div>
-    <h1>Hello { user.username || 'App' }</h1>
+    <Header user={ user }/>
     { children }
   </div>
 
