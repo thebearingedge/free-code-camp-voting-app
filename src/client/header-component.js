@@ -9,25 +9,28 @@ import { logoutSucceeded } from './actions'
 
 export const Header = props =>
 
-  <div>
+  <nav className='navbar navbar-light'>
+    <Link to='/' className='navbar-brand'><span>Votif&nbsp;</span></Link>
     { props.user.username
         ? <Authenticated { ...props }/>
         : <Unauthenticated/> }
-  </div>
+  </nav>
 
 
 const Authenticated = ({ user, dispatch }) =>
 
   <span>
-    Welcome back, { user.username }!
-    <button onClick={ handleLogout(user, dispatch) }>Log Out</button>
+    <button className='btn' onClick={ handleLogout(user, dispatch) }>
+      Log Out
+    </button>
   </span>
 
 
 const Unauthenticated = _ =>
 
   <span>
-    <Link to='/login'><button>Login</button></Link>
+    <Link to='/register'><button className='btn'>Join</button></Link>
+    <Link to='/login'><button className='btn'>Login</button></Link>
   </span>
 
 

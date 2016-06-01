@@ -3,6 +3,7 @@ import App from './app-component'
 import Poll from './poll-component'
 import Login from './login-component'
 import Profile from './profile-component'
+import Register from './register-component'
 import PollsList from './polls-list-component'
 
 
@@ -22,5 +23,6 @@ export default [
       }
     ]
   },
-  { path: '/login', component: Login }
+  { path: '/login', component: Login },
+  { path: '/register', component: Register }
 ]

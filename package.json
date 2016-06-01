@@ -33,7 +33,10 @@
     "bundle:watch": "watchify src/client/index.js -o build/public/bundle.js -vd",
     "build:client": "rimraf build/public && mkdirp build/public && npm run -s bundle",
     "start": "node build",
-    "html": "jade src/client/index.jade --pretty --out build/public"
+    "html": "jade src/client/index.jade --pretty --out build/public",
+    "html:watch": "npm run -s html -- -w",
+    "css": "stylus src/client/index.styl --out build/public/styles.css",
+    "css:watch": "npm run -s css -- -w"
   },
   "browserify": {
     "transform": [
@@ -75,6 +78,7 @@
     "mocha": "2.5.3",
     "npm-watch": "0.1.4",
     "rimraf": "2.5.2",
+    "stylus": "0.54.5",
     "supertest": "1.2.0",
     "supertest-as-promised": "3.1.0",
     "watchify": "3.7.0"
