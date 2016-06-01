@@ -9,7 +9,7 @@ import { loginSucceeded } from './actions'
 
 export const LoginForm = ({ dispatch }) =>
 
-  <Form model='login' onSubmit={ handleLogin(dispatch) }>
+  <Form className='votif-form m-t-1' model='login' onSubmit={ handleLogin(dispatch) }>
     <fieldset className='form-group'>
       <label for='username'>Username</label>
       <Field model='login.username'>
@@ -23,7 +23,10 @@ export const LoginForm = ({ dispatch }) =>
       </Field>
     </fieldset>
     <fieldset className='form-group'>
-      <input type='submit' className='btn' value='login'/>
+      <input
+        type='submit'
+        className='btn btn-primary form-control m-t-1'
+        value='Submit'/>
     </fieldset>
   </Form>
 
@@ -39,7 +42,8 @@ export const handleLogin = dispatch => model =>
     })
     .then(res => res.json())
     .then(persistUser(localStorage))
-    .then(onLogin(dispatch))
+    .then(onLoginSucceeded(dispatch))
+    .then(clearLogin(dispatch))
   )
 
 
@@ -48,9 +52,14 @@ export const persistUser = localStorage => user =>
   localStorage.setItem('user', JSON.stringify(user)) || user
 
 
-export const onLogin = dispatch => user =>
+const clearLogin = dispatch => _ =>
 
-  [loginSucceeded(user), push('/')].forEach(dispatch)
+  dispatch(formActions.change('login', {}))
+
+
+export const onLoginSucceeded = dispatch => user =>
+
+  [loginSucceeded(user), push(`/user/${user.username}`)].forEach(dispatch)
 
 
 export default connect()(LoginForm)

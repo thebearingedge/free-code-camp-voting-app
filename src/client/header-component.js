@@ -29,8 +29,8 @@ const Authenticated = ({ user, dispatch }) =>
 const Unauthenticated = _ =>
 
   <ul className='nav navbar-nav'>
-    <NavLink to='/register'>Join</NavLink>
-    <NavLink to='/login'>Login</NavLink>
+    <NavLink to='/register' activeClassName='active'>Join</NavLink>
+    <NavLink to='/login' activeClassName='active'>Login</NavLink>
   </ul>
 
 
@@ -66,4 +66,4 @@ const onLogoutSucceeded = dispatch =>
   [push('/login'), logoutSucceeded()].forEach(dispatch)
 
 
-export default connect()(Header)
+export default connect(null, null, null, { pure: false })(Header)

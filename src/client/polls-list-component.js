@@ -13,11 +13,11 @@ export const PollsList = ({ polls }) =>
   <ul>
     { polls.map(({ id, question, username, slug, votes }) =>
       <li key={ id }>
-        <h4>
+        <h5>
           <Link to={ `/poll/${username}/${slug}` }>
             { question } <VotesCount count={ votes }/>
           </Link>
-        </h4>
+        </h5>
         <span>
           <Link to={ `/user/${username}` }>by { username }</Link>
         </span>
