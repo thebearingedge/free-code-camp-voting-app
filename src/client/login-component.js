@@ -1,7 +1,7 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { Form, Field, actions as formActions } from 'react-redux-form'
+import { Form, Field } from 'react-redux-form'
 import { push } from 'react-router-redux'
 
 import { loginSucceeded } from './actions'
@@ -43,18 +43,12 @@ export const handleLogin = dispatch => model =>
     .then(res => res.json())
     .then(persistUser(localStorage))
     .then(onLoginSucceeded(dispatch))
-    .then(clearLogin(dispatch))
   )
 
 
 export const persistUser = localStorage => user =>
 
   localStorage.setItem('user', JSON.stringify(user)) || user
-
-
-const clearLogin = dispatch => _ =>
-
-  dispatch(formActions.change('login', {}))
 
 
 export const onLoginSucceeded = dispatch => user =>
