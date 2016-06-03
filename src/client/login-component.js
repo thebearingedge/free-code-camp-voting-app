@@ -1,15 +1,18 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
+import { asyncConnect } from 'redux-connect'
 import { Form, Field } from 'react-redux-form'
-import { push } from 'react-router-redux'
+import { push, replace } from 'react-router-redux'
 
 import { loginSucceeded } from './actions'
 
 
 export const LoginForm = ({ dispatch }) =>
 
-  <Form className='votif-form m-t-1' model='login' onSubmit={ handleLogin(dispatch) }>
+  <Form className='votif-form m-t-1'
+        model='login'
+        onSubmit={ handleLogin(dispatch) }>
     <fieldset className='form-group'>
       <label for='username'>Username</label>
       <Field model='login.username'>
@@ -56,4 +59,17 @@ export const onLoginSucceeded = dispatch => user =>
   [loginSucceeded(user), push(`/user/${user.username}`)].forEach(dispatch)
 
 
-export default connect()(LoginForm)
+const asyncState = [
+  {
+    key: 'user',
+    promise: ({ store, router }) => {
+
+      const { dispatch, getState } = store
+      const { username, token } = getState().user
+
+      if (token) dispatch(replace(`/user/${username}`))
+    }
+  }
+]
+
+export default asyncConnect(asyncState)(connect()(LoginForm))

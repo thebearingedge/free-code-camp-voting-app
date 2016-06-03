@@ -15,10 +15,8 @@ export default [
     childRoutes: [
       { path: 'user/:username', component: Profile },
       { path: 'poll/:username/:slug', component: Poll },
-      { path: 'login', component: Login, onEnter: onLoginEnter },
+      { path: 'login', component: Login },
       { path: 'register', component: Register }
     ]
   }
 ]
-
-const onLoginEnter = (nextState, replace, callback) => callback()
