@@ -2,7 +2,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { asyncConnect } from 'redux-connect'
-import { Form, Field } from 'react-redux-form'
+import { Form, Field, actions as formActions } from 'react-redux-form'
 import { push, replace } from 'react-router-redux'
 
 import { loginSucceeded } from './actions'
@@ -65,6 +65,9 @@ const asyncState = [
     promise: ({ store, router }) => {
 
       const { dispatch, getState } = store
+
+      dispatch(formActions.change('login', {}))
+
       const { username, token } = getState().user
 
       if (token) dispatch(replace(`/user/${username}`))
