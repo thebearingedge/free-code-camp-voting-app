@@ -1,25 +1,68 @@
 
 import React from 'react'
+import color from 'color'
 import { connect } from 'react-redux'
+import randomColor from 'randomcolor'
 import { asyncConnect } from 'redux-connect'
+import PieChart from './pie-chart-component'
 
 import { pollLoaded, voteSucceeded } from './actions'
 
 
-export const Poll = ({ poll, votes, dispatch }) =>
+export const Poll = ({ poll, votes, dispatch }) => {
 
-  <div>
-    <p>{ poll.question }</p>
-    <ul>
-      { poll.options.map((option, index) =>
-          <li key={ option.id }>
-            <button onClick={ castVote(dispatch, index, option, votes) }>
-              { option.value } { option.votes }
-            </button>
-          </li>
-        ) }
-    </ul>
-  </div>
+  const { id, question, options } = poll
+
+  if (!votes[id]) {
+
+    return (
+      <div>
+        <p>{ question }</p>
+        <ul>
+          { options.map((option, index) =>
+              <li key={ option.id }>
+                <button onClick={ castVote(dispatch, index, option, votes) }>
+                  { option.value } { option.votes }
+                </button>
+              </li>
+            ) }
+        </ul>
+      </div>
+    )
+  }
+
+  const chartData = {
+    labels: [],
+    datasets: [{
+      data: [],
+      backgroundColor: [],
+      hoverBackgroundColor: []
+    }]
+  }
+
+  options.reduce(({ labels, datasets }, { value, votes }) => {
+
+    const [ dataset ] = datasets
+    const { data, backgroundColor, hoverBackgroundColor } = dataset
+
+    const background = randomColor()
+    const hoverColor = color(background).desaturate(0.5).hexString()
+
+    labels.push(value)
+    data.push(votes)
+    backgroundColor.push(background)
+    hoverBackgroundColor.push(hoverColor)
+
+    return { labels, datasets }
+  }, chartData)
+
+  return (
+    <div>
+      <h3>{ question }</h3>
+      <PieChart data={ chartData } width={ 290 } height= { 290 }/>
+    </div>
+  )
+}
 
 
 export const castVote = (dispatch, optionIndex, option, votes) => _ =>
