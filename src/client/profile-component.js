@@ -18,7 +18,7 @@ export const Profile = ({ user, profile }) => {
       <h4>
         { userId === profileId
           ? 'My Polls'
-          : `Polls by ${username}` }
+          : `Asked by ${username}` }
       </h4>
       <hr/>
       <ul className='plain-list'>

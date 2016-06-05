@@ -1,6 +1,7 @@
 
 import React from 'react'
 import color from 'color'
+import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import randomColor from 'randomcolor'
 import { asyncConnect } from 'redux-connect'
@@ -12,19 +13,23 @@ import VotesCount from './votes-count-component'
 
 export const Poll = ({ poll, votes, dispatch }) => {
 
-  const { id, question, options } = poll
+  const { id, question, options, username } = poll
 
   if (!votes[id]) {
 
     return (
       <div>
-        <p>{ question }</p>
-        <ul>
+        <h5>{ question } <VotesCount count={ poll.votes }/></h5>
+        <p className='small'>
+          Asked by <Link to={ `/user/${username}` }>{ username }</Link>
+        </p>
+        <ul className='list-group'>
           { options.map((option, index) =>
-              <li key={ option.id }>
-                <button onClick={ castVote(dispatch, index, option, votes) }>
-                  { option.value } { option.votes }
-                </button>
+              <li key={ option.id }
+                  className='poll-option list-group-item'
+                  onClick={ castVote(dispatch, index, option, votes) }>
+                  <span>{ option.value }</span>
+                  <span className='pull-xs-right'>{ option.votes }</span>
               </li>
             ) }
         </ul>
@@ -60,6 +65,9 @@ export const Poll = ({ poll, votes, dispatch }) => {
   return (
     <div>
       <h5>{ question } <VotesCount count={ poll.votes }/></h5>
+      <p className='small'>
+        Asked by <Link to={ `/user/${username}` }>{ username }</Link>
+      </p>
       <PieChart data={ chartData } width={ 290 } height= { 290 }/>
     </div>
   )

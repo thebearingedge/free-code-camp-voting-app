@@ -10,28 +10,32 @@ import { loginSucceeded } from './actions'
 
 export const Credentials = ({ endpoint, dispatch }) =>
 
-  <Form className='center-box'
-        model='login'
-        onSubmit={ handleSubmit(endpoint, dispatch) }>
-    <fieldset className='form-group'>
-      <label for='username'>Username</label>
-      <Field model='login.username'>
-        <input id='username' type='text' className='form-control' required/>
-      </Field>
-    </fieldset>
-    <fieldset className='form-group'>
-      <label for='password'>Password</label>
-      <Field model='login.password'>
-        <input id='password' type='password' className='form-control' required/>
-      </Field>
-    </fieldset>
-    <fieldset className='form-group'>
-      <input
-        type='submit'
-        className='btn btn-primary form-control m-t-1'
-        value='Submit'/>
-    </fieldset>
-  </Form>
+  <div className='center-box'>
+    <h3>{ endpoint === 'signup' ? 'Join Votif' : 'Welcome Back' }</h3>
+    <hr/>
+    <Form model='login' onSubmit={ handleSubmit(endpoint, dispatch) }>
+      <fieldset className='form-group'>
+        <label for='username'>Username</label>
+        <Field model='login.username'>
+          <input id='username' type='text' className='form-control' required/>
+        </Field>
+      </fieldset>
+      <fieldset className='form-group'>
+        <label for='password'>Password</label>
+        <Field model='login.password'>
+          <input id='password'
+                 type='password'
+                 className='form-control' required/>
+        </Field>
+      </fieldset>
+      <fieldset className='form-group'>
+        <input
+          type='submit'
+          className='btn btn-primary form-control m-t-1'
+          value={ endpoint === 'signup' ? 'Sign Up' : 'Login' }/>
+      </fieldset>
+    </Form>
+  </div>
 
 
 export const LoginForm = props =>
