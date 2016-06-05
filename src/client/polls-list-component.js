@@ -10,16 +10,17 @@ import VotesCount from './votes-count-component'
 
 export const PollsList = ({ polls }) =>
 
-  <ul>
+  <ul className='plain-list'>
     { polls.map(({ id, question, username, slug, votes }) =>
       <li key={ id }>
-        <h5>
+        <strong>
           <Link to={ `/poll/${username}/${slug}` }>
             { question } <VotesCount count={ votes }/>
           </Link>
-        </h5>
-        <span>
-          <Link to={ `/user/${username}` }>by { username }</Link>
+        </strong>
+        <br/>
+        <span className='small'>
+          by <Link to={ `/user/${username}` }>{ username }</Link>
         </span>
       </li>
       ) }

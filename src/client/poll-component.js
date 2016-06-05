@@ -7,6 +7,7 @@ import { asyncConnect } from 'redux-connect'
 import PieChart from './pie-chart-component'
 
 import { pollLoaded, voteSucceeded } from './actions'
+import VotesCount from './votes-count-component'
 
 
 export const Poll = ({ poll, votes, dispatch }) => {
@@ -58,7 +59,7 @@ export const Poll = ({ poll, votes, dispatch }) => {
 
   return (
     <div>
-      <h3>{ question }</h3>
+      <h5>{ question } <VotesCount count={ poll.votes }/></h5>
       <PieChart data={ chartData } width={ 290 } height= { 290 }/>
     </div>
   )

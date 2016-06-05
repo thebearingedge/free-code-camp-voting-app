@@ -11,6 +11,9 @@ export const Header = props =>
 
   <nav className='navbar navbar-full navbar-dark bg-inverse'>
     <Link to='/' className='navbar-brand'><span>Votif&nbsp;</span></Link>
+    { props.user.username
+      ? <ProfileLink username={ props.user.username }/>
+      : null }
     <div className='pull-xs-right'>
       { props.user.username
           ? <Authenticated { ...props }/>
@@ -29,8 +32,17 @@ const Authenticated = ({ user, dispatch }) =>
 const Unauthenticated = _ =>
 
   <ul className='nav navbar-nav'>
-    <NavLink to='/register' activeClassName='active'>Join</NavLink>
+    <NavLink to='/signup' activeClassName='active'>Sign Up</NavLink>
     <NavLink to='/login' activeClassName='active'>Login</NavLink>
+  </ul>
+
+
+const ProfileLink = ({ username }) =>
+
+  <ul className='nav navbar-nav'>
+    <NavLink to={ `/user/${username}` } activeClassName='active'>
+      My Polls
+    </NavLink>
   </ul>
 
 

@@ -8,11 +8,11 @@ import { push, replace } from 'react-router-redux'
 import { loginSucceeded } from './actions'
 
 
-export const LoginForm = ({ dispatch }) =>
+export const Credentials = ({ endpoint, dispatch }) =>
 
-  <Form className='votif-form m-t-1'
+  <Form className='center-box'
         model='login'
-        onSubmit={ handleLogin(dispatch) }>
+        onSubmit={ handleSubmit(endpoint, dispatch) }>
     <fieldset className='form-group'>
       <label for='username'>Username</label>
       <Field model='login.username'>
@@ -34,11 +34,21 @@ export const LoginForm = ({ dispatch }) =>
   </Form>
 
 
-export const handleLogin = dispatch => model =>
+export const LoginForm = props =>
+
+  <Credentials endpoint={ 'authenticate' } { ...props }/>
+
+
+export const SignUpForm = props =>
+
+  <Credentials endpoint={ 'signup' } { ...props }/>
+
+
+export const handleSubmit = (endpoint, dispatch) => model =>
 
   dispatch((_, __, { fetch, localStorage }) =>
 
-    fetch('/api/authenticate', {
+    fetch(`/api/${endpoint}`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify(model)
@@ -75,4 +85,7 @@ const asyncState = [
   }
 ]
 
-export default asyncConnect(asyncState)(connect()(LoginForm))
+
+export const Login = asyncConnect(asyncState)(connect()(LoginForm))
+
+export const SignUp = asyncConnect(asyncState)(connect()(SignUpForm))

@@ -15,8 +15,13 @@ export const Profile = ({ user, profile }) => {
 
   return (
     <div>
-      <h3>{ userId === profileId ? 'My' : `${username}'s` } Polls</h3>
-      <ul>
+      <h4>
+        { userId === profileId
+          ? 'My Polls'
+          : `Polls by ${username}` }
+      </h4>
+      <hr/>
+      <ul className='plain-list'>
       { polls.map(({ id, question, slug, votes }) =>
           <li key={ id }>
             <Link to={ `/poll/${username}/${slug}` }>

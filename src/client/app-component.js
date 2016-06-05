@@ -7,9 +7,9 @@ import Header from './header-component'
 
 const App = ({ children, user }) =>
 
-  <div>
+  <div className='app'>
     <Header user={ user }/>
-    <div className='container'>{ children }</div>
+    <div className='content'>{ children }</div>
   </div>
 
 

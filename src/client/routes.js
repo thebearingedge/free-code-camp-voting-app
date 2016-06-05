@@ -1,9 +1,8 @@
 
 import App from './app-component'
 import Poll from './poll-component'
-import Login from './login-component'
+import { Login, SignUp } from './credentials-component'
 import Profile from './profile-component'
-import Register from './register-component'
 import PollsList from './polls-list-component'
 
 
@@ -16,7 +15,7 @@ export default [
       { path: 'user/:username', component: Profile },
       { path: 'poll/:username/:slug', component: Poll },
       { path: 'login', component: Login },
-      { path: 'register', component: Register }
+      { path: 'signup', component: SignUp }
     ]
   }
 ]
