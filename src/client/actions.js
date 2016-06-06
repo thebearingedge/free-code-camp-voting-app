@@ -44,3 +44,42 @@ export const LOGOUT_SUCCEEDED = 'LOGOUT_SUCCEEDED'
 export const logoutSucceeded = _ => ({
   type: LOGOUT_SUCCEEDED
 })
+
+
+export const QUESTION_UPDATED = 'QUESTION_UPDATED'
+
+export const questionUpdated = question => ({
+  type: QUESTION_UPDATED,
+  payload: question
+})
+
+
+export const OPTION_ADDED = 'OPTION_ADDED'
+
+export const optionAdded = adding => ({
+  type: OPTION_ADDED,
+  payload: { value: adding }
+})
+
+
+export const OPTION_UPDATED = 'OPTION_UPDATED'
+
+export const optionUpdated = adding => ({
+  type: OPTION_UPDATED,
+  payload: adding
+})
+
+
+export const POLL_FORM_CLEARED = 'POLL_FORM_CLEARED'
+
+export const pollFormCleared = _ => ({
+  type: POLL_FORM_CLEARED
+})
+
+
+export const POLL_FORM_LOADED = 'POLL_FORM_LOADED'
+
+export const pollFormLoaded = poll => ({
+  type: POLL_FORM_LOADED,
+  payload: poll
+})

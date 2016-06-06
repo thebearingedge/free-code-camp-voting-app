@@ -14,10 +14,11 @@ import createAppStore from './app-store'
 
 
 const login = {}
+const pollForm = { options: [] }
 const user = JSON.parse(localStorage.getItem('user')) || {}
 const votes = JSON.parse(localStorage.getItem('votes')) || {}
 
-const initialState = { user, votes, login }
+const initialState = { user, votes, login, pollForm }
 
 const middlewares = [
   routerMiddleware(browserHistory),

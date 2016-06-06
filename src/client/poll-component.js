@@ -11,9 +11,9 @@ import { pollLoaded, voteSucceeded } from './actions'
 import VotesCount from './votes-count-component'
 
 
-export const Poll = ({ poll, votes, dispatch }) => {
+export const Poll = ({ poll, votes, user, dispatch }) => {
 
-  const { id, question, options, username } = poll
+  const { id, question, options, username, slug } = poll
 
   if (!votes[id]) {
 
@@ -21,7 +21,11 @@ export const Poll = ({ poll, votes, dispatch }) => {
       <div>
         <h5>{ question } <VotesCount count={ poll.votes }/></h5>
         <p className='small'>
-          Asked by <Link to={ `/user/${username}` }>{ username }</Link>
+          { username === user.username
+              ? <Link to={ `/user/${username}/${slug}/edit` }>edit</Link>
+              : <span>
+                  Asked by <Link to={ `/user/${username}` }>{ username }</Link>
+                </span> }
         </p>
         <ul className='list-group'>
           { options.map((option, index) =>
@@ -29,7 +33,9 @@ export const Poll = ({ poll, votes, dispatch }) => {
                   className='poll-option list-group-item'
                   onClick={ castVote(dispatch, index, option, votes) }>
                   <span>{ option.value }</span>
-                  <span className='pull-xs-right'>{ option.votes }</span>
+                  <span className='label label-default label-pill pull-xs-right'>
+                    { option.votes }
+                  </span>
               </li>
             ) }
         </ul>
@@ -66,7 +72,11 @@ export const Poll = ({ poll, votes, dispatch }) => {
     <div>
       <h5>{ question } <VotesCount count={ poll.votes }/></h5>
       <p className='small'>
-        Asked by <Link to={ `/user/${username}` }>{ username }</Link>
+        { username === user.username
+            ? <Link to={ `/edit-poll/${id}` }>edit</Link>
+            : <span>
+                Asked by <Link to={ `/user/${username}` }>{ username }</Link>
+              </span> }
       </p>
       <PieChart data={ chartData } width={ 290 } height= { 290 }/>
     </div>
@@ -128,7 +138,9 @@ const asyncState = [
 ]
 
 
-const mapState = ({ poll, votes }, props) => ({ ...props, poll, votes })
+const mapState = ({ poll, votes, user }, props) => ({
+  ...props, poll, votes, user
+})
 
 
 export default asyncConnect(asyncState)(connect(mapState)(Poll))

@@ -8,7 +8,7 @@ import { profileLoaded } from './actions'
 import VotesCount from './votes-count-component'
 
 
-export const Profile = ({ user, profile }) => {
+export const Profile = ({ user, profile, pollForm }) => {
 
   const { id: userId } = user
   const { id: profileId, username, polls } = profile
@@ -22,17 +22,27 @@ export const Profile = ({ user, profile }) => {
       </h4>
       <hr/>
       <ul className='plain-list'>
-      { polls.map(({ id, question, slug, votes }) =>
-          <li key={ id }>
-            <Link to={ `/poll/${username}/${slug}` }>
-              <span>{ question } <VotesCount count={ votes }/></span>
-            </Link>
-          </li>
-        ) }
+        { polls.map(({ id, question, slug, votes }) =>
+            <li key={ id }>
+              <Link to={ `/poll/${username}/${slug}` }>
+                <span>{ question } <VotesCount count={ votes }/></span>
+              </Link>
+            </li>
+          ) }
       </ul>
+      { userId === profileId
+          ? <AddPoll username={ username }/>
+          : null }
     </div>
   )
 }
+
+
+const AddPoll = ({ username }) =>
+
+  <Link to='/create-poll'>
+    <button className='btn btn-primary form-control'>Add Poll</button>
+  </Link>
 
 
 const onProfileLoaded = dispatch => profile => {
@@ -59,10 +69,11 @@ const asyncState = [
   }
 ]
 
-const mapState = ({ user, profile }, props) => ({
+const mapState = ({ user, profile, pollForm }, props) => ({
   ...props,
   user,
-  profile
+  profile,
+  pollForm
 })
 
 export default asyncConnect(asyncState)(connect(mapState)(Profile))

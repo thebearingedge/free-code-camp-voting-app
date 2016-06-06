@@ -1,6 +1,8 @@
 
 import { POLL_LOADED, POLLS_LOADED, PROFILE_LOADED,
-         VOTE_SUCCEEDED, LOGIN_SUCCEEDED, LOGOUT_SUCCEEDED } from './actions'
+         VOTE_SUCCEEDED, LOGIN_SUCCEEDED, LOGOUT_SUCCEEDED,
+         QUESTION_UPDATED, OPTION_ADDED, OPTION_UPDATED,
+         POLL_FORM_CLEARED, POLL_FORM_LOADED } from './actions'
 
 
 export const poll = (state = { options: [] }, { type, payload }) => {
@@ -54,3 +56,24 @@ export const profile = (state = {}, { type, payload }) =>
   type === PROFILE_LOADED
     ? payload
     : state
+
+
+export const pollForm = (state = { question: '', adding: '', options: [] }, action) => {
+
+  const { type, payload } = action
+
+  switch (type) {
+    case QUESTION_UPDATED:
+      return { ...state, question: payload }
+    case OPTION_ADDED:
+      return { ...state, adding: '', options: state.options.concat(payload) }
+    case OPTION_UPDATED:
+      return { ...state, adding: payload }
+    case POLL_FORM_CLEARED:
+      return { question: '', adding: '', options: [] }
+    case POLL_FORM_LOADED:
+      return { ...payload, adding: '' }
+    default:
+      return state
+  }
+}

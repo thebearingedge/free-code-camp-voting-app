@@ -17,7 +17,10 @@ export const Credentials = ({ endpoint, dispatch }) =>
       <fieldset className='form-group'>
         <label for='username'>Username</label>
         <Field model='login.username'>
-          <input id='username' type='text' className='form-control' required/>
+          <input id='username'
+                 type='text'
+                 className='form-control'
+                 required/>
         </Field>
       </fieldset>
       <fieldset className='form-group'>
@@ -25,7 +28,8 @@ export const Credentials = ({ endpoint, dispatch }) =>
         <Field model='login.password'>
           <input id='password'
                  type='password'
-                 className='form-control' required/>
+                 className='form-control'
+                 required/>
         </Field>
       </fieldset>
       <fieldset className='form-group'>

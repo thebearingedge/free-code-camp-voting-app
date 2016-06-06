@@ -4,7 +4,9 @@ import { modelReducer, formReducer } from 'react-redux-form'
 import { reducer as reduxAsyncConnect } from 'redux-connect'
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 
-import { user, poll, userPolls, polls, votes, profile } from './reducers'
+import { user, poll, userPolls,
+         polls, votes, profile, pollForm } from './reducers'
+
 
 export default function createAppStore(middlewares, initialState) {
 
@@ -15,6 +17,7 @@ export default function createAppStore(middlewares, initialState) {
     votes,
     profile,
     routing,
+    pollForm,
     userPolls,
     reduxAsyncConnect,
     login: modelReducer('login'),
