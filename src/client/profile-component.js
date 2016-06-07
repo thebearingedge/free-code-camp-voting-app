@@ -25,8 +25,9 @@ export const Profile = ({ user, profile, pollForm }) => {
         { polls.map(({ id, question, slug, votes }) =>
             <li key={ id }>
               <Link to={ `/poll/${username}/${slug}` }>
-                <span>{ question } <VotesCount count={ votes }/></span>
+                <span>{ question } </span>
               </Link>
+              <VotesCount count={ votes }/>
             </li>
           ) }
       </ul>
