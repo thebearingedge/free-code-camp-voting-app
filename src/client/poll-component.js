@@ -22,7 +22,7 @@ export const Poll = ({ poll, votes, user, dispatch }) => {
         <h5>{ question } <VotesCount count={ poll.votes }/></h5>
         <p className='small'>
           { username === user.username
-              ? <Link to={ `/user/${username}/${slug}/edit` }>edit</Link>
+              ? <Link to={ `/edit-poll/${id}` }>Add Options</Link>
               : <span>
                   Asked by <Link to={ `/user/${username}` }>{ username }</Link>
                 </span> }
@@ -73,7 +73,7 @@ export const Poll = ({ poll, votes, user, dispatch }) => {
       <h5>{ question } <VotesCount count={ poll.votes }/></h5>
       <p className='small'>
         { username === user.username
-            ? <Link to={ `/edit-poll/${id}` }>edit</Link>
+            ? <Link to={ `/edit-poll/${id}` }>Add Options</Link>
             : <span>
                 Asked by <Link to={ `/user/${username}` }>{ username }</Link>
               </span> }

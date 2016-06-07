@@ -7,7 +7,7 @@ import { optionAdded, optionUpdated, questionUpdated,
          pollFormCleared, pollFormLoaded } from './actions'
 
 
-export const PollForm = ({ pollForm, dispatch }) =>
+export const PollForm = ({ pollForm, user, dispatch }) =>
 
   <div className='center-box'>
     <form>
@@ -18,6 +18,7 @@ export const PollForm = ({ pollForm, dispatch }) =>
                type='text'
                value={ pollForm.question }
                onChange={ handleQuestionChange(dispatch) }
+               disabled={ !!pollForm.id }
                required/>
       </fieldset>
       <fieldset className='form-group'>
@@ -30,7 +31,9 @@ export const PollForm = ({ pollForm, dispatch }) =>
           <span className='input-group-btn'>
             <button className='btn btn-secondary'
                     type='button'
-                    onClick={ handleAddOption(dispatch, pollForm) }>Add</button>
+                    onClick={ handleAddOption(dispatch, user, pollForm) }>
+              Add
+            </button>
           </span>
         </div>
       </fieldset>
@@ -40,6 +43,10 @@ export const PollForm = ({ pollForm, dispatch }) =>
              <li key={ i }>{ value }</li>
           ) }
       </ul>
+      <button type={ pollForm.id ? 'button' : 'submit' }
+              className='btn btn-primary form-control'>
+        Done
+      </button>
     </form>
   </div>
 
@@ -57,9 +64,32 @@ const handleUpdateOption = dispatch => ({ target }) => {
 }
 
 
-const handleAddOption = (dispatch, { adding }) => _ =>
+const handleAddOption = (dispatch, { token }, { id, adding, options }) => _ => {
 
-  adding.trim() && dispatch(optionAdded(adding.trim()))
+  const newValue = adding.trim()
+
+  if (!newValue) return
+
+  if (options.some(({ value }) => value === newValue)) return
+
+  const option = { value: newValue }
+
+  if (!id) return dispatch(optionAdded(option))
+
+  dispatch((_, __, { fetch }) =>
+
+    fetch(`/api/polls/${id}/options`, {
+      method: 'POST',
+      headers: {
+        'x-access-token': token,
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify(option)
+    })
+    .then(res => res.json())
+    .then(added => dispatch(optionAdded(added)))
+  )
+}
 
 
 const newPollState = [
@@ -95,7 +125,7 @@ const onPollFormLoaded = dispatch => poll => {
 }
 
 
-const mapState = ({ pollForm }, props) => ({ ...props, pollForm })
+const mapState = ({ pollForm, user }, props) => ({ ...props, pollForm, user })
 
 
 export const NewPoll = asyncConnect(newPollState)(connect(mapState)(PollForm))

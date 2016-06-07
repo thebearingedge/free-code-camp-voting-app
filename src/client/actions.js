@@ -56,9 +56,9 @@ export const questionUpdated = question => ({
 
 export const OPTION_ADDED = 'OPTION_ADDED'
 
-export const optionAdded = adding => ({
+export const optionAdded = option => ({
   type: OPTION_ADDED,
-  payload: { value: adding }
+  payload: option
 })
 
 
